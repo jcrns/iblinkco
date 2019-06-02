@@ -84,7 +84,7 @@ def register():
     if form.validate_on_submit():
 
         # Defining variables equal to post request paramaters
-        url = "http://localhost:8000/create-user"
+        url = "http://iblinkco.com/create-user"
         data = { 'firstname': form.firstname.data, 'lastname': form.lastname.data, 'email': form.email.data, 'password': form.password.data }
 
         try:
@@ -121,7 +121,7 @@ def login():
     if form.validate_on_submit():
 
         # Defining variables equal to post request paramaters
-        url = "http://127.0.0.1:8000/signin"
+        url = "http://iblinkco.com/signin"
         data = { 'email': form.email.data, 'password': form.password.data }
 
         # Sending data to API
