@@ -34,13 +34,11 @@ twitter = twitterConnect()
 @dashboard.route("/dashboard", methods=['GET', 'POST'])
 @login_required
 def home():
-    print('works')
     return render_template('dashboard/home.html')
 
 # Setup and Website Update
 @dashboard.route('/setup-update', methods=['GET', 'POST'])
 def updateSetupAndWebsite():
-	print("updating")
 	try:
 		twitter_exist = session['userTwitterData']
 		
@@ -49,15 +47,12 @@ def updateSetupAndWebsite():
 
 		# Assigning uid as a variable which will be used to go through branched in for loop
 		uid = user['localId']
-		print('ssss')
 		setup_completed = { "setup_complete": True }
 
 		# Adding Setup Complete to Database
 		database.child("users").child(uid).child("data").child("account").update({ "setup_complete": True })
-		print('ssss')
 
 		session['setup_complete'] = True
-		print('ssss')
 		value = "success"
 
 	except Exception as e:
@@ -69,11 +64,8 @@ def updateSetupAndWebsite():
 		website_name = request.form['website_name']
 		website_url = request.form['website_url']
 
-		print(website_url)
-
 		websiteScrap = websiteScrapping(website_url)
 
-		print('formweb\n\n\n\n\n\n\n\n\n\n\n\n')
 		# Defining json equal to input
 		addWebsite = { "website-name" : website_name, "website-url" : website_url, "header-text" : websiteScrap[0], "links" : websiteScrap[1] }
 
@@ -92,24 +84,19 @@ def updateSetupAndWebsite():
 		websiteData = dict(database.child("users").child(uid).child("data").child("website").get().val())
 
 		session['websiteData'] = websiteData
-		print("No website")
 		print(e)
 
 	# Trying to get and save required data
 	try:
 		# Getting database value
 		databaseData = dict(database.child("users").child(uid).child("data").get().val())
-		print('aaaaaa')
 
 		formatData = creationFormating(databaseData)
-		print('aaaaaa\n\n\n\n\n\n\n\n\n')
-		
+
 		returnedTips = tips(databaseData)
 		session['tips'] = returnedTips
 
 		websites = websites(databaseData)
-		print('websites\n\n\n\n\n\n\n\n')
-		print(websites)
 
 		value = "success"
 	except Exception as e:

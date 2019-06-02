@@ -37,6 +37,8 @@ def home():
         name = form.name.data
         database.child("contact-us").child(name).update(data)
         print(data)
+        flash(f'Message Sent!', 'success')
+
 
         return redirect(url_for('homepage.home'))
 
