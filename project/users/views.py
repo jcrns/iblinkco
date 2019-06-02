@@ -10,6 +10,9 @@ from project.decorators import login_required
 # Importing the request library for API
 import requests
 
+# Importing auth functions
+from project.api.views import createUserFunc, signInFunc
+
 # Defining Blueprint var
 users = Blueprint('users', __name__, template_folder='templates')
 
@@ -83,16 +86,13 @@ def register():
     # Checking if form is valid
     if form.validate_on_submit():
 
-        # Defining variables equal to post request paramaters
-        url = "http://iblinkco.com/create-user"
-        data = { 'firstname': form.firstname.data, 'lastname': form.lastname.data, 'email': form.email.data, 'password': form.password.data }
-
         try:
-            # Sending data to API
-            getData = requests.post(url = url, json = data) 
+            # Running auth function
+            createUser = createUserFunc(form.email.data, form.password.data, form.firstname.data, form.lastname.data)
 
             # Getting returned data
-            returnedData = getData.json()
+            returnedData = createUser
+            print('aaaa')
             email = returnedData[0]['email']
             firstname = returnedData[0]['firstname']
             lastname = returnedData[0]['lastname']
@@ -120,17 +120,10 @@ def login():
     # Checking if form is valid
     if form.validate_on_submit():
 
-        # Defining variables equal to post request paramaters
-        url = "http://iblinkco.com/signin"
-        data = { 'email': form.email.data, 'password': form.password.data }
+        # Running auth function
+        finalizedData = signInFunc(form.email.data, form.password.data)
 
-        # Sending data to API
-        getData = requests.post(url = url, json = data) 
-        print(getData)
-
-        # Getting returned data
-        finalizedData = getData.json()
-        # print(finalizedData)
+        print('aaaaaa')
         print(finalizedData)
         session['user'] = finalizedData[1]
         session['tips'] = finalizedData[2]

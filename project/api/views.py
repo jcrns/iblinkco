@@ -1,5 +1,5 @@
 # Importing all needed Flask classes
-from flask import Flask, session, redirect, Blueprint, request, jsonify, g, url_for, make_response
+from flask import Flask, session, redirect, Blueprint, request, jsonify, g, url_for, make_response, Response
 
 # Firebase connection
 from project.social_apis import firebaseConnect, websiteScrapping, googleSearch
@@ -218,14 +218,9 @@ def followerData(userReturn):
 @api.route("/create-user", methods=['GET', 'POST'])
 def signUp():
 	userData = dict()
-	userReturn = []
 	
 	# Getting posted data and putting it in a dictionary
 	print(request.get_json)
-	userData['firstname'] = request.get_json()['firstname']
-	userData['lastname'] = request.get_json()['lastname']
-	userData['email'] = request.get_json()['email']
-	userData['password'] = request.get_json()['password']
 
 	# Assigning variables to sign in to database
 	firstname = request.json['firstname']
@@ -234,7 +229,18 @@ def signUp():
 	password = request.json['password']
 
 	print(userData)
+	createdUser = createUserFunc(email, password, firstname, lastname)
+	return createdUser
+
+# Signin function
+def createUserFunc(email, password, firstname, lastname):
 	try:
+		userReturn = []
+		userData = dict()
+		userData['firstname'] = firstname
+		userData['lastname'] = lastname
+		userData['password'] = password
+		userData['email'] = email
 		# Attemptingto sign in to backend
 		user = authe.create_user_with_email_and_password(email,password)
 
@@ -259,15 +265,12 @@ def signUp():
 	print(userReturn)
 	userData['message'] = 'success'
 
-	return jsonify(userReturn)
+	return userReturn
+
 
 # Signin Function
 @api.route("/signin", methods=['GET', 'POST'])
 def signIn():
-	userData = dict()
-
-	# Creating list ready to return later
-	userFinal = []
 
 	# Assigning values to list for for loop to go though
 	userItemList = ['firstname', 'lastname']
@@ -279,7 +282,15 @@ def signIn():
 	# Assigning variables to sign in to database
 	email = request.json['email']
 	password = request.json['password']
+	signIn = signInFunc(email, password)
 
+	return signIn
+
+# Signin function
+def signInFunc(email, password):
+	# Creating list ready to return later
+	userData = dict()
+	userFinal = []
 	try:
 		# Attemptingto sign in to backend
 		user = authe.sign_in_with_email_and_password(email, password)
@@ -329,9 +340,10 @@ def signIn():
 
 	# print(userReturn)
 	print(userReturn)
-
+	print('aaaaa')
+	print(userFinal)
 	# Returning main data
-	return jsonify(userFinal)
+	return userFinal
 
 # Signout Function
 @api.route("/signout", methods=['POST'])
