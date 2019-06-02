@@ -21,10 +21,10 @@ database = databaseConnect['database']
 authe = databaseConnect['authe']
 
 # Stripe keys
-# pub_key = 'pk_test_S49pZhR9n8Qm0MM34RGzsMyG'
-# basic_sub_secret_key = 'sk_test_8dRE7QLn40wUt6wZtr8upMA4'
+pub_key = 'pk_test_S49pZhR9n8Qm0MM34RGzsMyG'
+basic_sub_secret_key = 'sk_test_8dRE7QLn40wUt6wZtr8upMA4'
 
-# stripe.api_key = basic_sub_secret_key
+stripe.api_key = basic_sub_secret_key
 @homepage.route("/", methods=['GET', 'POST'])
 def home():
 
