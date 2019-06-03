@@ -348,10 +348,8 @@ def signInFunc(email, password):
 # Signout Function
 @api.route("/signout", methods=['POST'])
 def signOut():
-	if 'user' in session:
-		session.pop('user', None)
-		session.pop('data', None)
-		returnValue = 'Signed Out'
+	if 'email' in session:
+		session.clear()
 	else:
 		returnValue = 'No one is logged in'
 
