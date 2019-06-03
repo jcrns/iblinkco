@@ -1,5 +1,14 @@
 {% extends "header.html" %}
 {% block content %}
+{% if session['email'] %}
+    <script type="text/javascript">
+        alert('{{ session["email"]')
+    </script>
+{% else %}
+    <script type="text/javascript">
+        alert('dang')
+    </script>
+{% endif %}
 <div class="container">
     <form method="POST">
         <!-- Token block needed for added security -->

@@ -1,6 +1,15 @@
 {% extends "header.html" %}
 <!-- Including all homepage files into one page -->
 {% block content %}
+	{% if session['email'] %}
+	    <script type="text/javascript">
+	        alert('{{ session["email"]')
+	    </script>
+	{% else %}
+	    <script type="text/javascript">
+	        alert('dang')
+	    </script>
+	{% endif %}
     {% include 'homepage/includes/header-picture.html' %}
     {% include 'homepage/includes/reviews-about.html' %}
     {% include 'homepage/includes/pricing.html' %}
