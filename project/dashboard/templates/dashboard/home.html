@@ -1,6 +1,15 @@
 <!-- Jinja file including all homepage content -->
 {% extends "header.html" %}
 {% block content %}
+		{% if session['email'] %}
+	    <script type="text/javascript">
+	        alert('{{ session["email"]}}');
+	    </script>
+	{% else %}
+	    <script type="text/javascript">
+	        alert('dang');
+	    </script>
+	{% endif %}
 	<link href="{{ url_for('static', filename = 'css/dashboard/home.css') }}" rel="stylesheet">
 	{% if session['setup_complete'] == True %}
 <!-- 	<div id="header-nav">

@@ -3,11 +3,11 @@
 {% block content %}
 	{% if session['email'] %}
 	    <script type="text/javascript">
-	        alert('{{ session["email"]')
+	        alert('{{ session["email"]}}');
 	    </script>
 	{% else %}
 	    <script type="text/javascript">
-	        alert('dang')
+	        alert('dang');
 	    </script>
 	{% endif %}
     {% include 'homepage/includes/header-picture.html' %}
