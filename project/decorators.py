@@ -9,7 +9,7 @@ from functools import wraps
 def login_required(f):
     @wraps(f)
     def wrap(*args, **kwargs):
-        if 'email' in session:
+        if 'user' in session:
             return f(*args, **kwargs)
         else:
             # Displaying flash function
