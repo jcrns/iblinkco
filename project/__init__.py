@@ -13,14 +13,14 @@ from project.dashboard.views import dashboard
 
 from project.api.views import api
 
+# Importing ssl
+import ssl
+
 # Importing Time
 from datetime import timedelta
 
-# Redis
-# import redis
 
-# redis_url = os.getenv('REDISTOGO_URL', 'redis://localhost:6379')
-# redis = redis.from_url(redis_url)
+ssl._create_default_https_context = ssl._create_unverified_context
 
 
 # Defing app which is nessisary for flask to run
@@ -38,7 +38,6 @@ app.register_blueprint(api)
 
 # Key Config
 app.config['SECRET_KEY'] = os.urandom(24)
-app.config['SESSION_COOKIE_NAME'] = 'session'
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=31)
 app.config['DEBUG'] = False
 
