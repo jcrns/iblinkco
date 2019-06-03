@@ -19,11 +19,6 @@ import ssl
 # Importing Time
 from datetime import timedelta
 
-# Redis 
-from redis import Redis
-
-redis = Redis()
-
 ssl._create_default_https_context = ssl._create_unverified_context
 
 
@@ -42,7 +37,7 @@ app.register_blueprint(api)
 
 # Key Config
 app.config['SECRET_KEY'] = os.urandom(24)
-app.config['PERMANENT_SESSION_LIFETIME'] =  timedelta(days=31)
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=31)
 app.config['DEBUG'] = False
 
 
