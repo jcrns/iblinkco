@@ -19,7 +19,6 @@ import ssl
 # Importing Time
 from datetime import timedelta
 
-
 ssl._create_default_https_context = ssl._create_unverified_context
 
 
@@ -38,10 +37,7 @@ app.register_blueprint(api)
 
 # Key Config
 app.config['SECRET_KEY'] = os.urandom(24)
-app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=31)
-app.config['DEBUG'] = False
-
-
+app.config['PERMANENT_SESSION_LIFETIME'] =  timedelta(minutes=40000)
 SESSION_TYPE = 'filesystem'
 
 @app.route('/')
