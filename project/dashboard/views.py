@@ -192,6 +192,7 @@ def twitterOauthorized():
 	print('dfdff')
 	resp = twitter.authorized_response()
 	print(resp)
+	print('lll')
 	if resp is None:
 		print('You denied the request to sign in.')
 	else:
@@ -217,7 +218,7 @@ def sessionExist():
 	return redirect(url_for('dashboard.home'))
 # Requesting twitter function
 def requestTwitter():
-			# Creating List to hold data
+		# Creating List to hold data
 		NumberOfTweets = []
 		tweetText = []
 		favoritesNumber = []
