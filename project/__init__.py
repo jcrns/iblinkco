@@ -36,7 +36,7 @@ app.register_blueprint(api)
 
 
 # Config
-app.config.from_object('appConfig.cfg')
+app.config.from_pyfile('appConfig.cfg')
 
 
 @app.route('/')
