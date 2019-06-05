@@ -44,6 +44,7 @@ def home():
 @dashboard.route('/setup-update', methods=['GET', 'POST'])
 def updateSetupAndWebsite():
 	try:
+		# Getting session data
 		twitter_exist = session['userTwitterData']
 		
 		# Attemptingto sign in to backend
