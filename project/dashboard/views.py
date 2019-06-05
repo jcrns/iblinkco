@@ -34,6 +34,9 @@ twitter = twitterConnect()
 @dashboard.route("/dashboard", methods=['GET', 'POST'])
 @login_required
 def home():
+	if session.get('twitter_oauth') is not None:
+		# Running twitter request function if session exist
+		twitterRequest = requestTwitter()
     return render_template('dashboard/home.html')
 
 # Setup and Website Update
