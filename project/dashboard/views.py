@@ -38,7 +38,7 @@ def home():
 	if session.get('twitter_oauth') is not None:
 		# Running twitter request function if session exist
 		twitterRequest = requestTwitter()
-    return render_template('dashboard/home.html')
+	return render_template('dashboard/home.html')
 
 # Setup and Website Update
 @dashboard.route('/setup-update', methods=['GET', 'POST'])
@@ -113,16 +113,16 @@ def updateSetupAndWebsite():
 
 @twitter.tokengetter
 def get_twitter_token():
-    if 'twitter_oauth' in session:
-        resp = session['twitter_oauth']
-        return resp['oauth_token'], resp['oauth_token_secret']
+	if 'twitter_oauth' in session:
+		resp = session['twitter_oauth']
+		return resp['oauth_token'], resp['oauth_token_secret']
 
 
 @dashboard.before_request
 def before_request():
-    g.user = None
-    if 'twitter_oauth' in session:
-        g.user = session['twitter_oauth']
+	g.user = None
+	if 'twitter_oauth' in session:
+		g.user = session['twitter_oauth']
 
 
 @dashboard.route('/twitter-getdata')
@@ -140,10 +140,10 @@ def index():
 # Twitter Sign In function
 @dashboard.route('/sign-in-twitter')
 def twitterLogin():
-    callback_url = url_for('dashboard.twitterOauthorized', next=request.args.get('next'))
+	callback_url = url_for('dashboard.twitterOauthorized', next=request.args.get('next'))
 
-    # callback_url = "http://localhost:5000/"
-    return twitter.authorize(callback=callback_url)
+	# callback_url = "http://localhost:5000/"
+	return twitter.authorize(callback=callback_url)
 
 # Getting multiple pages of followers using this function
 def nextCursorFollowers(screen_name, followers, next_cursor):
