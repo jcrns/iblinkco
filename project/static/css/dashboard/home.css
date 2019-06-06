@@ -1,4 +1,7 @@
 /*Body Styling*/
+* {
+    -webkit-overflow-scrolling: touch;
+}
 html,body
 {
     width: 100%;
