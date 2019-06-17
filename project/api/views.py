@@ -217,20 +217,18 @@ def followerData(userReturn):
 # Sign Up Function
 @api.route("/create-user", methods=['GET', 'POST'])
 def signUp():
-	userData = dict()
 	
 	# Getting posted data and putting it in a dictionary
 	print(request.get_json)
-
+	print(request.json)
 	# Assigning variables to sign in to database
 	firstname = request.json['firstname']
 	lastname = request.json['lastname']
 	email = request.json['email']
 	password = request.json['password']
 
-	print(userData)
 	createdUser = createUserFunc(email, password, firstname, lastname)
-	return createdUser
+	return jsonify(createdUser)
 
 # Signin function
 def createUserFunc(email, password, firstname, lastname):
@@ -271,20 +269,18 @@ def createUserFunc(email, password, firstname, lastname):
 # Signin Function
 @api.route("/signin", methods=['GET', 'POST'])
 def signIn():
-
-	# Assigning values to list for for loop to go though
-	userItemList = ['firstname', 'lastname']
-	
 	# Getting posted data and putting it in a dictionary
-	userData['email'] = request.json['email']
-	userData['password'] = request.json['password']
+	print(request.get_json)
+	print(request.json)
 
-	# Assigning variables to sign in to database
+	# Getting email and pass
 	email = request.json['email']
 	password = request.json['password']
-	signIn = signInFunc(email, password)
 
-	return signIn
+	# Assigning variables to sign in to database
+	signIn = signInFunc(email, password)
+	
+	return jsonify(signIn)
 
 # Signin function
 def signInFunc(email, password):

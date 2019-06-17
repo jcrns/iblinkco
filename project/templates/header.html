@@ -40,9 +40,8 @@
 
         <!-- responsive Navigation Bar -->
         <nav class="navbar navbar-expand-md navbar-default sticky-top" style="background:rgba(238,238,238,0.5);">
-
-            <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#collapse_target" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon bg-dark"></span>
+            <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#collapse_target" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon bg-dark"></span>
             </button>
             <a href="{{ url_for('homepage.home') }}#" class="navbar-brand"><img src="{{ url_for('static', filename = 'img/homepage/logo.png') }}"></a>
             <a href="{{ url_for('dashboard.home') }}"><span class="font-weight-bold" style="color: #212121">{{ session['name'] }}</span></a>

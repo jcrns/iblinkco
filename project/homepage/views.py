@@ -36,7 +36,6 @@ def home():
         data = { 'email': form.email.data, 'message': form.message.data }
         name = form.name.data
         database.child("contact-us").child(name).update(data)
-        print(data)
         flash(f'Message Sent!', 'success')
 
 

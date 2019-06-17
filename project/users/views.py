@@ -123,26 +123,30 @@ def login():
         # Running auth function
         finalizedData = signInFunc(form.email.data, form.password.data)
 
-        print('aaaaaa')
-        print(finalizedData)
-        session['user'] = finalizedData[1]
-        session['tips'] = finalizedData[2]
-        returnedData = finalizedData[0]
+        try:
+            print('aaaaaa')
+            print(finalizedData)
+            session['user'] = finalizedData[1]
+            session['tips'] = finalizedData[2]
+            returnedData = finalizedData[0]
 
-        print(finalizedData[1])
-        # print(returnedData)
+            print(finalizedData[1])
+            # print(returnedData)
 
-        # Getting history
-        session['history'] = finalizedData[3]
+            # Getting history
+            session['history'] = finalizedData[3]
 
-        # Getting followers' data
-        session['followersData'] = finalizedData[4]
+            # Getting followers' data
+            session['followersData'] = finalizedData[4]
 
-        # Getting website data
-        session['websiteData'] = finalizedData[5]
-        print(finalizedData[5])
+            # Getting website data
+            session['websiteData'] = finalizedData[5]
+            print(finalizedData[5])
 
-        print(finalizedData[2])
+            print(finalizedData[2]) 
+        except Exception as e:
+            return redirect(url_for('users.login'))
+            flash(f'signin failed')
 
         try:
             print('sssssss\n\n\n\n\n\n\n\n\n')
