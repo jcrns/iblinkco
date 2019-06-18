@@ -72,7 +72,7 @@ def updateSetupAndWebsite():
 		websiteScrap = websiteScrapping(website_url)
 
 		# Defining json equal to input
-		addWebsite = { "website-name" : website_name, "website-url" : website_url, "header-text" : websiteScrap[0], "links" : websiteScrap[1] }
+		addWebsite = { "website_name" : website_name, "website_url" : website_url, "header_text" : websiteScrap[0], "links" : websiteScrap[1] }
 
 		# Putting json in pyrebase
 		database.child("users").child(uid).child("data").child("website").set(addWebsite)
@@ -81,7 +81,7 @@ def updateSetupAndWebsite():
 		session['websiteData'] = addWebsite
 	except Exception as e:
 		# Defining json equal to input
-		addWebsite = { "website-name" : '', "website-url" : '' }
+		addWebsite = { "website_name" : '', "website_url" : '' }
 
 		# Putting json in pyrebase
 		database.child("users").child(uid).child("data").child("website").set(addWebsite)
@@ -332,14 +332,6 @@ def requestTwitter():
 		# print(userData)
 
 		# Updating twitter data in firebase
-		
-		# Defining user info
-		userLikes = {"user_likes" : userData['statuses_count']}
-		userFollowers = {"followers_count" : userData['followers_count']}
-		userFollowing = {"following_count" : userData['friends_count']}
-		userScreenName = {"screen_name" : userData['screen_name']}
-		userName = {"name" : userData['name']}
-		bio = {"bio" : userData['description']}
 
 		try:
 			# Attemptingto sign in to backend
@@ -357,15 +349,23 @@ def requestTwitter():
 			# Getting current time 
 			now = datetime.now()
 
-			date_time = now.strftime("%m-%d-%Y")
+			date_time = now.strftime("%m_%d_%Y")
+
+			# Defining user info
+			userLikes = {"user_likes" : userData['statuses_count']}
+			userFollowers = { date_time : userData['followers_count']}
+			userFollowing = { date_time : userData['friends_count']}
+			userScreenName = {"screen_name" : userData['screen_name']}
+			userName = {"name" : userData['name']}
+			bio = {"bio" : userData['description']}
 
 			# Saving data to firebase
 			database.child("users").child(uid).child("data").child("twitter").child("userData").set(userData)
 			database.child("users").child(uid).child("data").child("twitter").child("followers").set(followers)
 
 			# Saving Data as history
-			database.child("users").child(uid).child("data").child("twitter").child("history").child("followers").update({ str(date_time) : userFollowers })
-			database.child("users").child(uid).child("data").child("twitter").child("history").child("following").update({ str(date_time) : userFollowing })
+			database.child("users").child(uid).child("data").child("twitter").child("history").child("followers").update(userFollowers)
+			database.child("users").child(uid).child("data").child("twitter").child("history").child("following").update(userFollowing)
 
 			print('aaaa')
 			# Formating Twitter Data
