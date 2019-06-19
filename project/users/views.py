@@ -23,10 +23,10 @@ def creationFormating(returnedData):
     firstname = returnedData['account']['firstname']
     lastname = returnedData['account']['lastname']
     try:
-        websiteName = returnedData['website']['website-name']
+        websiteName = returnedData['website']['website_name']
         session['website_name'] = websiteName
 
-        websiteUrl = returnedData['website']['website-url']
+        websiteUrl = returnedData['website']['website_url']
         session['website_url'] = websiteUrl
     except Exception as e:
         print(e)

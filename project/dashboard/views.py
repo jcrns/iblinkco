@@ -167,30 +167,6 @@ def nextCursorFollowers(screen_name, followers, next_cursor):
 	# print(followingScreenNameList)
 	return returnedArray
 
-# Getting multiple pages of following using this function
-def nextCursorFollowing(screen_name, following, next_cursor):
-	prev_cursor = following['previous_cursor']
-	# Creating List to hold list
-	followingScreenNameList = []
-	followingNameList = []
-	# if next_cursor == 0:
-	# 	message = 'finished'
-	# 	return message	
-	nextCursor = twitter.request('friends/list.json?screen_name=' + screen_name + '&cursor=' + str(next_cursor))
-	nextCursor = nextCursor.data
-	
-	# Creating For Loop to get all user screen names
-	for cursorItem in nextCursor['users']:
-		followingItemScreenName = cursorItem['screen_name']
-		followingItemName = cursorItem['name']
-		followingScreenNameList.append(followingItemScreenName)
-		followingNameList.append(followingItemName)
-	returnedCursor = nextCursor['next_cursor']
-	returnedArray = [returnedCursor, followingScreenNameList, followingNameList]
-
-	# print(followingScreenNameList)
-	return returnedArray
-
 
 @dashboard.route('/twitter-oauthorized')
 def twitterOauthorized():
@@ -223,6 +199,7 @@ def sessionExist():
 	return redirect(url_for('dashboard.home'))
 # Requesting twitter function
 def requestTwitter():
+	try:
 		# Creating List to hold data
 		NumberOfTweets = []
 		tweetText = []
@@ -332,6 +309,14 @@ def requestTwitter():
 		# print(userData)
 
 		# Updating twitter data in firebase
+		
+		# Defining user info
+		userLikes = {"user_likes" : userData['statuses_count']}
+		userFollowers = {"followers_count" : userData['followers_count']}
+		userFollowing = {"following_count" : userData['friends_count']}
+		userScreenName = {"screen_name" : userData['screen_name']}
+		userName = {"name" : userData['name']}
+		bio = {"bio" : userData['description']}
 
 		try:
 			# Attemptingto sign in to backend
@@ -341,33 +326,56 @@ def requestTwitter():
 			print('aaa')
 
 			# Getting user from session
+
 			user = session['user']
 			
+			print('second print section')
 			# Assigning uid as a variable which will be used to go through branched in for loop
 			uid = user['localId']
+			print('third print section')
 
 			# Getting current time 
 			now = datetime.now()
 
-			date_time = now.strftime("%m_%d_%Y")
-
-			# Defining user info
-			userLikes = {"user_likes" : userData['statuses_count']}
-			userFollowers = { date_time : userData['followers_count']}
-			userFollowing = { date_time : userData['friends_count']}
-			userScreenName = {"screen_name" : userData['screen_name']}
-			userName = {"name" : userData['name']}
-			bio = {"bio" : userData['description']}
+			date_time = now.strftime("%m-%d-%Y")
+			date_time_api = now.strftime("%m_%d_%Y")
 
 			# Saving data to firebase
 			database.child("users").child(uid).child("data").child("twitter").child("userData").set(userData)
 			database.child("users").child(uid).child("data").child("twitter").child("followers").set(followers)
 
-			# Saving Data as history
-			database.child("users").child(uid).child("data").child("twitter").child("history").child("followers").update(userFollowers)
-			database.child("users").child(uid).child("data").child("twitter").child("history").child("following").update(userFollowing)
+			try:
+				# Getting follower history
+				historyData = dict(database.child("users").child(uid).child("data").child("twitter").child("history").get().val())
 
-			print('aaaa')
+				# Counter variable
+				print('aaaa\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n')
+
+				counter = 0
+				dateList = []
+				followersCountList = []
+				for followerItem in historyData['followers']:
+					# Getting data
+					date = followerItem['date']
+					followersCount = followerItem['followers_count']
+
+					# Appending to list
+					dateList.append(date)
+					followersCountList.append(followersCount)
+					counter += 1
+			except Exception as e:
+				print(e)
+				database.child("users").child(uid).child("data").child("twitter").child("history").child("followers").child(0).set({'followers_count': userData['followers_count'], 'date': date_time_api })
+				database.child("users").child(uid).child("data").child("twitter").child("history").child("following").child(0).set({'following_count': userData['following_count'], 'date': date_time_api })
+			
+
+			# Saving Data as history
+
+			# database.child("users").child(uid).child("data").child("twitter").child("history").child("followers").update({ str(date_time) : userFollowers })
+			# database.child("users").child(uid).child("data").child("twitter").child("history").child("following").update({ str(date_time) : userFollowing })
+
+
+			print('aaaa\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n')
 			# Formating Twitter Data
 			databaseData = dict(database.child("users").child(uid).child("data").get().val())
 			formatData = creationFormating(databaseData)
@@ -376,13 +384,15 @@ def requestTwitter():
 			# Getting Tips
 			returnedTips = tips(databaseData)
 			session['tips'] = returnedTips
-			print('aaaa')
+			print('aaaalllllaa')
 
 			# Getting history
-			historyReturned = history(databaseData)
-			session['history'] = historyReturned
+			historyData = history(databaseData)
+			print('a')
+			session['history'] = historyData
 			print('aaaa')
 
+			print(databaseData)
 			# Getting followers' data
 			followersData = followerData(databaseData)
 			session['followersData'] = followersData
@@ -395,8 +405,8 @@ def requestTwitter():
 				websiteData = dict(database.child("users").child(uid).child("data").child("website").get().val())
 				session['websiteData'] = websiteData
 			except Exception as e:
-				print(e)
 				print('website not connected')
+				print(e)
 
 			print('aaaa')
 		except Exception as e:
@@ -405,4 +415,8 @@ def requestTwitter():
 			flash(f'Twitter Login Failed')
 			return redirect(url_for('dashboard.home'))
 		return value
+	except Exception as e:
+		 print(e)
+		 flash(f'Twitter Login Failed')
+		 return redirect(url_for('dashboard.home'))
 	# Twitter Search Function Terms

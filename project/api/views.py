@@ -24,17 +24,17 @@ def websites(userReturn):
 	websiteData = dict()
 	try:
 		# Saving required variables
-		websiteName = userReturn['website']['website-name']
-		websiteUrl = userReturn['website']['website-url']
+		websiteName = userReturn['website']['website_name']
+		websiteUrl = userReturn['website']['website_url']
 
-		websiteData['website-name'] = websiteName
-		websiteData['website-url'] = websiteUrl
+		websiteData['website_name'] = websiteName
+		websiteData['website_url'] = websiteUrl
 		
 		# Trying other variables
 		try:
-			headerText = userReturn['website']['header-text']
+			headerText = userReturn['website']['header_text']
 			links = userReturn['website']['links']
-			websiteData['header-text'] = headerText
+			websiteData['header_text'] = headerText
 			websiteData['links'] = links
 		except Exception as e:
 			print(e)
@@ -59,10 +59,10 @@ def tips(userReturn):
 		twitterLocation = userReturn['twitter']['userData']['location']
 		twitterFollowing = userReturn['twitter']['userData']['friends_count']
 
-		websiteName = userReturn['website']['website-name']
-		websiteUrl = userReturn['website']['website-url']
 		# Trying to get website variables
 		try:
+			websiteName = userReturn['website']['website_name']
+			websiteUrl = userReturn['website']['website_url']
 			websiteLinks = userReturn['website']['links']
 			
 		except Exception as e:
@@ -101,7 +101,7 @@ def tips(userReturn):
 		# Trying to give other tips
 		try:
 			# Getting website title text
-			websiteHeader = userReturn['website']['header-text']
+			websiteHeader = userReturn['website']['header_text']
 
 			# Making both strings uppercase to identify same letters
 			websiteHeader = websiteHeader.upper()
@@ -143,10 +143,17 @@ def tips(userReturn):
 		if twitterFollowing < 100:
 			twitterFollowingTips = "You are only following " + str(twitterFollowing) + " people. Try following more people in your niche."
 			tips.append(twitterFollowingTips)
-		if websiteName == '' and websiteUrl == '':
+		
+		# Website Tip
+		if 'websiteName' in locals() and 'websiteUrl' in locals():
+			if websiteName == '' and websiteUrl == '':
+				websiteNotExist = "Website not connected we recommend you connect it as soon as possible."
+				tips.append(websiteNotExist)
+		else:
 			websiteNotExist = "Website not connected we recommend you connect it as soon as possible."
 			tips.append(websiteNotExist)
 
+		print('tips')
 		print(tips)
 		return tips
 
@@ -156,19 +163,19 @@ def tips(userReturn):
 
 # Get History
 def history(userReturn):
+	print('history')
 	try:
-		followerHistoryVar = userReturn['twitter']['history']['followers']
+		print(userReturn['twitter'])
+		history = userReturn['twitter']['history']
 		dateList = []
 		followerList = []
-		for i in followerHistoryVar:
-			print(i)
-			dateList.append(i)
+		for followerItem in history['followers']:
+			date = followerItem['date']
+			followersCount = followerItem['followers_count']
 
-			date = followerHistoryVar[i]
-
-			followerNumber = date['followers_count'] 
-			followerList.append(followerNumber)
-
+			# Appending to list
+			dateList.append(date)
+			followerList.append(followersCount)
 		data = []
 		data.append(dateList)
 		data.append(followerList)
@@ -279,7 +286,7 @@ def signIn():
 
 	# Assigning variables to sign in to database
 	signIn = signInFunc(email, password)
-	
+
 	return jsonify(signIn)
 
 # Signin function
@@ -367,7 +374,7 @@ def connectWebsite():
 			websiteScrap = websiteScrapping(websiteUrl)
 			print('aaa')
 			
-			websiteData = { "website-name" : websiteName, "website-url" : websiteUrl, "header-text" : websiteScrap[0], "links" : websiteScrap[1] }
+			websiteData = { "website_name" : websiteName, "website_url" : websiteUrl, "header_text" : websiteScrap[0], "links" : websiteScrap[1] }
 			print('aaa')
 
 			# Putting them into sessions
@@ -393,16 +400,16 @@ def connectWebsite():
 			print(request.get_json())
 
 			# Getting posted data
-			userData['website-name'] = request.get_json()['website-name']
-			userData['website-url'] = request.get_json()['website-url']
+			userData['website_name'] = request.get_json()['website_name']
+			userData['website_url'] = request.get_json()['website_url']
 
 			# Defining variables
-			websiteName = userData['website-name']
-			websiteUrl = userData['website-url']
+			websiteName = userData['website_name']
+			websiteUrl = userData['website_url']
 			
 			websiteScrap = websiteScrapping(website_url)
 			
-			addWebsite = { "website-name" : website_name, "website-url" : website_url, "header-text" : websiteScrap[0], "links" : websiteScrap[1] }
+			addWebsite = { "website_name" : website_name, "website_url" : website_url, "header_text" : websiteScrap[0], "links" : websiteScrap[1] }
 
 			# Importing data in firebase
 			database.child("users").child(uid).child("data").child("website").set(websiteData)
@@ -425,7 +432,7 @@ def disconnectWebsite():
 		uid = user['localId']
 
 		# Returning website data to default 
-		addWebsite = { "website-name" : '', "website-url" : '' }
+		addWebsite = { "website_name" : '', "website_url" : '' }
 		database.child("users").child(uid).child("data").child("website").set(addWebsite)
 
 		# Trying to put data in session
