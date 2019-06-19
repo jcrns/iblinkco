@@ -152,37 +152,28 @@
       </div>
     </div>
 	{% else %}
-	  <!-- Setup Modal -->
-	<div class="modal" id="setup-modal" tabindex="-1" role="dialog" aria-hidden="true">
-	  <div class="modal-dialog" role="document">
-	    <div class="modal-content">
-	      <div class="modal-header">
-	        <h5 class="modal-title" id="exampleModalLabel">Connect</h5>
-	      </div>
-	      <div class="modal-body" id="setup-body">
-	      	<p><a href="{{ url_for('dashboard.twitterLogin') }}"><img class="social-logo" src="{{ url_for('dashboard.static', filename = 'img/twitter-logo.png') }}"></a>
-	      		<img class="unavalable-logo social-logo" src="{{ url_for('dashboard.static', filename = 'img/facebook-logo.png') }}">
-	      		<img class="unavalable-logo social-logo" src="{{ url_for('dashboard.static', filename = 'img/snapchat-logo.png') }}">
-	      		<img class="unavalable-logo social-logo" src="{{ url_for('dashboard.static', filename = 'img/instagram-logo.png') }}"></p>
+	<!-- Setup Modal -->
+	<div class="container text-center">
+	<p><a href="{{ url_for('dashboard.twitterLogin') }}"><img class="social-logo" src="{{ url_for('dashboard.static', filename = 'img/twitter-logo.png') }}"></a>
+  	<img class="unavalable-logo social-logo" src="{{ url_for('dashboard.static', filename = 'img/facebook-logo.png') }}">
+  	<img class="unavalable-logo social-logo" src="{{ url_for('dashboard.static', filename = 'img/snapchat-logo.png') }}">
+  	<img class="unavalable-logo social-logo" src="{{ url_for('dashboard.static', filename = 'img/instagram-logo.png') }}"></p>
 
-	        <h4>Add Your Website! (Optional)</h4>
-	        <form method="POST" id="setup-connect-form">
-	        	<input id="website-name-setup" placeholder="Website Name" type="text" name="website-name-setup">
-	       		<input id="website-url-setup" placeholder="Website URL"type="text" name="website-url-setup">
-	       		<small>Website can be https://mywebsite.com or https://instagram/mywebsite </small>
-	       		<br>
-	       		<br>
-		        {% if session['userTwitterData'] %}
-		        	<h4>{{ session['userTwitterData']['name'] }}</h4>
-		        {% else %}
-		        	<p class="text-danger">Twitter Required To Procceed</p>
-		        {% endif %}
-	        	<p><input id="setup-submit" class="btn btn-secondary" required="true" type="submit" value="Go!"></p>
-	       		<p id="setup-form-message" class="text-primary"></p>
-	        </form>
-	      </div>
-	    </div>
-	  </div>
+    <h4>Add Your Website! (Optional)</h4>
+    <form method="POST" id="setup-connect-form">
+    	<input id="website-name-setup" placeholder="Website Name" type="text" name="website-name-setup">
+   		<input id="website-url-setup" placeholder="Website URL"type="text" name="website-url-setup">
+   		<small>Website can be https://mywebsite.com or https://instagram/mywebsite </small>
+   		<br>
+   		<br>
+        {% if session['userTwitterData'] %}
+        	<h4>{{ session['userTwitterData']['name'] }}</h4>
+        {% else %}
+        	<p class="text-danger">Twitter Required To Procceed</p>
+        {% endif %}
+    	<p><input id="setup-submit" class="btn btn-secondary" required="true" type="submit" value="Go!"></p>
+   		<p id="setup-form-message" class="text-primary"></p>
+    </form>
 	</div>
 	<a data-controls-modal="setup-modal" data-backdrop="static" data-keyboard="false" href="#">
 	{% endif %}
