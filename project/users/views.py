@@ -14,7 +14,7 @@ import requests
 from project.api.views import createUserFunc, signInFunc
 
 # Defining Blueprint var
-users = Blueprint('users', __name__, template_folder='templates')
+users = Blueprint('users', __name__, template_folder='templates', static_folder='static')
 
 def creationFormating(returnedData):
     print("Beggining Format")

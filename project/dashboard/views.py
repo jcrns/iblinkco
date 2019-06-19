@@ -19,7 +19,7 @@ import itertools
 # Importing time to 
 from datetime import datetime
 
-dashboard = Blueprint('dashboard', __name__, template_folder='templates')
+dashboard = Blueprint('dashboard', __name__, static_folder='static' , template_folder='templates', static_url_path='/static/dashboard')
 
 # FIREBASE AUTHENTICATION
 databaseConnect = firebaseConnect()

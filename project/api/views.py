@@ -10,7 +10,7 @@ import itertools
 # Importing random
 import random
 
-api = Blueprint('api', __name__, template_folder='templates')
+api = Blueprint('api', __name__, template_folder='templates', static_folder='static')
 
 # FIREBASE AUTHENTICATION
 databaseConnect = firebaseConnect()

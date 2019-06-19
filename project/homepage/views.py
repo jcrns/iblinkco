@@ -11,7 +11,7 @@ from project.homepage.forms import ContactUs
 from project.social_apis import firebaseConnect
 
 # Defining Blueprint var
-homepage = Blueprint('homepage', __name__, template_folder='templates')
+homepage = Blueprint('homepage', __name__, template_folder='templates', static_folder='static', static_url_path='/static/homepage')
 
 # FIREBASE AUTHENTICATION
 databaseConnect = firebaseConnect()
