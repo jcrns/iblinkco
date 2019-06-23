@@ -27,7 +27,6 @@ $(document).ready(function(){
         website_url : $('#website-url').val()
       },
       success: function (value) {
-        alert('aaaaaa')
         setTimeout(function() {
           // When value is returned I am deleting div
           loaderDiv.remove();

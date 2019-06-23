@@ -2,9 +2,6 @@
 {% extends "header.html" %}
 {% block content %}
 	<link href="{{ url_for('dashboard.static', filename = 'css/home.css') }}" rel="stylesheet">
-	<script type="text/javascript">
-		alert("{{ session['history'] }}")
-	</script>
 	{% if session['setup_complete'] == True %}
 <!-- 	<div id="header-nav">
 		<ul class="list-unstyled components">

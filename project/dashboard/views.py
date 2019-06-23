@@ -359,14 +359,17 @@ def requestTwitter():
 					# Getting data
 					date = followerItem['date']
 					followersCount = followerItem['followers_count']
-
-					print(counterFollowers)
-					print(date)
-					print(followersCount)
-					# Appending to list
-					followersDateList.append(date)
-					followersCountList.append(followersCount)
-					counterFollowers += 1
+					if date != followersDateList[-1]:
+						print('aaa')
+						print(counterFollowers)
+						print(date)
+						print(followersCount)
+						# Appending to list
+						followersDateList.append(date)
+						followersCountList.append(followersCount)
+						counterFollowers += 1
+					else:
+						continue
 				
 				counterFollowing = 0
 				followingDateList = []
