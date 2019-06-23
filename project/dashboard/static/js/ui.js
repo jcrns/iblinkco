@@ -23,10 +23,11 @@ $(document).ready(function(){
       type : 'POST',
       url : '/setup-update',
       data : {
-        website_name : $('#website-name-setup').val(),
-        website_url : $('#website-url-setup').val()
+        website_name : $('#website-name').val(),
+        website_url : $('#website-url').val()
       },
       success: function (value) {
+        alert('aaaaaa')
         setTimeout(function() {
           // When value is returned I am deleting div
           loaderDiv.remove();
@@ -103,20 +104,6 @@ $(document).ready(function(){
       } 
     });
   });
-
-  // Find competition refresh
-  $('#find-competition-refresh').click(function() {
-    $.ajax({
-      type: 'POST',
-      url : '/refresh-search',
-      success: function (value) {
-        if(value == "success"){
-          location.reload();
-        }
-      } 
-    });
-  });
-
   // Find followers refresh
   $('#find-followers-refresh').click(function() {
     $.ajax({

@@ -163,9 +163,10 @@ def tips(userReturn):
 
 # Get History
 def history(userReturn):
-	print('history')
+	print('historyaaaa')
 	try:
-		print(userReturn['twitter'])
+		# print(userReturn['twitter']['history'])
+		# print("userReturn['twitter']['history']")
 		history = userReturn['twitter']['history']
 		dateList = []
 		followerList = []
@@ -196,6 +197,7 @@ def followerData(userReturn):
 
 		# counter
 		x = 0
+
 		# For loop getting location and name
 		for follow in followers:
 			x += 1
@@ -246,6 +248,7 @@ def createUserFunc(email, password, firstname, lastname):
 		userData['lastname'] = lastname
 		userData['password'] = password
 		userData['email'] = email
+
 		# Attemptingto sign in to backend
 		user = authe.create_user_with_email_and_password(email,password)
 
@@ -255,8 +258,12 @@ def createUserFunc(email, password, firstname, lastname):
 		# Assigning uid which will be used to create paths in database
 		uid = user['localId']
 
+		# Website empty json
+		addWebsite = { "website_name" : '', "website_url" : '' }
+
 		# Creating branches
-		database.child("users").child(uid).child("data").child("account").set(userAccount)
+		database.child("users").child(uid).child("account").set(userAccount)
+		database.child("users").child(uid).child("website").set(addWebsite)
 	except Exception as e:
 		print("problem with creation")
 		print(e)
@@ -293,7 +300,6 @@ def signIn():
 def signInFunc(email, password):
 	# Creating list ready to return later
 	userData = dict()
-	userFinal = []
 	try:
 		# Attemptingto sign in to backend
 		user = authe.sign_in_with_email_and_password(email, password)
@@ -304,8 +310,8 @@ def signInFunc(email, password):
 
 		# Creating dict to store data from database
 		print(user['localId'])
-		userReturn = dict(database.child("users").child(uid).child("data").get().val())
-		userFinal.append(userReturn)
+		userReturn = dict(database.child("users").child(uid).get().val())
+		
 
 		# Tips
 		print("Tips\n\n\n\n\n\n\n\n\n")
@@ -323,7 +329,7 @@ def signInFunc(email, password):
 
 		# Attempting to get competition results
 		try:
-			competition = database.child("users").child(uid).child("data").child("competition").get().val()
+			competition = database.child("users").child(uid).child("competition").get().val()
 		except Exception as e:
 			print(e)
 
@@ -333,20 +339,27 @@ def signInFunc(email, password):
 		userData['message'] = 'failed'
 		return jsonify(userData)
 
-	# Appending data to final list
-	userFinal.append(user)
-	userFinal.append(returnedTips)
-	userFinal.append(historyReturned)
-	userFinal.append(followersData)
-	userFinal.append(websitesData)
-	userFinal.append(competition)
+
+	# Appending data to final dictionary
+	userReturn['user'] = user
+	userReturn['tips'] = returnedTips
+	userReturn['history'] = historyReturned
+	userReturn['followersFormated'] = followersData
+	userReturn['competition'] = competition
+	userReturn['website'] = websitesData
+
+	# userFinal.append(user)
+	# userFinal.append(returnedTips)
+	# userFinal.append(historyReturned)
+	# userFinal.append(followersData)
+	# userFinal.append(websitesData)
+	# userFinal.append(competition)
 
 	# print(userReturn)
-	print(userReturn)
+	print(userReturn['followersFormated'])
 	print('aaaaa')
-	print(userFinal)
 	# Returning main data
-	return userFinal
+	return userReturn
 
 # Signout Function
 @api.route("/signout", methods=['POST'])
@@ -385,7 +398,7 @@ def connectWebsite():
 
 			uid = user['localId']
 
-			database.child("users").child(uid).child("data").child("website").set(websiteData)
+			database.child("users").child(uid).child("website").set(websiteData)
 			value = 'success'
 		else:
 			value = 'failed'
@@ -412,7 +425,7 @@ def connectWebsite():
 			addWebsite = { "website_name" : website_name, "website_url" : website_url, "header_text" : websiteScrap[0], "links" : websiteScrap[1] }
 
 			# Importing data in firebase
-			database.child("users").child(uid).child("data").child("website").set(websiteData)
+			database.child("users").child(uid).child("website").set(websiteData)
 
 			return jsonify(userData)
 		except Exception as e:
@@ -433,11 +446,11 @@ def disconnectWebsite():
 
 		# Returning website data to default 
 		addWebsite = { "website_name" : '', "website_url" : '' }
-		database.child("users").child(uid).child("data").child("website").set(addWebsite)
+		database.child("users").child(uid).child("website").set(addWebsite)
 
 		# Trying to put data in session
 		try:
-			session['websiteData'] = dict(database.child("users").child(uid).child("data").child("website").get().val())
+			session['websiteData'] = dict(database.child("users").child(uid).child("website").get().val())
 		except Exception as e:
 			 print('failed to add session')
 			 print(e)
@@ -460,17 +473,17 @@ def postNiche():
 		user = session['user']
 		uid = user['localId']
 
-		location = database.child("users").child(uid).child("data").child("twitter").child("userData").child("location").get().val()
+		location = database.child("users").child(uid).child("twitter").child("userData").child("location").get().val()
 		
 		# Getting competitiors on google
 		searchResults = googleSearch(nichePost, location, 1)
 		print(searchResults)
 
 		# Putting niche in database
-		database.child("users").child(uid).child("data").child("account").update({'niche' : nichePost })
+		database.child("users").child(uid).child("account").update({'niche' : nichePost })
 
 		# Putting competitors in database
-		database.child("users").child(uid).child("data").child("competition").set(searchResults)
+		database.child("users").child(uid).child("competition").set(searchResults)
 		print('aaaaaa')
 
 		# Putting data in session
@@ -494,7 +507,7 @@ def disconnectNiche():
 
 
 		# Disconnecting niche from database
-		database.child("users").child(uid).child("data").child("twitter").child("userData").child("account").child("niche").remove()
+		database.child("users").child(uid).child("twitter").child("userData").child("account").child("niche").remove()
 
 		# Popping niche from session
 		session.pop('competition', None)
@@ -516,8 +529,8 @@ def refreshSearch():
 		uid = user['localId']
 
 		# Getting parameter data from firebase
-		niche = database.child("users").child(uid).child("data").child("account").child("niche").get().val()
-		location = database.child("users").child(uid).child("data").child("twitter").child("userData").child("location").get().val()
+		niche = database.child("users").child(uid).child("account").child("niche").get().val()
+		location = database.child("users").child(uid).child("twitter").child("userData").child("location").get().val()
 
 		# Running function
 		randomInt = random.randint(1,7)
@@ -526,7 +539,7 @@ def refreshSearch():
 		print(searchResults)
 
 		# Putting data back in firebase
-		database.child("users").child(uid).child("data").child("competition").set(searchResults)
+		database.child("users").child(uid).child("competition").set(searchResults)
 
 		session['competition'] = searchResults
 
@@ -554,7 +567,7 @@ def refreshFollowers():
 		uid = user['localId']
 
 		# Getting number of followers
-		followers = database.child("users").child(uid).child("data").child("twitter").child("followers").child("users").get().val()
+		followers = database.child("users").child(uid).child("twitter").child("followers").child("users").get().val()
 
 		for currentItem in session['followersData'][0]:
 			currentFollowersShowingName.append(currentItem)

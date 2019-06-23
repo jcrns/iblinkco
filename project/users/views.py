@@ -126,42 +126,47 @@ def login():
         try:
             print('aaaaaa')
             print(finalizedData)
-            session['user'] = finalizedData[1]
-            session['tips'] = finalizedData[2]
-            returnedData = finalizedData[0]
+            session['user'] = finalizedData['user']
+            session['tips'] = finalizedData['tips']
+            returnedData = finalizedData['user']
 
-            print(finalizedData[1])
+            # print(finalizedData[1])
             # print(returnedData)
 
             # Getting history
-            session['history'] = finalizedData[3]
+            session['history'] = finalizedData['history']
 
             # Getting followers' data
-            session['followersData'] = finalizedData[4]
+            session['followersData'] = finalizedData['followersFormated']
+            print('\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n')
 
+            print(finalizedData['website'])
+
+            print('\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n')
+            
             # Getting website data
-            session['websiteData'] = finalizedData[5]
-            print(finalizedData[5])
+            session['websiteData'] = finalizedData['website']
+            # print(finalizedData[5])
 
-            print(finalizedData[2]) 
+            # print(finalizedData[2]) 
         except Exception as e:
             return redirect(url_for('users.login'))
             flash(f'signin failed')
 
         try:
             print('sssssss\n\n\n\n\n\n\n\n\n')
-            session['competition'] = finalizedData[6]  
+            session['competition'] = finalizedData['competition']  
             print(session['competition'])
         except Exception as e:
-             print(e)
-             print('sssssss\n\n\n\n\n\n\n\n\n')
+            print(e)
+            print('sssssss\n\n\n\n\n\n\n\n\n')
 
-             print('no competition')
+            print('no competition')
         try:
 
-            createFormat = creationFormating(returnedData)
+            createFormat = creationFormating(finalizedData)
             session.permanent = True
-            print(finalizedData[2])
+            print(finalizedData['tips'])
             print('aaaa')
 
             return redirect(url_for('dashboard.home'))

@@ -2,6 +2,9 @@
 {% extends "header.html" %}
 {% block content %}
 	<link href="{{ url_for('dashboard.static', filename = 'css/home.css') }}" rel="stylesheet">
+	<script type="text/javascript">
+		alert("{{ session['history'] }}")
+	</script>
 	{% if session['setup_complete'] == True %}
 <!-- 	<div id="header-nav">
 		<ul class="list-unstyled components">
@@ -99,7 +102,7 @@
 				<h4>Website
 					<span><a id="website-text" href="#"><img src="{{ url_for('dashboard.static', filename = 'img/info.png') }}"><span id="website-description-text">These are possible links of your website found on your homepage.</span></a></span>
 				</h4>
-				{% if session['websiteData']['website-name'] != '' %}
+				{% if session['websiteData']['website_name'] != '' %}
 					<p><strong>{{ session['websiteData']['header-text'] }}</strong></p>
 	        		<p>{{ session['websiteData']['website-name'] }}</p>
 	       			<h6>Your website urls (found on requested page)</h6>
@@ -110,7 +113,7 @@
 	        		<button class="btn btn-light" data-toggle="modal" data-target="#connect-website">Connect Your Website</button>
 	        	{% endif %}
 	        	<small>Tip: Try having all sections and subsidiaries of your business or brand on your homepage</small>
-	        	{% if session['websiteData']['website-name'] != '' %}
+	        	{% if session['websiteData']['website_name'] != '' %}
 	        		<button class="btn btn-secondary" id="disconnect-website">Disconnect</button>
 	        	{% endif %}
 			</div>
@@ -153,31 +156,32 @@
     </div>
 	{% else %}
 	<!-- Setup Modal -->
-	<div class="container text-center">
-	<p><a href="{{ url_for('dashboard.twitterLogin') }}"><img class="social-logo" src="{{ url_for('dashboard.static', filename = 'img/twitter-logo.png') }}"></a>
-  	<img class="unavalable-logo social-logo" src="{{ url_for('dashboard.static', filename = 'img/facebook-logo.png') }}">
-  	<img class="unavalable-logo social-logo" src="{{ url_for('dashboard.static', filename = 'img/snapchat-logo.png') }}">
-  	<img class="unavalable-logo social-logo" src="{{ url_for('dashboard.static', filename = 'img/instagram-logo.png') }}"></p>
+	<div class="container text-center" id="setup-body">
+		<p><a href="{{ url_for('dashboard.twitterLogin') }}"><img class="social-logo" src="{{ url_for('dashboard.static', filename = 'img/twitter-logo.png') }}"></a>
+	  	<img class="unavalable-logo social-logo" src="{{ url_for('dashboard.static', filename = 'img/facebook-logo.png') }}">
+	  	<img class="unavalable-logo social-logo" src="{{ url_for('dashboard.static', filename = 'img/snapchat-logo.png') }}">
+	  	<img class="unavalable-logo social-logo" src="{{ url_for('dashboard.static', filename = 'img/instagram-logo.png') }}"></p>
 
-    <h4>Add Your Website! (Optional)</h4>
-    <form method="POST" id="setup-connect-form">
-    	<input id="website-name-setup" placeholder="Website Name" type="text" name="website-name-setup">
-   		<input id="website-url-setup" placeholder="Website URL"type="text" name="website-url-setup">
-   		<small>Website can be https://mywebsite.com or https://instagram/mywebsite </small>
-   		<br>
-   		<br>
-        {% if session['userTwitterData'] %}
-        	<h4>{{ session['userTwitterData']['name'] }}</h4>
-        {% else %}
-        	<p class="text-danger">Twitter Required To Procceed</p>
-        {% endif %}
-    	<p><input id="setup-submit" class="btn btn-secondary" required="true" type="submit" value="Go!"></p>
-   		<p id="setup-form-message" class="text-primary"></p>
-    </form>
-	</div>
+	    <h4>Add Your Website! (Optional)</h4>
+	    <form method="POST" action="/setup-update">
+	    	<input id="website-name-setup" placeholder="Website Name" type="text" name="website-name-setup">
+	   		<input id="website-url-setup" placeholder="Website URL" type="text" name="website-url-setup">
+	   		<br>
+	   		<small>Website can be https://mywebsite.com or https://instagram/mywebsite </small>
+	   		<br>
+	   		<br>
+	        {% if session['userTwitterData'] %}
+	        	<h4>{{ session['userTwitterData']['name'] }} Connected</h4>
+	        {% else %}
+	        	<p class="text-danger">Twitter Required To Procceed</p>
+	        {% endif %}
+	    	<p><input id="setup-submit" class="btn btn-secondary" required="true" type="submit" value="Go!"></p>
+	   		<p id="setup-form-message" class="text-primary"></p>
+	    </form>	
+	</div>	
 	<a data-controls-modal="setup-modal" data-backdrop="static" data-keyboard="false" href="#">
 	{% endif %}
-	<script src="{{ url_for('static', filename='js/dashboard/ui.js') }}"></script>
+	<script src="{{ url_for('dashboard.static', filename='js/ui.js') }}"></script>
 	<script type="text/javascript">
 		// Changing setup submit button color
 		{% if session['userTwitterData'] %}

@@ -44,6 +44,7 @@ def home():
 @dashboard.route('/setup-update', methods=['GET', 'POST'])
 def updateSetupAndWebsite():
 	try:
+		print('aaff\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n')
 		# Getting session data
 		twitter_exist = session['userTwitterData']
 		
@@ -55,9 +56,10 @@ def updateSetupAndWebsite():
 		setup_completed = { "setup_complete": True }
 
 		# Adding Setup Complete to Database
-		database.child("users").child(uid).child("data").child("account").update({ "setup_complete": True })
+		database.child("users").child(uid).child("account").update({ "setup_complete": True })
 
 		session['setup_complete'] = True
+		print('aaff\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n')
 		value = "success"
 
 	except Exception as e:
@@ -65,28 +67,27 @@ def updateSetupAndWebsite():
 		value = "Twitter not connected"
 		return value
 	try:
-		# Defining variables equal to form input
-		website_name = request.form['website_name']
-		website_url = request.form['website_url']
+		if request.method == 'POST':
+			print('kkkk')
+			websiteName = request.form['website_name']
+			websiteUrl = request.form['website_url']
 
-		websiteScrap = websiteScrapping(website_url)
 
-		# Defining json equal to input
-		addWebsite = { "website_name" : website_name, "website_url" : website_url, "header_text" : websiteScrap[0], "links" : websiteScrap[1] }
+			print('aaaa')
+			
+			websiteScrap = websiteScrapping(website_url)
 
-		# Putting json in pyrebase
-		database.child("users").child(uid).child("data").child("website").set(addWebsite)
+			# Defining json equal to input
+			addWebsite = { "website_name" : websiteName, "website_url" : websiteUrl, "header_text" : websiteScrap[0], "links" : websiteScrap[1] }
 
-		# Session
-		session['websiteData'] = addWebsite
+			# Putting json in pyrebase
+			database.child("users").child(uid).child("website").set(addWebsite)
+
+			# Session
+			session['websiteData'] = addWebsite
 	except Exception as e:
-		# Defining json equal to input
-		addWebsite = { "website_name" : '', "website_url" : '' }
-
-		# Putting json in pyrebase
-		database.child("users").child(uid).child("data").child("website").set(addWebsite)
-
-		websiteData = dict(database.child("users").child(uid).child("data").child("website").get().val())
+		print('website not entered')
+		websiteData = dict(database.child("users").child(uid).child("website").get().val())
 
 		session['websiteData'] = websiteData
 		print(e)
@@ -94,7 +95,7 @@ def updateSetupAndWebsite():
 	# Trying to get and save required data
 	try:
 		# Getting database value
-		databaseData = dict(database.child("users").child(uid).child("data").get().val())
+		databaseData = dict(database.child("users").child(uid).get().val())
 
 		formatData = creationFormating(databaseData)
 
@@ -109,7 +110,7 @@ def updateSetupAndWebsite():
 		print(e)
 
 
-	return value
+	return redirect(url_for('dashboard.home'))
 
 @twitter.tokengetter
 def get_twitter_token():
@@ -340,44 +341,68 @@ def requestTwitter():
 			date_time = now.strftime("%m-%d-%Y")
 			date_time_api = now.strftime("%m_%d_%Y")
 
-			# Saving data to firebase
-			database.child("users").child(uid).child("data").child("twitter").child("userData").set(userData)
-			database.child("users").child(uid).child("data").child("twitter").child("followers").set(followers)
 
 			try:
 				# Getting follower history
-				historyData = dict(database.child("users").child(uid).child("data").child("twitter").child("history").get().val())
+				historyData = dict(database.child("users").child(uid).child("twitter").child("history").get().val())
 
 				# Counter variable
 				print('aaaa\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n')
 
-				counter = 0
-				dateList = []
+				counterFollowers = 0
+				followersDateList = []
 				followersCountList = []
+				print(historyData)
+
+				# Getting followers
 				for followerItem in historyData['followers']:
 					# Getting data
 					date = followerItem['date']
 					followersCount = followerItem['followers_count']
 
+					print(counterFollowers)
+					print(date)
+					print(followersCount)
 					# Appending to list
-					dateList.append(date)
+					followersDateList.append(date)
 					followersCountList.append(followersCount)
-					counter += 1
+					counterFollowers += 1
+				
+				counterFollowing = 0
+				followingDateList = []
+				followingCountList = []
+
+				# Getting following
+				# for followerItem in historyData['following']:
+				# 	# Getting data
+				# 	date = followerItem['date']
+				# 	followersCount = followerItem['following_count']
+
+				# 	print(counter)
+				# 	print(date)
+				# 	print(followersCount)
+				# 	# Appending to list
+				# 	followingDateList.append(date)
+				# 	followingCountList.append(followingCount)
+				# 	counterFollowing += 1
+
+				database.child("users").child(uid).child("twitter").child("history").child("followers").child(counterFollowers).set({'followers_count': userData['followers_count'], 'date': date_time_api })
 			except Exception as e:
+				print('Exception for loop')
 				print(e)
-				database.child("users").child(uid).child("data").child("twitter").child("history").child("followers").child(0).set({'followers_count': userData['followers_count'], 'date': date_time_api })
-				database.child("users").child(uid).child("data").child("twitter").child("history").child("following").child(0).set({'following_count': userData['following_count'], 'date': date_time_api })
+				# database.child("users").child(uid).child("twitter").child("history").child("followers").child(0).set({'followers_count': userData['followers_count'], 'date': date_time_api })
+				# database.child("users").child(uid).child("twitter").child("history").child("following").child(0).set({'following_count': userData['following_count'], 'date': date_time_api })
 			
 
 			# Saving Data as history
 
-			# database.child("users").child(uid).child("data").child("twitter").child("history").child("followers").update({ str(date_time) : userFollowers })
-			# database.child("users").child(uid).child("data").child("twitter").child("history").child("following").update({ str(date_time) : userFollowing })
+			# database.child("users").child(uid).child("twitter").child("history").child("followers").update({ str(date_time) : userFollowers })
+			# database.child("users").child(uid).child("twitter").child("history").child("following").update({ str(date_time) : userFollowing })
 
 
 			print('aaaa\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n')
 			# Formating Twitter Data
-			databaseData = dict(database.child("users").child(uid).child("data").get().val())
+			databaseData = dict(database.child("users").child(uid).get().val())
 			formatData = creationFormating(databaseData)
 			print('aaaa')
 
@@ -398,11 +423,13 @@ def requestTwitter():
 			session['followersData'] = followersData
 			print('aaall')
 			value = 'success'
+			print(value)
+
 
 			# Unrequired data for setup
 			try:
 				# Getting website data
-				websiteData = dict(database.child("users").child(uid).child("data").child("website").get().val())
+				websiteData = dict(database.child("users").child(uid).child("website").get().val())
 				session['websiteData'] = websiteData
 			except Exception as e:
 				print('website not connected')
@@ -414,6 +441,19 @@ def requestTwitter():
 			print(e)
 			flash(f'Twitter Login Failed')
 			return redirect(url_for('dashboard.home'))
+
+
+		# Saving data to firebase
+
+		# Saving Userdata
+		database.child("users").child(uid).child("twitter").child("userData").set(userData)
+
+		# Updating followers info
+		database.child("users").child(uid).child("twitter").child("followers").set(followers)
+
+		# Updating tips in firebase
+		database.child("users").child(uid).child("twitter").child("tips").remove()
+		database.child("users").child(uid).child("twitter").child("tips").set(returnedTips)
 		return value
 	except Exception as e:
 		 print(e)
