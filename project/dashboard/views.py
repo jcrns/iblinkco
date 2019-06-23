@@ -340,14 +340,14 @@ def requestTwitter():
 
 			date_time = now.strftime("%m-%d-%Y")
 			date_time_api = now.strftime("%m_%d_%Y")
-
+			
 
 			try:
 				# Getting follower history
 				historyData = dict(database.child("users").child(uid).child("twitter").child("history").get().val())
 
 				# Counter variable
-				print('aaaa\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n')
+				print('aaaa\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n')
 
 				counterFollowers = 0
 				followersDateList = []
@@ -374,6 +374,7 @@ def requestTwitter():
 				counterFollowing = 0
 				followingDateList = []
 				followingCountList = []
+				print('\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n')
 
 				# Getting following
 				# for followerItem in historyData['following']:
@@ -393,7 +394,7 @@ def requestTwitter():
 			except Exception as e:
 				print('Exception for loop')
 				print(e)
-				# database.child("users").child(uid).child("twitter").child("history").child("followers").child(0).set({'followers_count': userData['followers_count'], 'date': date_time_api })
+				database.child("users").child(uid).child("twitter").child("history").child("followers").child(0).set({'followers_count': userData['followers_count'], 'date': date_time_api })
 				# database.child("users").child(uid).child("twitter").child("history").child("following").child(0).set({'following_count': userData['following_count'], 'date': date_time_api })
 			
 
@@ -455,8 +456,8 @@ def requestTwitter():
 		database.child("users").child(uid).child("twitter").child("followers").set(followers)
 
 		# Updating tips in firebase
-		database.child("users").child(uid).child("twitter").child("tips").remove()
-		database.child("users").child(uid).child("twitter").child("tips").set(returnedTips)
+		# database.child("users").child(uid).child("twitter").child("tips").remove()
+		database.child("users").child(uid).child("tips").set(returnedTips)
 		return value
 	except Exception as e:
 		 print(e)
