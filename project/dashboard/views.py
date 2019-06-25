@@ -19,6 +19,7 @@ import itertools
 # Importing time to 
 from datetime import datetime
 
+# Creating blueprint for app
 dashboard = Blueprint('dashboard', __name__, static_folder='static' , template_folder='templates', static_url_path='/static/dashboard')
 
 # FIREBASE AUTHENTICATION
@@ -340,7 +341,7 @@ def requestTwitter():
 
 			date_time = now.strftime("%m-%d-%Y")
 			date_time_api = now.strftime("%m_%d_%Y")
-			
+
 
 			try:
 				# Getting follower history
@@ -389,7 +390,10 @@ def requestTwitter():
 				# 	followingDateList.append(date)
 				# 	followingCountList.append(followingCount)
 				# 	counterFollowing += 1
-
+				# try:
+				# 	database.child("users").child(uid).child("twitter").child("history").remove()
+				# except Exception as e:
+				# 	print(e)
 				database.child("users").child(uid).child("twitter").child("history").child("followers").child(counterFollowers).set({'followers_count': userData['followers_count'], 'date': date_time_api })
 			except Exception as e:
 				print('Exception for loop')
@@ -397,6 +401,8 @@ def requestTwitter():
 				database.child("users").child(uid).child("twitter").child("history").child("followers").child(0).set({'followers_count': userData['followers_count'], 'date': date_time_api })
 				# database.child("users").child(uid).child("twitter").child("history").child("following").child(0).set({'following_count': userData['following_count'], 'date': date_time_api })
 			
+			# Removing data from history
+			database.child("users").child(uid).child("twitter").child("history").child(0).remove()
 
 			# Saving Data as history
 
@@ -455,8 +461,10 @@ def requestTwitter():
 		# Updating followers info
 		database.child("users").child(uid).child("twitter").child("followers").set(followers)
 
+		# Saving formated follower data
+		database.child("users").child(uid).child("twitter").child("followersFormated").set(followersData)
+
 		# Updating tips in firebase
-		# database.child("users").child(uid).child("twitter").child("tips").remove()
 		database.child("users").child(uid).child("tips").set(returnedTips)
 		return value
 	except Exception as e:

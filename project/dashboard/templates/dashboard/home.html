@@ -2,8 +2,6 @@
 {% extends "header.html" %}
 {% block content %}
 	<link href="{{ url_for('dashboard.static', filename = 'css/home.css') }}" rel="stylesheet">
-	<script type="text/javascript">
-	</script>
 	{% if session['setup_complete'] == True %}
 <!-- 	<div id="header-nav">
 		<ul class="list-unstyled components">
@@ -71,7 +69,7 @@
 					<a href="#">Show More<img id="refresh-website" src="{{ url_for('dashboard.static', filename = 'img/refresh.png') }}"></a>
 				</p>
 				<p>Click these links to find other businesses like yours</p>
-				{% if session['competition'] %}
+				{% if session['competition'] is defined %}
 		        	<table id="competition-table"></table>
 		        	<button class="btn btn-secondary" id="disconnect-niche-competition">Remove Niche & Competition</button>
 		        	<p style="text-align: right; text-decoration: none; font-size: 20px;"><a id="expand-competition" onclick="expandCompetition()" href="#" style="color: #000;"><ion-icon name="expand"></ion-icon></a></p>
@@ -209,12 +207,12 @@
 
 			// Getting data from session
 			{% if session['followersData'] %}
-				{% for followerName in session['followersData'][0] %}
+				{% for followerName in session['followersData']['name'] %}
 					followerName = '{{ followerName }}'
 					followerNameList.push(followerName)
 				{% endfor %}
 
-				{% for followerLocation in session['followersData'][1] %}
+				{% for followerLocation in session['followersData']['location'] %}
 					followerLocation = '{{ followerLocation }}'
 					followerLocationList.push(followerLocation)
 				{% endfor %}
@@ -341,12 +339,12 @@
 
 			{% if session['competition'] %}
 				// Getting data from session
-				{% for title in session['competition'][0] %}
+				{% for title in session['competition']['title'] %}
 					title = '{{ title }}'
 					searchTitleList.push(title)
 				{% endfor %}
 
-				{% for url in session['competition'][1] %}
+				{% for url in session['competition']['link'] %}
 					url = '{{ url }}'
 					searchUrlList.push(url)
 				{% endfor %}
