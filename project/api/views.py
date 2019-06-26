@@ -128,7 +128,7 @@ def tips(userReturn):
 		# Competition
 		competition = userReturn['competition']
 
-		if competition != '':
+		if competition['title'] != 'null':
 			competitionNoneTip = "Find your competition as soon as possible"
 			tips.append(competitionNoneTip)
 
