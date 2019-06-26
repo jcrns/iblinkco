@@ -359,8 +359,13 @@ def signInFunc(email, password):
 		# History
 		historyReturned = history(userReturn)
 
-		# Getting followers data
-		followersData = followerData(userReturn)
+		try:
+			# Getting followers data
+			followersData = followerData(userReturn)
+			userReturn['twitter']['followersFormated'] = followersData
+		
+		except Exception as e:
+			print(e)
 
 		# Getting website data
 		websitesData = websites(userReturn)
@@ -407,7 +412,7 @@ def signInFunc(email, password):
 	userReturn['competition'] = competition
 
 	# print(userReturn)
-	print('aaaaa')
+	print('aaalaaaalllalaa')
 	# Returning main data
 	return userReturn
 

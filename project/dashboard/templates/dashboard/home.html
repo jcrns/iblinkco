@@ -1,6 +1,9 @@
 <!-- Jinja file including all homepage content -->
 {% extends "header.html" %}
 {% block content %}
+	<script type="text/javascript">
+		alert("{{ session['competition'] }}")
+	</script>
 	<link href="{{ url_for('dashboard.static', filename = 'css/home.css') }}" rel="stylesheet">
 	{% if session['setup_complete'] == True %}
 <!-- 	<div id="header-nav">

@@ -137,7 +137,7 @@ def login():
             session['history'] = finalizedData['history']
 
             # Getting followers' data
-            session['followersData'] = finalizedData['followersFormated']
+            session['followersData'] = finalizedData['twitter']['followersFormated']
             print('\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n')
 
             print(finalizedData['website'])
@@ -150,6 +150,7 @@ def login():
 
             # print(finalizedData[2]) 
         except Exception as e:
+            print(e)
             return redirect(url_for('users.login'))
             flash(f'signin failed')
 
@@ -175,7 +176,7 @@ def login():
             print("e")
             print(e)
             flash(f'signin failed')
-
+        print("aaaaaa")
     return render_template('users/login.html', title="Login", form=form)
 
 @users.route("/logout")
