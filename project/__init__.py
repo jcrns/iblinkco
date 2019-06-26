@@ -21,6 +21,8 @@ from datetime import timedelta
 
 ssl._create_default_https_context = ssl._create_unverified_context
 
+# Importing http redirect library
+from flask_sslify import SSLify
 
 # Defing app which is nessisary for flask to run
 app = Flask(__name__)
