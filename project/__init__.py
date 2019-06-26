@@ -34,6 +34,7 @@ app.register_blueprint(dashboard)
 
 app.register_blueprint(api)
 
+sslify = SSLify(app)
 
 # Config
 app.config.from_pyfile('appConfig.cfg')
