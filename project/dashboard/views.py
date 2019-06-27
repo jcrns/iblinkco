@@ -378,22 +378,20 @@ def requestTwitter():
 				print('\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n')
 
 				# Getting following
-				# for followerItem in historyData['following']:
-				# 	# Getting data
-				# 	date = followerItem['date']
-				# 	followersCount = followerItem['following_count']
+				for followerItem in historyData['following']:
+					# Getting data
+					date = followerItem['date']
+					followersCount = followerItem['following_count']
 
-				# 	print(counter)
-				# 	print(date)
-				# 	print(followersCount)
-				# 	# Appending to list
-				# 	followingDateList.append(date)
-				# 	followingCountList.append(followingCount)
-				# 	counterFollowing += 1
-				# try:
-				# 	database.child("users").child(uid).child("twitter").child("history").remove()
-				# except Exception as e:
-				# 	print(e)
+					print(counter)
+					print(date)
+					print(followersCount)
+
+					# Appending to list
+					followingDateList.append(date)
+					followingCountList.append(followingCount)
+					counterFollowing += 1
+				
 				database.child("users").child(uid).child("twitter").child("history").child("followers").child(counterFollowers).set({'followers_count': userData['followers_count'], 'date': date_time_api })
 			except Exception as e:
 				print('Exception for loop')
