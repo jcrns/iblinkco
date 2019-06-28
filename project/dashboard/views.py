@@ -348,90 +348,87 @@ def requestTwitter():
 				historyData = dict(database.child("users").child(uid).child("twitter").child("history").get().val())
 
 				# Counter variable
-				print('aaaa\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n')
+				print('aaakdmofbwfkgbnwrthirgnbiwsga\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n')
 
 				counterFollowers = 0
 				followersDateList = []
 				followersCountList = []
 				print(historyData)
 
+				# Checking if user is new if so updating data
+				try:
+					if historyData['followers'][0] == 'null':
+						database.child("users").child(uid).child("twitter").child("history").child("followers").child(0).set({'followers_count': userData['followers_count'], 'date': date_time_api })
+					if historyData['following'][0] == 'null':
+						database.child("users").child(uid).child("twitter").child("history").child("following").child(0).set({'following_count': userData['following_count'], 'date': date_time_api })
+				except Exception as e:
+					print('not a new account')
+
 				# Getting followers
 				for followerItem in historyData['followers']:
+					print('aaa')
 					# Getting data
 					date = followerItem['date']
 					followersCount = followerItem['followers_count']
-					if date != followersDateList[-1]:
-						print('aaa')
-						print(counterFollowers)
+					print(date)
+					print(followersCount)
+
+					# Appending to list
+					followersDateList.append(date)
+					followersCountList.append(followersCount)
+
+					print(followersDateList[-1])
+					print(followersCountList[-1])
+
+					counterFollowers += 1
+					if date_time_api != followersDateList[-1]:
+
+						print('aalka')
 						print(date)
 						print(followersCount)
-						# Appending to list
-						followersDateList.append(date)
-						followersCountList.append(followersCount)
-						counterFollowers += 1
+						print(counterFollowers)
+						database.child("users").child(uid).child("twitter").child("history").child("followers").child(counterFollowers).update({'followers_count': userData['followers_count'], 'date': date_time_api })
+						print('aasasas')
+						break
 					else:
 						continue
-				
+				print(historyData['followers'])
+
 				counterFollowing = 0
 				followingDateList = []
 				followingCountList = []
 				print('\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n')
 
+				print(historyData)
 				# Getting following
-				for followerItem in historyData['following']:
+				for followingItem in historyData['following']:
 					# Getting data
 					date = followerItem['date']
-					followersCount = followerItem['following_count']
+					followingCount = followingItem['following_count']
 
 					print(counter)
 					print(date)
-					print(followersCount)
+					print(followingCount)
 
 					# Appending to list
 					followingDateList.append(date)
 					followingCountList.append(followingCount)
 					counterFollowing += 1
-				
-				database.child("users").child(uid).child("twitter").child("history").child("followers").child(counterFollowers).set({'followers_count': userData['followers_count'], 'date': date_time_api })
+					if date_time_api != followingDateList[-1]:
+						database.child("users").child(uid).child("twitter").child("history").child("following").child(counterFollowing).update({'followers_count': userData['followers_count'], 'date': date_time_api })
+						break
+					else:
+						continue
 			except Exception as e:
 				print('Exception for loop')
 				print(e)
-				database.child("users").child(uid).child("twitter").child("history").child("followers").child(0).set({'followers_count': userData['followers_count'], 'date': date_time_api })
+				# database.child("users").child(uid).child("twitter").child("history").child("followers").child(0).set({'followers_count': userData['followers_count'], 'date': date_time_api })
 				# database.child("users").child(uid).child("twitter").child("history").child("following").child(0).set({'following_count': userData['following_count'], 'date': date_time_api })
 			
-			# Removing data from history
-			database.child("users").child(uid).child("twitter").child("history").child(0).remove()
-
 			# Saving Data as history
 
 			# database.child("users").child(uid).child("twitter").child("history").child("followers").update({ str(date_time) : userFollowers })
 			# database.child("users").child(uid).child("twitter").child("history").child("following").update({ str(date_time) : userFollowing })
-
-
-			print('aaaa\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n')
-			# Formating Twitter Data
-			databaseData = dict(database.child("users").child(uid).get().val())
-			formatData = creationFormating(databaseData)
-			print('aaaa')
-
-			# Getting Tips
-			returnedTips = tips(databaseData)
-			session['tips'] = returnedTips
-			print('aaaalllllaa')
-
-			# Getting history
-			historyData = history(databaseData)
-			print('a')
-			session['history'] = historyData
-			print('aaaa')
-
-			print(databaseData)
-			# Getting followers' data
-			followersData = followerData(databaseData)
-			session['followersData'] = followersData
-			print('aaall')
-			value = 'success'
-			print(value)
 
 
 			# Unrequired data for setup
@@ -455,15 +452,45 @@ def requestTwitter():
 
 		# Saving Userdata
 		database.child("users").child(uid).child("twitter").child("userData").set(userData)
-
+		print('aaad')
 		# Updating followers info
 		database.child("users").child(uid).child("twitter").child("followers").set(followers)
+		print('aaad')
+
+		databaseData = dict(database.child("users").child(uid).get().val())
+
+		# Getting Tips
+		returnedTips = tips(databaseData)
+		session['tips'] = returnedTips
+		print('aaaalllllaa')
+
+		# Updating tips in firebase
+		database.child("users").child(uid).child("tips").set(returnedTips)
+
+		# Getting followers' data
+		followersData = followerData(databaseData)
+		session['followersData'] = followersData
+		print('aaall')
+		value = 'success'
+		print(value)
 
 		# Saving formated follower data
 		database.child("users").child(uid).child("twitter").child("followersFormated").set(followersData)
 
-		# Updating tips in firebase
-		database.child("users").child(uid).child("tips").set(returnedTips)
+		print('aaaa\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n')
+		# Formating Twitter Data
+		formatData = creationFormating(databaseData)
+		print('aaaa')
+
+
+		# Getting history
+		historyData = history(databaseData)
+		print('a')
+		session['history'] = historyData
+		print('aaaa')
+
+		print(databaseData)
+
 		return value
 	except Exception as e:
 		 print(e)

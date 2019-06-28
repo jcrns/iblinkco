@@ -173,7 +173,7 @@ def tips(userReturn):
 def history(userReturn):
 	print('historyaaaa')
 	try:
-		# print(userReturn['twitter']['history'])
+		print(userReturn['twitter']['history'])
 		# print("userReturn['twitter']['history']")
 		history = userReturn['twitter']['history']
 		dateList = []
@@ -199,7 +199,7 @@ def followerData(userReturn):
 		print('followw\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n')
 		followersLocatonList = []
 		followersNameList = []
-
+		print(userReturn)
 		# Getting followers info from database
 		followers = userReturn['twitter']['followers']['users']
 
@@ -273,7 +273,8 @@ def createUserFunc(email, password, firstname, lastname):
 		database.child("users").child(uid).child("account").set(userAccount)
 		database.child("users").child(uid).child("website").set(addWebsite)
 		database.child("users").child(uid).child("user").set(user)
-		database.child("users").child(uid).child("twitter").child("history").set(['null'])
+		database.child("users").child(uid).child("twitter").child("history").child("followers").set(['null'])
+		database.child("users").child(uid).child("twitter").child("history").child("following").set(['null'])
 		database.child("users").child(uid).child("twitter").child("followersFormated").set([ ['null'], ['null'] ])
 		database.child("users").child(uid).child("competition").child("link").set(['null'])
 		database.child("users").child(uid).child("competition").child("title").set(['null'])
