@@ -63,6 +63,9 @@ def updateSetupAndWebsite():
 		print('aaff\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n')
 		value = "success"
 
+		websiteData = dict(database.child("users").child(uid).child("website").get().val())
+
+		session['websiteData'] = websiteData
 	except Exception as e:
 		print("twiiter not connected")
 		value = "Twitter not connected"
