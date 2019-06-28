@@ -67,31 +67,6 @@ def updateSetupAndWebsite():
 		print("twiiter not connected")
 		value = "Twitter not connected"
 		return value
-	try:
-		if request.method == 'POST':
-			print('kkkk')
-			websiteName = request.form['website_name']
-			websiteUrl = request.form['website_url']
-
-
-			print('aaaa')
-			
-			websiteScrap = websiteScrapping(website_url)
-
-			# Defining json equal to input
-			addWebsite = { "website_name" : websiteName, "website_url" : websiteUrl, "header_text" : websiteScrap[0], "links" : websiteScrap[1] }
-
-			# Putting json in pyrebase
-			database.child("users").child(uid).child("website").set(addWebsite)
-
-			# Session
-			session['websiteData'] = addWebsite
-	except Exception as e:
-		print('website not entered')
-		websiteData = dict(database.child("users").child(uid).child("website").get().val())
-
-		session['websiteData'] = websiteData
-		print(e)
 
 	# Trying to get and save required data
 	try:
