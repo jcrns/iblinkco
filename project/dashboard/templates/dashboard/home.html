@@ -134,7 +134,6 @@
             		<input type="text" id="website-name" name="website-name" placeholder="Website Name">
             		<br>
             		<small>Ex: MyWebsite</small>
-
             	</p>
 
             	<!-- Url Input -->
@@ -154,7 +153,7 @@
 	{% else %}
 	<!-- Setup Modal -->
 	<div class="container text-center" id="setup-body">
-		<h4>Click Social Media to Connect!</h4>
+		<h4>Click Social Media Icons to Connect!</h4>
 		<p><a href="{{ url_for('dashboard.twitterLogin') }}"><img class="social-logo" src="{{ url_for('dashboard.static', filename = 'img/twitter-logo.png') }}"></a>
 	  	<img class="unavalable-logo social-logo" src="{{ url_for('dashboard.static', filename = 'img/facebook-logo.png') }}">
 	  	<img class="unavalable-logo social-logo" src="{{ url_for('dashboard.static', filename = 'img/snapchat-logo.png') }}">
