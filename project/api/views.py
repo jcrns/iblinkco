@@ -176,9 +176,13 @@ def history(userReturn):
 		print(userReturn['twitter']['history'])
 		# print("userReturn['twitter']['history']")
 		history = userReturn['twitter']['history']
+		print('aaaa')
+		history['followers']
 		dateList = []
 		followerList = []
+		print('aggg')
 		for followerItem in history['followers']:
+			print(followerItem)
 			date = followerItem['date']
 			followersCount = followerItem['followers_count']
 
