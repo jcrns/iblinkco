@@ -329,6 +329,7 @@ def requestTwitter():
 				print('aaakdmofbwfkgbnwrthirgnbiwsga\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n')
 
 				counterFollowers = 0
+				todayAlreadyIn = False
 				followersDateList = []
 				followersCountList = []
 				print(historyData)
@@ -343,33 +344,42 @@ def requestTwitter():
 					print('not a new account')
 
 				# Getting followers
+				# for followerItem in historyData['followers']:
+				# 	print('aaa')
+				# 	# Getting data
+				# 	date = followerItem['date']
+				# 	followersCount = followerItem['followers_count']
+				# 	print(date)
+				# 	print(followersCount)
+
+				# 	# Appending to list
+				# 	followersDateList.append(date)
+				# 	followersCountList.append(followersCount)
+
+				# 	print(followersDateList[-1])
+				# 	print(followersCountList[-1])
+
+				# 	counterFollowers += 1
+				# 	if date_time_api != followersDateList[-1]:
+
+				# 		print('aalka')
+				# 		print(date)
+				# 		print(followersCount)
+				# 		print(counterFollowers)
+				# 		database.child("users").child(uid).child("twitter").child("history").child("followers").child(counterFollowers).update({'followers_count': userData['followers_count'], 'date': date_time_api })
+				# 		print('aasasas')
+				# 		break
+				# 	else:
+				# 		continue
 				for followerItem in historyData['followers']:
-					print('aaa')
-					# Getting data
-					date = followerItem['date']
-					followersCount = followerItem['followers_count']
-					print(date)
-					print(followersCount)
-
-					# Appending to list
-					followersDateList.append(date)
-					followersCountList.append(followersCount)
-
-					print(followersDateList[-1])
-					print(followersCountList[-1])
-
-					counterFollowers += 1
-					if date_time_api != followersDateList[-1]:
-
-						print('aalka')
-						print(date)
-						print(followersCount)
-						print(counterFollowers)
-						database.child("users").child(uid).child("twitter").child("history").child("followers").child(counterFollowers).update({'followers_count': userData['followers_count'], 'date': date_time_api })
-						print('aasasas')
+					if date_time_api in followerItem['date']:
+						todayAlreadyIn = True
 						break
 					else:
-						continue
+						counterFollowers += 1
+				if todayAlreadyIn == True:
+					database.child("users").child(uid).child("twitter").child("history").child("followers").child(counterFollowers).update({'followers_count': userData['followers_count'], 'date': date_time_api })
+
 				print(historyData['followers'])
 
 				counterFollowing = 0
