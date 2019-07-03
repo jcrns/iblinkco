@@ -3,13 +3,9 @@
 {% block content %}
 	<link href="{{ url_for('dashboard.static', filename = 'css/home.css') }}" rel="stylesheet">
 	{% if session['setup_complete'] == True %}
-<!-- 	<div id="header-nav">
-		<ul class="list-unstyled components">
-			<li>Home</li>
-			<li>Competition</li>
-			<li>Analytics</li>
-		</ul>
-	</div> -->
+	<script type="text/javascript">
+
+	</script>
 	<div id="header-bar" class="bg-dark">
 		<p><span id="header-bar-name"><b>{{ session['userTwitterData']['name'] }}</b></span><span id="header-bar-description">    {{ session['userTwitterData']['description'] }}</span></p>
 	</div>
@@ -70,9 +66,13 @@
 				</p>
 				<p>Click these links to find other businesses like yours</p>
 				{% if session['competition'] is defined %}
-		        	<table id="competition-table"></table>
-		        	<button class="btn btn-secondary" id="disconnect-niche-competition">Remove Niche & Competition</button>
-		        	<p style="text-align: right; text-decoration: none; font-size: 20px;"><a id="expand-competition" onclick="expandCompetition()" href="#" style="color: #000;"><ion-icon name="expand"></ion-icon></a></p>
+					{% if session['competition']['link'][0] != null %}
+			        	<table id="competition-table"></table>
+			        	<button class="btn btn-secondary" id="disconnect-niche-competition">Remove Niche & Competition</button>
+			        	<p style="text-align: right; text-decoration: none; font-size: 20px;"><a id="expand-competition" onclick="expandCompetition()" href="#" style="color: #000;"><ion-icon name="expand"></ion-icon></a></p>
+			        {% else %}
+
+			        {% endif %}
 		        {% else %}
 		        	<form method="POST" id="niche-submit">
 		        		<p>Your company is a <input id="niche-text" type="text" placeholder="Ex: Barbershop"><input id="niche-button" class="btn btn-primary" value="Submit" type="submit" ></p>
@@ -116,7 +116,7 @@
 			</div>
 		</div>
 	</div>
-	    <!-- Connect Website  -->
+	<!-- Connect Website  -->
     <div class="modal fade" id="connect-website" tabindex="-1" role="dialog">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
