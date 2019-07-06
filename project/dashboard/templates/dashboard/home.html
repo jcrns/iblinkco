@@ -4,7 +4,7 @@
 	<link href="{{ url_for('dashboard.static', filename = 'css/home.css') }}" rel="stylesheet">
 	{% if session['setup_complete'] == True %}
 	<script type="text/javascript">
-
+		alert("{{ session['websiteData'] }}")
 	</script>
 	<div id="header-bar" class="bg-dark">
 		<p><span id="header-bar-name"><b>{{ session['userTwitterData']['name'] }}</b></span><span id="header-bar-description">    {{ session['userTwitterData']['description'] }}</span></p>

@@ -371,13 +371,14 @@ def requestTwitter():
 				# 		break
 				# 	else:
 				# 		continue
+				todayAlreadyIn = False
 				for followerItem in historyData['followers']:
 					if str(date_time_api) == followerItem['date']:
 						todayAlreadyIn = True
 						break
 					else:
 						counterFollowers += 1
-				if todayAlreadyIn == True:
+				if todayAlreadyIn == False:
 					database.child("users").child(uid).child("twitter").child("history").child("followers").child(counterFollowers).set({'followers_count': userData['followers_count'], 'date': date_time_api })
 
 				print(historyData['followers'])
