@@ -66,12 +66,14 @@
 				</p>
 				<p>Click these links to find other businesses like yours</p>
 				{% if session['competition'] is defined %}
-					{% if session['competition']['link'][0] != null %}
+					{% if session['competition']['link'][0] != 'null' %}
 			        	<table id="competition-table"></table>
 			        	<button class="btn btn-secondary" id="disconnect-niche-competition">Remove Niche & Competition</button>
 			        	<p style="text-align: right; text-decoration: none; font-size: 20px;"><a id="expand-competition" onclick="expandCompetition()" href="#" style="color: #000;"><ion-icon name="expand"></ion-icon></a></p>
 			        {% else %}
-
+				        <form method="POST" id="niche-submit">
+			        		<p>Your company is a <input id="niche-text" type="text" placeholder="Ex: Barbershop"><input id="niche-button" class="btn btn-primary" value="Submit" type="submit" ></p>
+			        	</form>
 			        {% endif %}
 		        {% else %}
 		        	<form method="POST" id="niche-submit">
