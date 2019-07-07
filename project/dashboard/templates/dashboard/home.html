@@ -32,8 +32,12 @@
 				<p class="status-bar-connect-item"><a href="#">Settings</a></p>
 				<p class="status-bar-connect-item">
 					<span>Connected</span>
+					{% if session['instagram'] %}
+						<span class="status-img"><a href="#"><img src="{{ url_for('dashboard.static', filename = 'img/instagram-logo.png') }}"></a></span>
+					{% else %}
+						<span class="status-img"><a href="#"><img class="unavalable-logo" src="{{ url_for('dashboard.static', filename = 'img/instagram-logo.png') }}"></a></span>
+					{% endif %}
 					<span class="status-img"><a href="#"><img src="{{ url_for('dashboard.static', filename = 'img/twitter-logo.png') }}"></a></span>
-					<span class="status-img"><a href="#"><img src="{{ url_for('dashboard.static', filename = 'img/instagram-logo.png') }}"></a></span>
 				</p>
 				<p class="status-bar-connect-item">
 					<span>Competition:</span>
@@ -56,6 +60,7 @@
 					{% endif %}
 				</p>
 			</div>
+			<hr>
 		</div>
 		<!-- Summary -->
 		<div class="col-xs-12 col-sm-12 col-md-5 col-lg-5" id="left-container">

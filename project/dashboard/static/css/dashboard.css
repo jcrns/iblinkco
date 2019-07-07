@@ -194,8 +194,10 @@ html,body
   height: 35px;
 }
 .status-bar-connect-item {
-  color: #000; 
   margin-left: 10%;
+}
+.status-bar-connect-item a{
+  color: #000; 
 }
 
 #competition-text img {
