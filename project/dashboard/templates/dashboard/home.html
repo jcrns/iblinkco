@@ -1,7 +1,7 @@
 <!-- Jinja file including all homepage content -->
 {% extends "header.html" %}
 {% block content %}
-	<link href="{{ url_for('dashboard.static', filename = 'css/home.css') }}" rel="stylesheet">
+	<link href="{{ url_for('dashboard.static', filename = 'css/dashboard.css') }}" rel="stylesheet">
 	{% if session['setup_complete'] == True %}
 	<div id="header-bar" class="bg-dark">
 		<p><span id="header-bar-name"><b>{{ session['userTwitterData']['name'] }}</b></span><span id="header-bar-description">    {{ session['userTwitterData']['description'] }}</span></p>
@@ -12,9 +12,10 @@
 		<div class="col-md-2 col-lg-2 h-auto d-inline-block bg-light fixed-left" id="sidebar-status">
 			<ul class="list-unstyled components" id="sidebar-list">
 				<h5>Status
-					<span><a id="status-text" href="#"><img src="{{ url_for('dashboard.static', filename = 'img/info.png') }}"><span id="status-description-text">This status bar is where tips about your social media will be given</span></a></span>
+					<span><a id="status-text" href="#"><img id="sidebar-status-icon" src="{{ url_for('dashboard.static', filename = 'img/info.png') }}"><span id="status-description-text">This status bar is where tips about your social media will be given</span></a></span>
 				</h5> 
 			</ul>
+			<hr>
 			{% if session['tips'] %}
 				{% for tip in session['tips'] %}
 					<div class="card tip-card">
@@ -26,6 +27,35 @@
 					</div>
 				{% endfor %}
 			{% endif %}
+			<hr>
+			<div id="connection-div">
+				<p class="status-bar-connect-item"><a href="#">Settings</a></p>
+				<p class="status-bar-connect-item">
+					<span>Connected</span>
+					<span class="status-img"><a href="#"><img src="{{ url_for('dashboard.static', filename = 'img/twitter-logo.png') }}"></a></span>
+					<span class="status-img"><a href="#"><img src="{{ url_for('dashboard.static', filename = 'img/instagram-logo.png') }}"></a></span>
+				</p>
+				<p class="status-bar-connect-item">
+					<span>Competition:</span>
+					{% if session['competition'] is defined %}
+						{% if session['competition']['link'][0] != 'null' %}
+							<span class="text-success">True</span>
+						{% else %}
+							<span class="text-secondary">False</span>
+						{% endif %}
+					{% else %}
+						<span class="text-secondary">False</span>
+					{% endif %}
+				</p>
+				<p class="status-bar-connect-item">
+					<span>Website:</span>
+					{% if session['websiteData']['website_name'] != '' %}
+						<span class="text-success">True</span>
+					{% else %}
+						<span class="text-secondary">False</span>
+					{% endif %}
+				</p>
+			</div>
 		</div>
 		<!-- Summary -->
 		<div class="col-xs-12 col-sm-12 col-md-5 col-lg-5" id="left-container">
@@ -49,7 +79,7 @@
 		        </div>
 		      	{% if session['niche'] %}
 		        	<p>Your company is a {{ session['niche'] }}</p>
-		        	<p style="text-align: right; text-decoration: none; font-size: 20px;"><a href="#" onclick="expandSummary()" style="color: #000;"><ion-icon name="expand"></ion-icon></a></p>
+		        	<p class="expand"><a href="#" onclick="expandSummary()"><ion-icon name="expand"></ion-icon></a></p>
 		        {% else %}
 
 		        {% endif %}
@@ -66,7 +96,7 @@
 					{% if session['competition']['link'][0] != 'null' %}
 			        	<table id="competition-table"></table>
 			        	<button class="btn btn-secondary" id="disconnect-niche-competition">Remove Niche & Competition</button>
-			        	<p style="text-align: right; text-decoration: none; font-size: 20px;"><a id="expand-competition" onclick="expandCompetition()" href="#" style="color: #000;"><ion-icon name="expand"></ion-icon></a></p>
+			        	<p class="expand"><a id="expand-competition" onclick="expandCompetition()" href="#"><ion-icon name="expand"></ion-icon></a></p>
 			        {% else %}
 				        <form method="POST" id="niche-submit">
 			        		<p>Your company is a <input id="niche-text" type="text" placeholder="Ex: Barbershop"><input id="niche-button" class="btn btn-primary" value="Submit" type="submit" ></p>
