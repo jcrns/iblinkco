@@ -247,12 +247,14 @@ def signUp():
 	lastname = request.json['lastname']
 	email = request.json['email']
 	password = request.json['password']
+	software = request.json['software']
 
-	createdUser = createUserFunc(email, password, firstname, lastname)
+
+	createdUser = createUserFunc(email, password, firstname, lastname, software)
 	return jsonify(createdUser)
 
 # Signin function
-def createUserFunc(email, password, firstname, lastname):
+def createUserFunc(email, password, firstname, lastname, software):
 	try:
 		userReturn = []
 		userData = dict()
@@ -271,7 +273,7 @@ def createUserFunc(email, password, firstname, lastname):
 		uid = user['localId']
 
 		# Website empty json
-		addWebsite = { "website_name" : '', "website_url" : '' }
+		addWebsite = { "website_name" : '', "website_url" : '', "header_text" : "", "links": ["null"] }
 
 		# Creating branches
 		database.child("users").child(uid).child("account").set(userAccount)
@@ -283,6 +285,7 @@ def createUserFunc(email, password, firstname, lastname):
 		database.child("users").child(uid).child("competition").child("link").set(['null'])
 		database.child("users").child(uid).child("competition").child("title").set(['null'])
 		database.child("users").child(uid).child("tips").set(['null'])
+
 	except Exception as e:
 		print("problem with creation")
 		print(e)
@@ -320,6 +323,32 @@ def signIn():
 		# Deleting dictionaries from data
 		try:
 			del signIn['twitter']['followers']
+			del signIn['twitter']['userData']['contributors_enabled']
+			del signIn['twitter']['userData']['created_at']
+			del signIn['twitter']['userData']['default_profile']
+			del signIn['twitter']['userData']['default_profile_image']
+			del signIn['twitter']['userData']['follow_request_sent']
+			del signIn['twitter']['userData']['geo_enabled']
+			del signIn['twitter']['userData']['has_extended_profile']
+			del signIn['twitter']['userData']['id']
+			del signIn['twitter']['userData']['id_str']
+			del signIn['twitter']['userData']['is_translation_enabled']
+			del signIn['twitter']['userData']['is_translator']
+			del signIn['twitter']['userData']['listed_count']
+			del signIn['twitter']['userData']['needs_phone_verification']
+			del signIn['twitter']['userData']['notifications']
+			del signIn['twitter']['userData']['profile_background_color']
+			del signIn['twitter']['userData']['profile_background_title']
+			del signIn['twitter']['userData']['profile_image_url']
+			del signIn['twitter']['userData']['profile_image_url_https']
+			del signIn['twitter']['userData']['profile_link_color']
+			del signIn['twitter']['userData']['profile_sidebar_border_color']
+			del signIn['twitter']['userData']['profile_sidebar_fill_color']
+			del signIn['twitter']['userData']['profile_text_color']
+			del signIn['twitter']['userData']['profile_use_background_image']
+			del signIn['twitter']['userData']['protected']
+			del signIn['twitter']['userData']['suspended']
+			del signIn['twitter']['userData']['translator_type']
 		except Exception as e:
 			print(e)
 			print('Deleting followers failed')

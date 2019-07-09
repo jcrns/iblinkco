@@ -88,7 +88,7 @@ def register():
 
         try:
             # Running auth function
-            createUser = createUserFunc(form.email.data, form.password.data, form.firstname.data, form.lastname.data)
+            createUser = createUserFunc(form.email.data, form.password.data, form.firstname.data, form.lastname.data, 'web')
 
             # Getting returned data
             returnedData = createUser

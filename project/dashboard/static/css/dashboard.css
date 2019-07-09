@@ -299,3 +299,8 @@ html,body
 .expand a {
   color: #000;
 }
+
+/*Disconnect button*/
+.disconnect-button {
+  font-size: 10px;
+}

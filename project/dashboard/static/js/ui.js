@@ -130,11 +130,11 @@ function dismissTip(e){
   console.log('element length: : ' + element.childNodes.length)
   console.log('numberOfTips: : ' + numberOfTips)
   if(numberOfTips == 1){
-  // div = document.getElementById('sidebar-status');
+    noneDivText = document.getElementById('tips-div');
     var noneDiv = document.createElement('p');
     var noneText = document.createTextNode('No Tips');
     noneDiv.appendChild(noneText);
-    element.appendChild(noneDiv);
+    noneDivText.appendChild(noneDiv);
   } 
 
 }
