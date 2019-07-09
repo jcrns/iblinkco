@@ -2,7 +2,7 @@
 from flask import Flask, render_template, session, flash, redirect, Blueprint, request, jsonify, g, url_for, make_response
 
 # Importing twitter api
-from project.social_apis import twitterConnect, firebaseConnect, websiteScrapping
+from project.social_apis import twitterConnect, firebaseConnect, websiteScrapping, getTwitterData
 
 # Importing Login Required
 from project.decorators import login_required
@@ -433,9 +433,27 @@ def requestTwitter():
 		except Exception as e:
 			value = 'failed'
 			print(e)
-			flash(f'Twitter Login Failed')
+			print('Twitter Login Failed1111')
 			return redirect(url_for('dashboard.home'))
 
+		# Trying to define username 
+		try:
+			print("screen name")
+			username = userData['screen_name']
+		except Exception as e:
+			print("Error Defining username as screen name")
+			username = database.child("users").child(uid).child("twitter").child("userData").child("screen_name").get().val()
+			print(e)
+		print("lllll\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n")
+		# Trying to run webscrapping function
+		try:
+			print('webscrapping')
+			twitterScrapped = getTwitterData(username)
+			tweets = twitterScrapped[0]
+			twitterStats = twitterScrapped[1]
+			database.child("users").child(uid).child("twitter").child("tweets").set(tweets)
+		except Exception as e:
+			print(e)
 
 		# Saving data to firebase
 
@@ -483,6 +501,6 @@ def requestTwitter():
 		return value
 	except Exception as e:
 		 print(e)
-		 flash(f'Twitter Login Failed')
+		 print('Twitter Login Failed')
 		 return redirect(url_for('dashboard.home'))
 	# Twitter Search Function Terms

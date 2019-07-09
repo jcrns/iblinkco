@@ -86,7 +86,9 @@
 		          	</p>
 		          	<button class="btn btn-danger disconnect-button">Disconnect</button>
 		        {% else %}
-		        	
+		        	<form>
+		        		<input type="text" name="twitter-username" placeholder="Twitter Username">
+		        	</form>
 	          	{% endif %}
 	          	<br>
 	          	<br>
@@ -99,9 +101,13 @@
 		          	</p>
 		          	<button class="btn btn-danger disconnect-button">Disconnect</button>
 		        {% else %}
-		        	<form>
-		        		<input type="text" name="instagram-username" placeholder="Instagram Username">
-		        	</form>
+		        	<form method="POST">
+		        		<p>Instagram:</p>
+			        	<p>
+				        	<input type="text" name="instagram-username" placeholder="Instagram Username">
+				        </p>
+				        <input class="btn btn-primary" type="submit" value="Connect" >
+			        </form>
 	          	{% endif %}
 	          </div>
 	        </div>
