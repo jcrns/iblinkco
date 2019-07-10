@@ -304,3 +304,8 @@ html,body
 .disconnect-button {
   font-size: 10px;
 }
+
+/*Sidebar Navbar*/
+#nav-sidebar button{
+  width: 100%;
+}

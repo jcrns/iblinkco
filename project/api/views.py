@@ -2,7 +2,7 @@
 from flask import Flask, session, redirect, Blueprint, request, jsonify, g, url_for, make_response, Response
 
 # Firebase connection
-from project.social_apis import firebaseConnect, websiteScrapping, googleSearch
+from project.social_apis import firebaseConnect, websiteScrapping, googleSearch, getTwitterData, InstagramScraper
 
 # Tools for for loops
 import itertools
@@ -729,6 +729,35 @@ def refreshFollowers():
 		value = 'failed'
 
 	return value
+
+@api.route("/connect-instagram-api", methods=['GET','POST'])
+def connectInstagramAPI():
+	try:
+		print('connecting instagram api')
+		username = request.form['instagram-username']
+		returnedData = connectInstagram(username)
+		
+		# Getting user session
+		user = session['user']
+		uid = user['localId']
+
+		database.child("users").child(uid).child("instagram").set(returnedData)
+		return redirect(url_for('dashboard.home'))
+	except Exception as e:
+		print(e)
+		username = request.get_json()['username']
+		returnedData = connectInstagram(username)
+		return returnedData
+
+# Connect instagram function
+def connectInstagram(username):
+	print('connecting instagram')
+	instagramConnection = InstagramScraper()
+	results = instagramConnection.profile_page_metrics('https://www.instagram.com/' + username + '/')
+	if not results:
+		print('account private')
+		return 'failed'
+	return results
 
 # GOOGLE SEARCH
 

@@ -2,6 +2,9 @@
 {% extends "header.html" %}
 {% block content %}
 	<link href="{{ url_for('dashboard.static', filename = 'css/dashboard.css') }}" rel="stylesheet">
+	<script type="text/javascript">
+		alert("{{ session['userInstagramData'] }}")
+	</script>
 	{% if session['setup_complete'] == True %}
 	<div id="header-bar" class="bg-dark">
 		<p><span id="header-bar-name"><b>{{ session['userTwitterData']['name'] }}</b></span><span id="header-bar-description">    {{ session['userTwitterData']['description'] }}</span></p>
@@ -10,11 +13,13 @@
 
 		<!-- Sidebar -->
 		<div class="col-md-2 col-lg-2 h-auto d-inline-block bg-light fixed-left" id="sidebar-status">
-			<ul class="list-unstyled components" id="sidebar-list">
-				<h5>Status
-					<span><a id="status-text" href="#"><img id="sidebar-status-icon" src="{{ url_for('dashboard.static', filename = 'img/info.png') }}"><span id="status-description-text">This status bar is where tips about your social media will be given</span></a></span>
-				</h5> 
-			</ul>
+			<div>
+				<ul class="list-unstyled components" id="sidebar-list">
+					<h5>Status
+						<span><a id="status-text" href="#"><img id="sidebar-status-icon" src="{{ url_for('dashboard.static', filename = 'img/info.png') }}"><span id="status-description-text">This status bar is where tips about your social media will be given</span></a></span>
+					</h5> 
+				</ul>
+			</div>
 			<hr>
 			<div id="tips-div">
 				{% if session['tips'] %}
@@ -27,6 +32,17 @@
 							<p>{{ tip }}</p>
 						</div>
 					{% endfor %}
+				{% endif %}
+			</div>
+			<hr>
+			<!-- Navbar -->
+			<div id="nav-sidebar">
+				<button class="btn btn-secondary">Home</button>
+				{% if session['userInstagramData'] %}
+					<button class="btn btn-light">Instagram ({{ session['userInstagramData']['username'] }})</button>
+				{% endif %}
+				{% if session['userTwitterData'] %}
+					<button class="btn btn-light">Twitter ({{ session['userTwitterData']['name'] }})</button>
 				{% endif %}
 			</div>
 			<hr>
@@ -92,21 +108,21 @@
 	          	{% endif %}
 	          	<br>
 	          	<br>
-	          	{% if session['userDataInstagram'] %}
+	          	{% if session['userInstagramData'] %}
 		          	<p>
 		          		<span>Instagram:</span>
 		          		<span class="text-success">
-		          			{{ session['userInstagramData']['name'] }}
+		          			{{ session['userInstagramData']['username'] }}
 		          		</span>
 		          	</p>
 		          	<button class="btn btn-danger disconnect-button">Disconnect</button>
 		        {% else %}
-		        	<form method="POST">
+		        	<form method="POST" action="/connect-instagram-api"> 
 		        		<p>Instagram:</p>
 			        	<p>
 				        	<input type="text" name="instagram-username" placeholder="Instagram Username">
 				        </p>
-				        <input class="btn btn-primary" type="submit" value="Connect" >
+				        <input class="btn btn-primary" type="submit" value="Connect">
 			        </form>
 	          	{% endif %}
 	          </div>

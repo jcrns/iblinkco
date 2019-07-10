@@ -2,7 +2,8 @@
 from flask import Flask, render_template, session, flash, redirect, Blueprint, request, jsonify, g, url_for, make_response
 
 # Importing twitter api
-from project.social_apis import twitterConnect, firebaseConnect, websiteScrapping, getTwitterData
+from project.social_apis import twitterConnect, firebaseConnect, websiteScrapping, getTwitterData, InstagramScraper
+InstagramScraper
 
 # Importing Login Required
 from project.decorators import login_required
@@ -238,55 +239,8 @@ def requestTwitter():
 		print(followersNameList)
 		print(len(followersScreenNameList))
 
-		# # Getting User Following
-		# getFollowering = twitter.request('friends/list.json?count=200')
-		# following = getFollowering.data
-		# print(following)
-
-		# print('printing following\n\n\n\n\n\n\n\n')
-		# # print(following)
-		# firstFollowingCursor = following['next_cursor']
-		# firstPrevCursor = following['previous_cursor']
-
-		# print('printing following22\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n')
-		# # returnedCursor = nextCursorFollowing(screen_name, following, firstCursor)
-		# # print(returnedCursor)
-
-		# followingCursorList = [firstFollowingCursor]
-
-
-		# # Appending following screen names to list
-		# for followingItem in following['users']:
-		# 	followingItemScreenName = followingItem['screen_name']
-		# 	followingItemName = followingItem['name']
-		# 	followingScreenNameList.append(followingItemScreenName)
-		# 	followingNameList.append(followingItemName)
-
-		# print(followingScreenNameList)
-
-		# for i in itertools.count():
-		# 	print(followingCursorList[i])
-		# 	returnedList = nextCursorFollowing(screen_name, following, followingCursorList[i])
-		# 	cursor = returnedList[0]
-		# 	if cursor == 0:	
-		# 		print("done")
-		# 		break
-		# 	else:
-		# 		userScreenNames = returnedList[1]
-		# 		userNames = returnedList[2]
-		# 		followingScreenNameList.append(userScreenNames)
-		# 		followingNameList.append(userNames)
-		# 		followingCursorList.append(cursor)
-
-		# print(followingScreenNameList)
-		# print(followingNameList)
-
-		# print("cursors" + str(len(followingCursorList)))
-		# print("following" + str(len(followingScreenNameList)))
-
 		userData = twitter.request('users/show.json?screen_name=' + screen_name)
 		userData = userData.data
-		# print(userData)
 
 		# Updating twitter data in firebase
 		
@@ -343,34 +297,6 @@ def requestTwitter():
 				except Exception as e:
 					print('not a new account')
 
-				# Getting followers
-				# for followerItem in historyData['followers']:
-				# 	print('aaa')
-				# 	# Getting data
-				# 	date = followerItem['date']
-				# 	followersCount = followerItem['followers_count']
-				# 	print(date)
-				# 	print(followersCount)
-
-				# 	# Appending to list
-				# 	followersDateList.append(date)
-				# 	followersCountList.append(followersCount)
-
-				# 	print(followersDateList[-1])
-				# 	print(followersCountList[-1])
-
-				# 	counterFollowers += 1
-				# 	if date_time_api != followersDateList[-1]:
-
-				# 		print('aalka')
-				# 		print(date)
-				# 		print(followersCount)
-				# 		print(counterFollowers)
-				# 		database.child("users").child(uid).child("twitter").child("history").child("followers").child(counterFollowers).update({'followers_count': userData['followers_count'], 'date': date_time_api })
-				# 		print('aasasas')
-				# 		break
-				# 	else:
-				# 		continue
 				todayAlreadyIn = False
 				for followerItem in historyData['followers']:
 					if str(date_time_api) == followerItem['date']:
@@ -411,14 +337,8 @@ def requestTwitter():
 			except Exception as e:
 				print('Exception for loop')
 				print(e)
-				# database.child("users").child(uid).child("twitter").child("history").child("followers").child(0).set({'followers_count': userData['followers_count'], 'date': date_time_api })
-				# database.child("users").child(uid).child("twitter").child("history").child("following").child(0).set({'following_count': userData['following_count'], 'date': date_time_api })
 			
 			# Saving Data as history
-
-			# database.child("users").child(uid).child("twitter").child("history").child("followers").update({ str(date_time) : userFollowers })
-			# database.child("users").child(uid).child("twitter").child("history").child("following").update({ str(date_time) : userFollowing })
-
 
 			# Unrequired data for setup
 			try:
@@ -445,6 +365,9 @@ def requestTwitter():
 			username = database.child("users").child(uid).child("twitter").child("userData").child("screen_name").get().val()
 			print(e)
 		print("lllll\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n")
+
+		# WEBSCRAPPING
+
 		# Trying to run webscrapping function
 		try:
 			print('webscrapping')
@@ -454,6 +377,15 @@ def requestTwitter():
 			database.child("users").child(uid).child("twitter").child("tweets").set(tweets)
 		except Exception as e:
 			print(e)
+
+
+		# Checking if instagram is connected
+		try:
+			instagramData = dict(database.child("users").child(uid).child("instagram").get().val())
+			session['userInstagramData'] = instagramData
+		except Exception as e:
+			print('instagram not connected')
+
 
 		# Saving data to firebase
 
