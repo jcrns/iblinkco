@@ -156,6 +156,53 @@ def googleSearch(niche, location, start):
 	url = "https://www.googleapis.com/customsearch/v1"
 	userInput = str(niche) + " company in " + str(location)
 
+	while len(title_list) < 10:
+		# Running function to google search
+		results = getGoogleSearchData(userInput, start, url)
+		
+		# Getting title and link through for loop
+		for item in results['items']:
+			noAppend = False
+			title = item['title'].lower()
+			for x in range(101):
+				print(x)
+				if len(title_list) == 10:
+					noAppend = True
+					break
+				if item['link'] in link_list:
+					noAppend = True
+					break	
+				# Filtering which if link is a list or not
+				if 'top ' + str(x) in title or 'top ' + str(x) in title or str(x) + ' best' in title or str(x) + ' best' in title or 'list of' in title:
+					noAppend = True
+					break
+			if noAppend == False:
+				link_list.append(item['link'])
+				title_list.append(item['title'])
+		start += 1
+
+	# if len(link_list) < 10:
+	# 	print('found articles the first time looking for more businesses now')
+	# 	page = requests.request("GET", url, params=parameters)
+	# 	results = json.loads(page.text)
+		
+	# 	# Going through another loop to get 10 items
+	# 	for item in results['items']:
+	# 		if len(link_list) == 10:
+	# 			break
+	# 		title = item['title'].lower()
+	# 		for x in range(101):		
+	# 			if 'top ' + str(x) in title or 'top ' + str(x) in title or str(x) + ' best' in title or str(x) + ' best' in title or 'list of' in title:
+	# 				break
+	# 			else:
+	# 				link_list.append(item['link'])
+	# 				title_list.append(item['title'])
+	# 				break 
+
+	returnedData = [title_list, link_list]
+	return returnedData
+
+def getGoogleSearchData(userInput, start, url):
 	# Connect google
 	parameters = {
 		"q": userInput,
@@ -166,14 +213,7 @@ def googleSearch(niche, location, start):
 	}
 	page = requests.request("GET", url, params=parameters)
 	results = json.loads(page.text)
-	
-	# Getting title and link through for loop
-	for item in results['items']:
-		link_list.append(item['link'])
-		title_list.append(item['title'])
-
-	returnedData = [title_list, link_list]
-	return returnedData
+	return results
 
 
 # Instagram Scrapping

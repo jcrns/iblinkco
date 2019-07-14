@@ -40,6 +40,7 @@ def home():
 	if session.get('twitter_oauth') is not None:
 		# Running twitter request function if session exist
 		twitterRequest = requestTwitter()
+	instagramRequest = requestInstagram()
 	return render_template('dashboard/home.html')
 
 # Setup and Website Update
@@ -379,14 +380,6 @@ def requestTwitter():
 			print(e)
 
 
-		# Checking if instagram is connected
-		try:
-			instagramData = dict(database.child("users").child(uid).child("instagram").get().val())
-			session['userInstagramData'] = instagramData
-		except Exception as e:
-			print('instagram not connected')
-
-
 		# Saving data to firebase
 
 		# Saving Userdata
@@ -436,3 +429,93 @@ def requestTwitter():
 		 print('Twitter Login Failed')
 		 return redirect(url_for('dashboard.home'))
 	# Twitter Search Function Terms
+
+# Instagram 
+def requestInstagram():
+	
+	try:
+		print("Request Instagram\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n")
+		# Getting user from session
+		user = session['user']
+		print(user)
+		# Assigning uid as a variable which will be used to go through branched in for loop
+		uid = user['localId']
+		print('aaa')
+
+		# Checking if instagram is connected
+		try:
+			instagramData = dict(database.child("users").child(uid).child("instagram").get().val())
+			session['userInstagramData'] = instagramData
+		except Exception as e:
+			print('instagram not connected')
+
+		# Getting Data
+		try:
+			print('aaa')
+
+			username = database.child("users").child(uid).child("instagram").child("username").get().val()
+			instagramConnection = InstagramScraper()
+			results = instagramConnection.profile_page_metrics('https://www.instagram.com/' + username + '/')
+			print('asddaa')
+			print(results)
+			numberOfFollowers = results['edge_followed_by']
+			numberOfFollowing = results['edge_follow']
+			print('aa')
+		except Exception as e:
+			print("Instagram not connected")
+			print(e)
+			return redirect(url_for('dashboard.home'))
+
+		# Getting current time 
+		now = datetime.now()
+
+		date_time = now.strftime("%m-%d-%Y")
+		date_time_api = now.strftime("%m_%d_%Y")
+		print(numberOfFollowers)
+		print(numberOfFollowing)
+		# Instagram History
+		historyData = dict(database.child("users").child(uid).child("instagram").child("history").get().val())
+
+		counterFollowers = 0
+		todayAlreadyInFollowers = False
+		followersDateList = []
+		followersCountList = []
+		
+		# Checking if user is new if so updating data
+		try:
+			if historyData['followers'][0] == 'null':
+				database.child("users").child(uid).child("instagram").child("history").child("followers").child(0).set({'followers_count': numberOfFollowers, 'date': date_time_api })
+			if historyData['following'][0] == 'null':
+				database.child("users").child(uid).child("instagram").child("history").child("following").child(0).set({'following_count': numberOfFollowing, 'date': date_time_api })
+		except Exception as e:
+			print('not a new account')
+
+		for followerItem in historyData['followers']:
+			if str(date_time_api) == followerItem['date']:
+				todayAlreadyInFollowers = True
+				break
+			else:
+				counterFollowers += 1
+		if todayAlreadyInFollowers == False:
+			database.child("users").child(uid).child("instagram").child("history").child("followers").child(counterFollowers).set({'followers_count': numberOfFollowers, 'date': date_time_api })
+
+		# Adding following history
+		counterFollowing = 0
+		todayAlreadyInFollowing = False
+		followingDateList = []
+		followingCountList = []
+
+		for followingItem in historyData['following']:
+			if str(date_time_api) == followingItem['date']:
+				todayAlreadyInFollowing = True
+				break
+			else:
+				counterFollowing += 1
+		if todayAlreadyInFollowing == False:
+			database.child("users").child(uid).child("instagram").child("history").child("following").child(counterFollowing).set({'following_count': numberOfFollowing, 'date': date_time_api })
+
+	except Exception as e:
+		print(e)
+		print('Instagram Get Data failed')
+		return redirect(url_for('dashboard.home'))
+

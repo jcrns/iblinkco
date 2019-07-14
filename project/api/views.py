@@ -53,50 +53,63 @@ def tips(userReturn):
 		# Defining variables
 
 		print(userReturn)
-		# Twitter variables
-		twitterDescription = userReturn['twitter']['userData']['description']
-		twitterName = userReturn['twitter']['userData']['name']
-		twitterLocation = userReturn['twitter']['userData']['location']
-		twitterFollowing = userReturn['twitter']['userData']['friends_count']
 
-		# Trying to get website variables
+		# twitter tips
 		try:
-			websiteName = userReturn['website']['website_name']
-			websiteUrl = userReturn['website']['website_url']
-			websiteLinks = userReturn['website']['links']
-			
-		except Exception as e:
-			print('Website tips not working/setup')
-			print(e)
+			# Twitter variables
+			twitterDescription = userReturn['twitter']['userData']['description']
+			twitterName = userReturn['twitter']['userData']['name']
+			twitterLocation = userReturn['twitter']['userData']['location']
+			twitterFollowing = userReturn['twitter']['userData']['friends_count']
 
-		twitterDescriptionLen = len(twitterDescription)
+			twitterDescriptionLen = len(twitterDescription)
 
-		twitterFollowers = history(userReturn)
+			twitterFollowers = history(userReturn)
 
-		print('\n\n\n\n\n\n\n\n\n\n\n')
-		print(twitterFollowers)
-		twitterFollowerNumberList = twitterFollowers[1]
-		print(twitterFollowerNumberList)
-
-		# Finding out static trend with for loop
-		twitterDaysStatic = 0
-		for i in itertools.count():
-			if i == 0:
-				i += 1
-			print('aaaaaaa')
-			print(twitterFollowerNumberList[-i])
-			print(twitterFollowerNumberList[-i + 1])
-			print(i)
+			print('\n\n\n\n\n\n\n\n\n\n\n')
+			print(twitterFollowers)
+			twitterFollowerNumberList = twitterFollowers[1]
 			print(twitterFollowerNumberList)
-			if i == len(twitterFollowerNumberList):
-				break
-			if twitterFollowerNumberList[-i] == twitterFollowerNumberList[-i - 1]:
-				twitterDaysStatic += 1
-				print(twitterDaysStatic)
-			else:
-				break
-		print('\n\n\n\n\n\n\n\n\n\n\n\n\ndaysStatic')
-		print(twitterDaysStatic)
+
+			# Finding out static trend with for loop
+			twitterDaysStatic = 0
+			for i in itertools.count():
+				if i == 0:
+					i += 1
+				print('aaaaaaa')
+				print(twitterFollowerNumberList[-i])
+				print(twitterFollowerNumberList[-i + 1])
+				print(i)
+				print(twitterFollowerNumberList)
+				if i == len(twitterFollowerNumberList):
+					break
+				if twitterFollowerNumberList[-i] == twitterFollowerNumberList[-i - 1]:
+					twitterDaysStatic += 1
+					print(twitterDaysStatic)
+				else:
+					break
+			print('\n\n\n\n\n\n\n\n\n\n\n\n\ndaysStatic')
+			print(twitterDaysStatic)
+
+			# Twitter tips
+			if twitterDescriptionLen < 160:
+				twitterDescriptionLenMessage = "Only " + str(twitterDescriptionLen) + "/180 of your characters have been used for your bio. Explain who you are!"
+				tips.append(twitterDescriptionLenMessage)
+			if "#" not in twitterDescription:
+				twitterDescriptionNoHashtagsMessage = "No Hashtags Found. Try adding hashtags to your bio!"
+				tips.append(twitterDescriptionNoHashtagsMessage)
+			if twitterLocation == "":
+				twitterLocationIsNoneMessage = "No location found! Add your location so people know where you are located"
+				tips.append(twitterLocationIsNoneMessage)
+			if twitterDaysStatic >= 3:
+				twitterDaysStaticTip = "Followers on twitter haven't changed in the last " + str(twitterDaysStatic) + " days. Try posting more and engaging with people."
+				tips.append(twitterDaysStaticTip)
+			if twitterFollowing < 100:
+				twitterFollowingTips = "You are only following " + str(twitterFollowing) + " people. Try following more people in your niche."
+				tips.append(twitterFollowingTips)
+		except Exception as e:
+			print(e)
+			print('no twitter')
 
 		# Trying to give other tips
 		try:
@@ -135,24 +148,25 @@ def tips(userReturn):
 
 		# If conditions are true tips will be given to user
 		
-		# Programming tips
-		if twitterDescriptionLen < 160:
-			twitterDescriptionLenMessage = "Only " + str(twitterDescriptionLen) + "/180 of your characters have been used for your bio. Explain who you are!"
-			tips.append(twitterDescriptionLenMessage)
-		if "#" not in twitterDescription:
-			twitterDescriptionNoHashtagsMessage = "No Hashtags Found. Try adding hashtags to your bio!"
-			tips.append(twitterDescriptionNoHashtagsMessage)
-		if twitterLocation == "":
-			twitterLocationIsNoneMessage = "No location found! Add your location so people know where you are located"
-			tips.append(twitterLocationIsNoneMessage)
-		if twitterDaysStatic >= 3:
-			twitterDaysStaticTip = "Followers on twitter haven't changed in the last " + str(twitterDaysStatic) + " days. Try posting more and engaging with people."
-			tips.append(twitterDaysStaticTip)
-		if twitterFollowing < 100:
-			twitterFollowingTips = "You are only following " + str(twitterFollowing) + " people. Try following more people in your niche."
-			tips.append(twitterFollowingTips)
+		# Instagram tips
+		try:
+			print('instagram')
+
+		except Exception as e:
+			raise e
+
+		# Website tips
 		
-		# Website Tip
+		# Trying to get website variables
+		try:
+			websiteName = userReturn['website']['website_name']
+			websiteUrl = userReturn['website']['website_url']
+			websiteLinks = userReturn['website']['links']
+			
+		except Exception as e:
+			print('Website tips not working/setup')
+			print(e)
+
 		if 'websiteName' in locals() and 'websiteUrl' in locals():
 			if websiteName == '' and websiteUrl == '':
 				websiteNotExist = "Website not connected we recommend you connect it as soon as possible."
@@ -173,26 +187,42 @@ def tips(userReturn):
 def history(userReturn):
 	print('historyaaaa')
 	try:
+		returnedData = dict()
+		historyInstagram = userReturn['instagram']['history']
+		instagramDateList = []
+		instagramFollowerList = []
+		for followerItem in historyInstagram['followers']:
+			print(followerItem)
+			date = followerItem['date']
+			followersCount = followerItem['followers_count']
+			instagramDateList.append(date)
+			instagramFollowerList.append(followersCount)
+		instagramData = []
+		instagramData.append(instagramDateList)
+		instagramData.append(instagramFollowerList)
+		returnedData['instagram'] = instagramData
+
 		print(userReturn['twitter']['history'])
 		# print("userReturn['twitter']['history']")
-		history = userReturn['twitter']['history']
+		historyTwitter = userReturn['twitter']['history']
 		print('aaaa')
-		history['followers']
-		dateList = []
-		followerList = []
+		twitterDateList = []
+		twitterFollowerList = []
 		print('aggg')
-		for followerItem in history['followers']:
+		for followerItem in historyTwitter['followers']:
 			print(followerItem)
 			date = followerItem['date']
 			followersCount = followerItem['followers_count']
 
 			# Appending to list
-			dateList.append(date)
-			followerList.append(followersCount)
-		data = []
-		data.append(dateList)
-		data.append(followerList)
-		return data
+			twitterDateList.append(date)
+			twitterFollowerList.append(followersCount)
+		twitterData = []
+		twitterData.append(twitterDateList)
+		twitterData.append(twitterFollowerList)
+		returnedData['twitter'] = twitterData
+
+		return returnedData
 	except Exception as e:
 		print('Trouble getting history')
 		print(e)
@@ -281,6 +311,8 @@ def createUserFunc(email, password, firstname, lastname, software):
 		database.child("users").child(uid).child("user").set(user)
 		database.child("users").child(uid).child("twitter").child("history").child("followers").set(['null'])
 		database.child("users").child(uid).child("twitter").child("history").child("following").set(['null'])
+		database.child("users").child(uid).child("instagram").child("history").child("followers").set(['null'])
+		database.child("users").child(uid).child("instagram").child("history").child("following").set(['null'])
 		database.child("users").child(uid).child("twitter").child("followersFormated").set([ ['null'], ['null'] ])
 		database.child("users").child(uid).child("competition").child("link").set(['null'])
 		database.child("users").child(uid).child("competition").child("title").set(['null'])
@@ -323,32 +355,6 @@ def signIn():
 		# Deleting dictionaries from data
 		try:
 			del signIn['twitter']['followers']
-			# del signIn['twitter']['userData']['contributors_enabled']
-			# del signIn['twitter']['userData']['created_at']
-			# del signIn['twitter']['userData']['default_profile']
-			# del signIn['twitter']['userData']['default_profile_image']
-			# del signIn['twitter']['userData']['follow_request_sent']
-			# del signIn['twitter']['userData']['geo_enabled']
-			# del signIn['twitter']['userData']['has_extended_profile']
-			# del signIn['twitter']['userData']['id']
-			# del signIn['twitter']['userData']['id_str']
-			# del signIn['twitter']['userData']['is_translation_enabled']
-			# del signIn['twitter']['userData']['is_translator']
-			# del signIn['twitter']['userData']['listed_count']
-			# del signIn['twitter']['userData']['needs_phone_verification']
-			# del signIn['twitter']['userData']['notifications']
-			# del signIn['twitter']['userData']['profile_background_color']
-			# del signIn['twitter']['userData']['profile_background_title']
-			# del signIn['twitter']['userData']['profile_image_url']
-			# del signIn['twitter']['userData']['profile_image_url_https']
-			# del signIn['twitter']['userData']['profile_link_color']
-			# del signIn['twitter']['userData']['profile_sidebar_border_color']
-			# del signIn['twitter']['userData']['profile_sidebar_fill_color']
-			# del signIn['twitter']['userData']['profile_text_color']
-			# del signIn['twitter']['userData']['profile_use_background_image']
-			# del signIn['twitter']['userData']['protected']
-			# del signIn['twitter']['userData']['suspended']
-			# del signIn['twitter']['userData']['translator_type']
 		except Exception as e:
 			print(e)
 			print('Deleting followers failed')
@@ -434,13 +440,6 @@ def signInFunc(email, password):
 		print(i)
 
 	print('pppp\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n')
-
-	# userFinal.append(user)
-	# userFinal.append(returnedTips)
-	# userFinal.append(historyReturned)
-	# userFinal.append(followersData)
-	# userFinal.append(websitesData)
-	# userFinal.append(competition)
 
 	userReturn['tips'] = returnedTips
 	userReturn['competition'] = competition
@@ -568,8 +567,8 @@ def postNiche():
 		searchResults = googleSearch(nichePost, location, 1)
 		print(searchResults)
 		compDict = {}
-		compDict['link'] = searchResults[0]
-		compDict['title'] = searchResults[1]
+		compDict['link'] = searchResults[1]
+		compDict['title'] = searchResults[0]
 
 		# Putting niche in database
 		database.child("users").child(uid).child("account").update({'niche' : nichePost })
@@ -741,7 +740,7 @@ def connectInstagramAPI():
 		user = session['user']
 		uid = user['localId']
 
-		database.child("users").child(uid).child("instagram").set(returnedData)
+		database.child("users").child(uid).child("instagram").update(returnedData)
 		return redirect(url_for('dashboard.home'))
 	except Exception as e:
 		print(e)
