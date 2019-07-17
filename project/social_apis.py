@@ -52,6 +52,7 @@ def twitterConnect():
 
 # Twitter webscrapping
 def getTwitterData(username):
+	print(username)
 	r = rq.get('https://twitter.com/' + str(username))
 	# print(r.text)
 	soup = BeautifulSoup(r.text, 'html.parser')
@@ -60,6 +61,7 @@ def getTwitterData(username):
 	# numberTagChildren
 	# print(numberTags.prettify())
 	info = {}
+	returnedData = []
 	counter = 0
 	for child in children:
 		# print(child.text)
@@ -76,17 +78,32 @@ def getTwitterData(username):
 			counter += 1
 		except Exception as e:
 			print('das tuff')
-	# print(info)
+	print(info)
+
+	# Scrapping data and putting in variables
+	usernameOfficial = soup.find('b',{'class': 'u-linkComplex-target'} )
+	description = soup.find('p',{'class': 'ProfileHeaderCard-bio u-dir'} )
+	location = soup.find('div',{'class': 'ProfileHeaderCard-location'} )
+	name = soup.find('a',{'class': 'ProfileHeaderCard-nameLink u-textInheritColor js-nav'} )
+
+	# Saving userdata in info dict
+	info['username'] = usernameOfficial.text
+	info['description'] = description.text
+	info['location'] = location.text[17:-11]
+	info['name'] = name.text
 
 	tweets = soup.find('div', {'class': 'stream'})
-	# print(tweets.prettify())
+	
 	streamChildren = tweets.findChildren("p" , recursive=True)
 	streamChildrenTime = tweets.findChildren("small" , recursive=True)
 	tweets = []
 	tweetTimes = []
 	finalTweetData = []
 	for child in streamChildren:
-		wrongPTag = "@" + str(username) + " hasn't Tweeted yet."
+		if 'hours ago' in child.text or 'hour ago' in child.text or 'minutes ago' in child.text:
+			child.text = child.text[:2]
+		wrongPTag = "@" + str(usernameOfficial.text) + " hasn't Tweeted yet."
+		print(wrongPTag)
 		if wrongPTag in child.text:
 			continue
 		elif "Twitter may be over capacity or experiencing a momentary hiccup. Try again or visit Twitter Status for more information." in child.text:
@@ -94,23 +111,38 @@ def getTwitterData(username):
 		elif child.text == "Back to top ↑":
 			continue
 
-			tweets.append(child.text)
+		tweets.append(child.text)
+	
 	for child in streamChildrenTime:
-		# print(child.text)
-		tweetTimes.append(child.text[1:-1])
+		if 'hours ago' in child.text:
+			recentTime = child.text[:4]
+			print(recentTime)
+			tweetTimes.append(recentTime)
+		else:	
+			print(child.text)
+			tweetTimes.append(child.text[1:-1])
 
+	print(tweets)
 	counterTimeIteration = 0
 	for tweet in tweets:
 		tweetDict = {}
 		tweetDict['tweet'] = tweet
+		print(tweet)
 		for time in tweetTimes:
-			# print(tweetTimes[counterTimeIteration])
-			tweetDict['time'] = tweetTimes[counterTimeIteration]
-			counterTimeIteration += 1
-			break
-		finalTweetData.append(tweetDict)	
+			print(time)
+			try:
+				tweetDict['time'] = tweetTimes[counterTimeIteration]
+				counterTimeIteration += 1
+				break
+			except Exception as e:
+				break
 
-	returnedData = [finalTweetData, info]
+		finalTweetData.append(tweetDict)	
+	print(finalTweetData)
+	print(info)
+	returnedData.append(finalTweetData)
+	returnedData.append(info)
+	print(usernameOfficial.text)
 	return returnedData
 
 # Website Scrapping
@@ -173,7 +205,7 @@ def googleSearch(niche, location, start):
 					noAppend = True
 					break	
 				# Filtering which if link is a list or not
-				if 'top ' + str(x) in title or 'top ' + str(x) in title or str(x) + ' best' in title or str(x) + ' best' in title or 'list of' in title:
+				if 'top ' + str(x) in title or 'top ' + str(x) in title or str(x) + ' best' in title or str(x) + ' best' in title or 'list of' in title or 'jobs' in title:
 					noAppend = True
 					break
 			if noAppend == False:

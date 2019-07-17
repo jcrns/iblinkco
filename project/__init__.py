@@ -1,6 +1,12 @@
 # Importing all needed Flask classes
 from flask import Flask, render_template, session, flash, redirect, url_for, session
 
+# Importing session
+from flask_sessionstore import Session
+
+import redis
+
+
 # Importing os to encode session variable
 import os
 
@@ -41,6 +47,10 @@ sslify = SSLify(app)
 # Config
 app.config.from_pyfile('appConfig.cfg')
 
+# External flask session library
+SESSION_TYPE = 'redis'
+app.config.from_object(__name__)
+Session(app)
 
 @app.route('/')
 def root():

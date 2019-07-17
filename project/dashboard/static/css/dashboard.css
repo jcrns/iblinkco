@@ -115,7 +115,7 @@ html,body
 }
 
 /*Refresh*/
-#refresh-twitter {
+#refresh {
   margin-left: 1%;
   width: 35px;
   height: 35px;
@@ -246,6 +246,29 @@ html,body
   visibility: visible;
 }
 
+.stream-text img {
+  width: 15px;
+  height: 15px;
+  margin-left: 1%;
+}
+.stream-description-text {
+  visibility: hidden;
+  width: 120px;
+  background-color: #D3D3D3;
+  color: #000;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  font-size: 14px;
+
+  /* Position the tooltip */
+  position: absolute;
+  z-index: 1;
+}
+#stream-text:hover #stream-description-text {
+  visibility: visible;
+}
+
 #website-text img {
   width: 15px;
   height: 15px;
@@ -309,4 +332,14 @@ html,body
 #nav-sidebar button{
   width: 100%;
   
+}
+
+/*Stream*/
+.stream {
+  max-height: 75vh;
+  overflow: auto;
+}
+.instagram-stream-img {
+  max-height: 300px;
+  max-width: 300px;
 }

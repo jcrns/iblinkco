@@ -1,5 +1,5 @@
 # Importing all needed Flask classes
-from flask import Flask, render_template, session, flash, redirect, url_for, Blueprint
+from flask import Flask, render_template, session, flash, redirect, url_for, Blueprint, jsonify
 
 # Importing forms
 from project.users.forms import RegistrationForm, LoginForm, ContactUs
@@ -60,20 +60,11 @@ def creationFormating(returnedData):
             userItem = returnedData['twitter']['userData'][i]
             returnedTwitterUserData[i] = userItem
             print(userItem)
+        returnedTwitterUserData['tweets'] = returnedData['twitter']['tweets']
         session['userTwitterData'] = returnedTwitterUserData
         # session['twitter'] = twitterData
     except Exception as e:
         print('Twitter not connected')
-        print(e)
-
-    # Checking for instagram
-    try:
-        # Defining variables equal to json data
-        instagramData = returnedData['instagram']
-
-        session['instagram'] = instagramData
-    except Exception as e:
-        print('Instagram not connected')
         print(e)
 
 # Register page url and function
@@ -122,7 +113,9 @@ def login():
 
         # Running auth function
         finalizedData = signInFunc(form.email.data, form.password.data)
-
+        print("finalizedData\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n")
+        print(finalizedData)
+        print("finalizedData\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n")
         try:
             print('aaaaaa')
             print(finalizedData)
@@ -134,10 +127,11 @@ def login():
             # print(returnedData)
 
             # Getting history
-            session['history'] = finalizedData['history']
 
-            # Getting followers' data
-            session['followersData'] = finalizedData['twitter']['followersFormated']
+            # # Getting followers' data
+            # session['followersData'] = finalizedData['twitter']['followersFormated']
+
+            # Stream
             print('\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n')
 
             print(finalizedData['website'])
