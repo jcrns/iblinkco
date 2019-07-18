@@ -43,21 +43,40 @@ def home():
 	if setup_complete == True:
 		try:
 			twitterRequest = requestTwitter(uid)
-			twitterFormatted = twitterRequest.json
-			session['userTwitterData'] = twitterFormatted
+			try:
+				twitterFormatted = twitterRequest.json
+			except Exception as e:
+				print(e)
+				twitterFormatted = twitterRequest
+			if twitterFormatted == 'failed':
+				if session.get('userTwitterData'):
+					session.pop('userTwitterData')
 		except Exception as e:
 			print(e)
+			# if session.get('userTwitterData'):
+			# 	session.pop('userTwitterData')
 		try:
 			instagramRequest = requestInstagram(uid)
-			instagramFormatted = instagramRequest
-			session['userInstagramData'] = instagramRequest
+			try:
+				instagramFormatted = instagramRequest.json
+			except Exception as e:
+				print(e)
+				instagramFormatted = instagramRequest
+			
+
+			if instagramFormatted == 'failed':
+				if session.get('userInstagramData'):
+					session.pop('userInstagramData')
+			else:
+				session['userInstagramData'] = instagramFormatted
+
 		except Exception as e:
 			print(e)
 			print("aergergqergqrthetyjtyrgkwr thwkrth wtyhk ety etjyektyjytjetyj\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n")
+
 		sessionRequest = dataUpdating(uid)
 		formatData = creationFormating(databaseData)
-		print('dvwrgtwrtgwrtg')
-		# print(session['userTwitterData'])
+		print(instagramFormatted)
 	return render_template('dashboard/home.html')
 
 # Setup and Website Update

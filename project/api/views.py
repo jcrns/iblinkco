@@ -283,12 +283,12 @@ def statistics(userReturn, uid):
 		highestAmountOfFollowers = max(totalFollowersList)
 
 		# Getting sum of list
-		sumOfFollowersList = 0
-		print("totalFollowersList")
-		for number in totalFollowersList:
-			print(number)
-			sumOfFollowersList+=number
-		averageAmountOfFollowers = sumOfFollowersList / len(totalFollowersList)
+		# sumOfFollowersList = 0
+		# print("totalFollowersList")
+		# for number in totalFollowersList:
+		# 	print(number)
+		# 	sumOfFollowersList+=number
+		averageAmountOfFollowers = sum(totalFollowersList) / len(totalFollowersList)
 		print("totalFollowersList")
 
 		# Saving data to dict
@@ -512,7 +512,7 @@ def createUserFunc(email, password, firstname, lastname, software):
 		addTwitterDefault = {"followers":0, "following": 0, 'likes': 0, "username": ''}
 		addTwitterTweetDefault = { "time" : "", "tweet" : "" }
 
-		addInstagramDefault = { "biography" : "", "business_category_name" : "", "edge_felix_video_timeline" : 0, "edge_follow" : 0, "edge_followed_by" : 0, "edge_media_collections" : 0, "edge_mutual_followed_by" : 0, "edge_saved_media" : 0, "external_url" : "", "external_url_linkshimmed" : "", "full_name" : "" }
+		addInstagramDefault = { "biography" : "", "business_category_name" : "", "edge_felix_video_timeline" : 0, "edge_follow" : 0, "edge_followed_by" : 0, "edge_media_collections" : 0, "edge_mutual_followed_by" : 0, "edge_saved_media" : 0, "external_url" : "", "external_url_linkshimmed" : "", "full_name" : "", "username" : "" }
 		addInstagramPostDefault = [{ "caption" : "", "number_of_comments" : 0, "number_of_likes" : 0, "pic_url" : "", "picture_text" : "", "tips" : ["null"], " success": 0 }]
 
 		# Creating branches
@@ -945,14 +945,12 @@ def connectInstagramAPI():
 		database.child("users").child(uid).child("instagram").update(returnedData[0])
 		databaseData = dict(database.child("users").child(uid).get().val())
 		instagramDataFomated = instagramPostsFormat(returnedData[1])
-		try:
-			database.child("users").child(uid).child("instagram").child("instagramPosts").update(instagramDataFomated)
-		except Exception as e:
-			print(e)
-			database.child("users").child(uid).child("instagram").child("instagramPosts").set(instagramDataFomated)
-		return redirect(url_for('dashboard.home'))
+		
+		database.child("users").child(uid).child("instagram").child("instagramPosts").set(instagramDataFomated)
+		
 		print('erghwrthwjrkthjwrt hkwrth\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n')
 		session['userInstagramData'] = databaseData['instagram']
+		return redirect(url_for('dashboard.home'))
 	except Exception as e:
 		print(e)
 		username = request.get_json()['username']
@@ -983,40 +981,62 @@ def connectInstagram(username):
 
 # Disconnect instagram
 @api.route("/disconnect-instagram", methods=['GET', 'POST'])
-def disconnectInstagramAPI(uid):
-	print('aadfsdfsf')
+def disconnectInstagramAPI():
+	# Disconnecting from api
+	try:
+		user = session['user']
+		print(user)
+		uid = user['localId']
+		disconnect = disconnectInstagram(uid)
+		return redirect(url_for('dashboard.home'))
+	except Exception as e:
+		print(e)
 
-	addInstagramDefault = { "biography" : "", "business_category_name" : "", "edge_felix_video_timeline" : 0, "edge_follow" : 0, "edge_followed_by" : 0, "edge_media_collections" : 0, "edge_mutual_followed_by" : 0, "edge_saved_media" : 0, "external_url" : "", "external_url_linkshimmed" : "", "full_name" : "" }
-	addInstagramPostDefault = [{ "caption" : "", "number_of_comments" : 0, "number_of_likes" : 0, "pic_url" : "", "picture_text" : "", "tips" : ["null"], " success": 0 }]
+def disconnectInstagram(uid):
+	try:
+		addInstagramDefault = { "biography" : "", "business_category_name" : "", "edge_felix_video_timeline" : 0, "edge_follow" : 0, "edge_followed_by" : 0, "edge_media_collections" : 0, "edge_mutual_followed_by" : 0, "edge_saved_media" : 0, "external_url" : "", "external_url_linkshimmed" : "", "full_name" : "", "username" : "" }
+		addInstagramPostDefault = [{ "caption" : "", "number_of_comments" : 0, "number_of_likes" : 0, "pic_url" : "", "picture_text" : "", "tips" : ["null"], " success": 0 }]
 
-	# Setting instagram data back to default
-	database.child("users").child(uid).child("instagram").remove()
-	database.child("users").child(uid).child("instagram").child("history").child("followers").set(['null'])
-	database.child("users").child(uid).child("instagram").child("history").child("following").set(['null'])
-	database.child("users").child(uid).child("instagram").set(addInstagramDefault)
-	database.child("users").child(uid).child("instagram").child("instagramPosts").set(addInstagramPostDefault)
+		# Setting instagram data back to default
+		database.child("users").child(uid).child("instagram").remove()
+		database.child("users").child(uid).child("instagram").set(addInstagramDefault)
+		database.child("users").child(uid).child("instagram").child("history").child("followers").set(['null'])
+		database.child("users").child(uid).child("instagram").child("history").child("following").set(['null'])
+		database.child("users").child(uid).child("instagram").child("instagramPosts").set(addInstagramPostDefault)
+		return 'success'
+	except Exception as e:
+		print(e)
+		return 'failed'
+
 
 # Disconnect twitter
 @api.route("/disconnect-twitter", methods=['GET', 'POST'])
-def disconnectTwitterAPI(uid):
+def disconnectTwitterAPI():
 	try:
 		user = session['user']
-		uid = session['localId']
+		print(user)
+		uid = user['localId']
 		print('aadfsdfsf')
+		disconnect = disconnectTwitter(uid)
+		return redirect(url_for('dashboard.home'))
+	except Exception as e:
+		print(e)
 
+def disconnectTwitter(uid):
+	try:
 		addTwitterDefault = {"followers":0, "following": 0, 'likes': 0, "username": ''}
 		addTwitterTweetDefault = { "time" : "", "tweet" : "" }
 
 		# Setting twitter data back to default
 		database.child("users").child(uid).child("twitter").remove()
 		database.child("users").child(uid).child("twitter").set(addTwitterDefault)
+		database.child("users").child(uid).child("twitter").child("tweets").set(addTwitterTweetDefault)
 		database.child("users").child(uid).child("twitter").child("history").child("followers").set(['null'])
 		database.child("users").child(uid).child("twitter").child("history").child("following").set(['null'])
-		database.child("users").child(uid).child("twitter").child("tweets").set(addTwitterTweetDefault)
-
+		return 'success'
 	except Exception as e:
 		print(e)
-# def disconnectTwitter(uid):
+		return 'failed'
 
 @api.route("/connect-twitter-api", methods=['GET','POST'])
 def connectTwitterAPI():
@@ -1033,6 +1053,8 @@ def connectTwitterAPI():
 		uid = user['localId']
 		database.child("users").child(uid).child("twitter").update(returnedData[1])
 		database.child("users").child(uid).child("twitter").child("tweets").set(returnedData[0])
+		print(returnedData)
+		print("returnedData")
 		session['userTwitterData'] = returnedData
 		return redirect(url_for('dashboard.home'))
 	except Exception as e:
@@ -1146,7 +1168,7 @@ def requestTwitter(uid):
 	except Exception as e:
 		print(e)
 		print('twitter login failed')
-		return redirect(url_for('dashboard.home'))
+		return 'failed'
 
 # Instagram 
 def requestInstagram(uid):
@@ -1187,7 +1209,7 @@ def requestInstagram(uid):
 		except Exception as e:
 			print("Instagram not connected")
 			print(e)
-			return redirect(url_for('dashboard.home'))
+			return "failed"
 
 		# Getting current time 
 		now = datetime.now()
@@ -1248,7 +1270,7 @@ def requestInstagram(uid):
 	except Exception as e:
 		print(e)
 		print('Instagram Get Data failed')
-		return redirect(url_for('dashboard.home'))
+		return 'failed'
 
 # Getting data and creating sessions after social platform functions run
 def dataUpdating(uid):

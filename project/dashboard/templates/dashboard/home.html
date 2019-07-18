@@ -143,14 +143,14 @@
 								</span>
 							</p>
 							{# Disconnecting twitter button #}
-							<form method="POST">
+							<form method="POST" action="{{ url_for('api.disconnectTwitterAPI') }}">
 								<button class="btn btn-danger disconnect-button">Disconnect</button>
 							</form>
 						{% else %}
-							<form method="POST" action="/disconnect-instagram"> 
+							<form method="POST" action="{{ url_for('api.connectTwitterAPI') }}"> 
 								<p>Twitter:</p>
 								<p>
-									<input type="text" name="instagram-username" placeholder="Instagram Username">
+									<input type="text" name="twitter-username" placeholder="Twitter Username">
 								</p>
 								<input class="btn btn-primary" type="submit" value="Connect">
 							</form>
@@ -165,11 +165,11 @@
 								</span>
 							</p>
 							{# Disconnecting twitter button #}
-							<form method="POST">
+							<form method="POST" action="{{ url_for('api.disconnectInstagramAPI') }}">
 								<button class="btn btn-danger disconnect-button">Disconnect</button>
 							</form>
 						{% else %}
-							<form method="POST" action="/disconnect-twitter"> 
+							<form method="POST" action="{{ url_for('api.connectInstagramAPI') }}"> 
 								<p>Instagram:</p>
 								<p>
 									<input type="text" name="instagram-username" placeholder="Instagram Username">
@@ -345,12 +345,16 @@
 			<br>
 			<br>
 			{% if session['userTwitterData'] %}
-				
-			{% else %}
-				<p class="text-danger">Twitter or Instagram Required To Procceed</p>
+				<h4>{{ session['userTwitterData'][1]['username'] }}</h4>
 			{% endif %}
 			{% if session['userInstagramData'] %}
 				<h4>{{ session['userInstagramData']['username'] }}</h4>
+			{% endif %}
+			{% if session['userTwitterData'] or session['userInstagramData'] %}
+
+			{% else %}
+				<p class="text-secondary">Twitter or Instagram Required To Procceed</p>
+			
 			{% endif %}
 			<p><input id="setup-submit" class="btn btn-secondary" required="true" type="submit" value="Go!"></p>
 			<p id="setup-form-message" class="text-primary"></p>
@@ -407,6 +411,7 @@
 {% endif %}
 	<script src="{{ url_for('dashboard.static', filename='js/ui.js') }}"></script>
 	<script type="text/javascript">
+		alert("{{ session['userInstagramData'] }}")
 		// Changing setup submit button color
 		{% if session['userTwitterData'] %}
 			setupSubmit = document.getElementById('setup-submit')
