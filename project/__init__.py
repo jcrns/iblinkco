@@ -25,15 +25,14 @@ import ssl
 # Importing http redirect library
 from flask_sslify import SSLify
 
-
 # Importing Time
 from datetime import timedelta
 
 ssl._create_default_https_context = ssl._create_unverified_context
 
-# # Connecting Redis in heroku 
-# redis_url = os.getenv('REDISTOGO_URL', 'redis://localhost:6379')
-# redis = redis.from_url(redis_url)
+# Connecting Redis in heroku 
+redis_url = os.getenv('REDISTOGO_URL', 'redis://localhost:6379')
+redis = redis.from_url(redis_url)
 
 # Defing app which is nessisary for flask to run
 app = Flask(__name__)
@@ -48,7 +47,6 @@ app.register_blueprint(dashboard)
 app.register_blueprint(api)
 
 sslify = SSLify(app)
-
 SESSION_TYPE = 'redis'
 # Config
 app.config.from_pyfile('appConfig.cfg')
@@ -61,19 +59,6 @@ Session(app)
 def root():
 	return redirect(url_for(homepage.home))
 
-
-# Fix redis debugger 
-from flask import Flask, render_template
-import sys
-import logging
-
-app.logger.addHandler(logging.StreamHandler(sys.stdout))
-app.logger.setLevel(logging.ERROR)
-
-
-# potential fix for redis 
-uri = URI.parse(ENV["REDISTOGO_URL"] || "redis://localhost:6379/" )
-REDIS = Redis.new(:host => uri.host, :port => uri.port, :password => uri.password)
 
 
 
