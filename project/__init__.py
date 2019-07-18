@@ -28,7 +28,7 @@ from flask_sslify import SSLify
 # Importing Time
 from datetime import timedelta
 
-flask.debug = true
+flask.debug = True
 
 ssl._create_default_https_context = ssl._create_unverified_context
 
