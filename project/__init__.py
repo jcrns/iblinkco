@@ -48,6 +48,7 @@ app.register_blueprint(api)
 
 sslify = SSLify(app)
 
+SESSION_TYPE = 'redis'
 # Config
 app.config.from_pyfile('appConfig.cfg')
 
