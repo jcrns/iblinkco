@@ -44,6 +44,13 @@ app.register_blueprint(api)
 
 sslify = SSLify(app)
 SESSION_TYPE = 'redis'
+
+redis_url = os.getenv('REDISTOGO_URL')
+
+urlparse.uses_netloc.append('redis')
+url = urlparse.urlparse(redis_url)
+conn = Redis(host=url.hostname, port=url.port, db=0, password=url.password)
+
 # Config
 app.config.from_pyfile('appConfig.cfg')
 
@@ -56,5 +63,8 @@ def root():
 	return redirect(url_for(homepage.home))
 
 
-
+if __name__ == '__main__':
+	with Connection(conn):
+	    worker = Worker(map(Queue, listen))
+	    worker.work()
 
