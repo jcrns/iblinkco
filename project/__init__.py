@@ -31,7 +31,9 @@ ssl._create_default_https_context = ssl._create_unverified_context
 from flask_sslify import SSLify
 
 # Connecting Redis in heroku 
-r = redis.from_url(os.environ.get("REDIS_URL"))
+redis_url = redis.from_url(os.environ.get("REDIS_URL"))
+
+conn = redis.from_url(redis_url)
 
 # Defing app which is nessisary for flask to run
 app = Flask(__name__)
