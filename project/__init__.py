@@ -28,12 +28,10 @@ from flask_sslify import SSLify
 # Importing Time
 from datetime import timedelta
 
-flask.debug = True
-
 ssl._create_default_https_context = ssl._create_unverified_context
 
 # Connecting Redis in heroku 
-redis_url = redis.from_url(os.environ.get("REDIS_URL"))
+# redis_url = redis.from_url(os.environ.get("REDIS_URL"))
 
 # Defing app which is nessisary for flask to run
 app = Flask(__name__)
