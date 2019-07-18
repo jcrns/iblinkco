@@ -4,8 +4,8 @@ from flask import Flask, render_template, session, flash, redirect, url_for, ses
 # Importing session
 from flask_sessionstore import Session
 
+# Importing redis for larger session
 import redis
-
 
 # Importing os to encode session variable
 import os
@@ -22,18 +22,18 @@ from project.api.views import api
 # Importing ssl
 import ssl
 
-# Importing Time
-from datetime import timedelta
-
-ssl._create_default_https_context = ssl._create_unverified_context
-
 # Importing http redirect library
 from flask_sslify import SSLify
 
+# Importing Time
+from datetime import timedelta
+
+flask.debug = true
+
+ssl._create_default_https_context = ssl._create_unverified_context
+
 # Connecting Redis in heroku 
 redis_url = redis.from_url(os.environ.get("REDIS_URL"))
-
-conn = redis.from_url(redis_url)
 
 # Defing app which is nessisary for flask to run
 app = Flask(__name__)
@@ -53,10 +53,13 @@ sslify = SSLify(app)
 app.config.from_pyfile('appConfig.cfg')
 
 # External flask session library
-SESSION_TYPE = 'redis'
 app.config.from_object(__name__)
 Session(app)
 
 @app.route('/')
 def root():
 	return redirect(url_for(homepage.home))
+
+
+
+
