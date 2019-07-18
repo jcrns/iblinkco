@@ -25,6 +25,7 @@ import ssl
 # Importing http redirect library
 from flask_sslify import SSLify
 
+
 # Importing Time
 from datetime import timedelta
 
@@ -60,6 +61,14 @@ Session(app)
 def root():
 	return redirect(url_for(homepage.home))
 
+
+# Fix redis debugger 
+from flask import Flask, render_template
+import sys
+import logging
+
+app.logger.addHandler(logging.StreamHandler(sys.stdout))
+app.logger.setLevel(logging.ERROR)
 
 
 
