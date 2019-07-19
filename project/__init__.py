@@ -71,8 +71,8 @@ def root():
 	return redirect(url_for(homepage.home))
 
 
-if __name__ == '__main__':
-	with Connection(conn):
-	    worker = Worker(map(Queue, listen))
-	    worker.work()
+# if __name__ == '__main__':
+# 	with Connection(conn):
+# 	    worker = Worker(map(Queue, listen))
+# 	    worker.work()
 
