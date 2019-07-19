@@ -9,12 +9,12 @@ from flask_sessionstore import Session
 import os
 
 # Importing redis for larger session
-# import  urllib.parse
+import  urllib.parse
 
 
-# from redis import Redis
+from redis import Redis
 import redis
-# from rq import Worker, Queue, Connection
+from rq import Worker, Queue, Connection
 
 # Importing Views
 from project.homepage.views import homepage
@@ -51,14 +51,13 @@ app.register_blueprint(api)
 sslify = SSLify(app)
 SESSION_TYPE = 'redis'
 
-# redis_url = os.getenv('REDISTOGO_URL')
-
-# urllib.parse.uses_netloc.append('redis')
-# url = urllib.parse.quote_plus(redis_url)
-# conn = Redis(host=url.hostname, port=url.port, db=0, password=url.password)
-
 redis_url = os.getenv('REDISTOGO_URL', 'redis://h:p9cd965813270ce4f4585a9a45fe132dce4eab7d54896910bf8ec61c9dcdea3af@ec2-3-221-178-194.compute-1.amazonaws.com:17279')
-redis = redis.from_url(redis_url)
+conn = redis.from_url(redis_url)
+
+urllib.parse.uses_netloc.append('redis')
+print(conn)
+url = urllib.parse.quote_plus(redis_url)
+# conn = Redis(host=redis_configed.hostname, port=redis_configed.port, db=0, password=redis_configed.password)
 
 # Config
 app.config.from_pyfile('appConfig.cfg')
