@@ -12,7 +12,7 @@ import os
 import  urllib.parse
 
 
-from redis import Redis
+# from redis import Redis
 import redis
 from rq import Worker, Queue, Connection
 
@@ -56,8 +56,8 @@ conn = redis.from_url(redis_url)
 
 urllib.parse.uses_netloc.append('redis')
 print(conn)
-url = urllib.parse.quote_plus(redis_url)
-# conn = Redis(host=redis_configed.hostname, port=redis_configed.port, db=0, password=redis_configed.password)
+# url = urllib.parse.quote_plus(redis_url)
+# conn = Redis(host=url.hostname, port=url.port, db=0, password=url.password)
 
 # Config
 app.config.from_pyfile('appConfig.cfg')
