@@ -9,12 +9,12 @@ from flask_sessionstore import Session
 import os
 
 # Importing redis for larger session
-import  urllib.parse
+# import  urllib.parse
 
 
 # from redis import Redis
 import redis
-from rq import Worker, Queue, Connection
+# from rq import Worker, Queue, Connection
 
 # Importing Views
 from project.homepage.views import homepage
