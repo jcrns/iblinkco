@@ -4,11 +4,17 @@ from flask import Flask, render_template, session, flash, redirect, url_for, ses
 # Importing session
 from flask_sessionstore import Session
 
-# Importing redis for larger session
-import redis
 
 # Importing os to encode session variable
 import os
+
+# Importing redis for larger session
+import  urllib.parse
+
+
+# from redis import Redis
+import redis
+from rq import Worker, Queue, Connection
 
 # Importing Views
 from project.homepage.views import homepage
@@ -45,11 +51,14 @@ app.register_blueprint(api)
 sslify = SSLify(app)
 SESSION_TYPE = 'redis'
 
-redis_url = os.getenv('REDISTOGO_URL')
+# redis_url = os.getenv('REDISTOGO_URL')
 
-urlparse.uses_netloc.append('redis')
-url = urlparse.urlparse(redis_url)
-conn = Redis(host=url.hostname, port=url.port, db=0, password=url.password)
+# urllib.parse.uses_netloc.append('redis')
+# url = urllib.parse.quote_plus(redis_url)
+# conn = Redis(host=url.hostname, port=url.port, db=0, password=url.password)
+
+redis_url = os.getenv('REDISTOGO_URL', 'redis://h:p9cd965813270ce4f4585a9a45fe132dce4eab7d54896910bf8ec61c9dcdea3af@ec2-3-221-178-194.compute-1.amazonaws.com:17279')
+redis = redis.from_url(redis_url)
 
 # Config
 app.config.from_pyfile('appConfig.cfg')
