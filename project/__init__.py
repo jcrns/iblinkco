@@ -54,7 +54,7 @@ app.register_blueprint(dashboard)
 app.register_blueprint(api)
 
 sslify = SSLify(app)
-SESSION_TYPE = 'redis'
+SESSION_TYPE = 'filesystem'
 
 # redis_url = os.getenv('REDISTOGO_URL', 'redis://h:p9cd965813270ce4f4585a9a45fe132dce4eab7d54896910bf8ec61c9dcdea3af@ec2-3-221-178-194.compute-1.amazonaws.com:17279')
 # conn = redis.from_url(redis_url)
