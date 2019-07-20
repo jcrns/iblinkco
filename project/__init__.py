@@ -49,13 +49,9 @@ app.register_blueprint(dashboard)
 app.register_blueprint(api)
 
 sslify = SSLify(app)
-SESSION_TYPE = 'redis'
+SESSION_TYPE = 'filesystem'
 
-redis_url = os.getenv('REDISTOGO_URL', 'redis://h:p9cd965813270ce4f4585a9a45fe132dce4eab7d54896910bf8ec61c9dcdea3af@ec2-3-221-178-194.compute-1.amazonaws.com:17279')
-conn = redis.from_url(redis_url)
-
-urllib.parse.uses_netloc.append('redis')
-print(conn)
+# 
 # url = urllib.parse.quote_plus(redis_url)
 # conn = Redis(host=url.hostname, port=url.port, db=0, password=url.password)
 
@@ -71,8 +67,8 @@ def root():
 	return redirect(url_for(homepage.home))
 
 
-if __name__ == '__main__':
-	with Connection(conn):
-	    worker = Worker(map(Queue, listen))
-	    worker.work()
+# if __name__ == '__main__':
+# 	with Connection(conn):
+# 	    worker = Worker(map(Queue, listen))
+# 	    worker.work()
 

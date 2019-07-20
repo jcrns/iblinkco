@@ -602,7 +602,7 @@ def signInFunc(email, password):
 	# Creating list ready to return later
 	userData = dict()
 	try:
-		# Attemptingto sign in to backend
+		# Atxtemptingto sign in to backend
 		user = authe.sign_in_with_email_and_password(email, password)
 		print(user)
 

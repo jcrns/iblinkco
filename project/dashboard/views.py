@@ -51,6 +51,8 @@ def home():
 			if twitterFormatted == 'failed':
 				if session.get('userTwitterData'):
 					session.pop('userTwitterData')
+			else:
+				session['userTwitterData'] = twitterFormatted
 		except Exception as e:
 			print(e)
 			# if session.get('userTwitterData'):
@@ -76,7 +78,7 @@ def home():
 
 		sessionRequest = dataUpdating(uid)
 		formatData = creationFormating(databaseData)
-		print(instagramFormatted)
+		print(twitterFormatted)
 	return render_template('dashboard/home.html')
 
 # Setup and Website Update
