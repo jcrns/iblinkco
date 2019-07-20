@@ -16,9 +16,6 @@ import  urllib.parse
 import redis
 from rq import Worker, Queue, Connection
 
-from flask_kvsession import KVSessionExtension
-from simplekv.memory.redisstore import RedisStore
-
 # Importing Views
 from project.homepage.views import homepage
 
@@ -39,8 +36,6 @@ from datetime import timedelta
 
 ssl._create_default_https_context = ssl._create_unverified_context
 
-store = RedisStore(redis.StrictRedis())
-
 # Defing app which is nessisary for flask to run
 app = Flask(__name__)
 
@@ -54,18 +49,15 @@ app.register_blueprint(dashboard)
 app.register_blueprint(api)
 
 sslify = SSLify(app)
-SESSION_TYPE = 'filesystem'
+SESSION_TYPE = 'redis'
 
-# redis_url = os.getenv('REDISTOGO_URL', 'redis://h:p9cd965813270ce4f4585a9a45fe132dce4eab7d54896910bf8ec61c9dcdea3af@ec2-3-221-178-194.compute-1.amazonaws.com:17279')
-# conn = redis.from_url(redis_url)
+redis_url = os.getenv('REDISTOGO_URL', 'redis://h:p9cd965813270ce4f4585a9a45fe132dce4eab7d54896910bf8ec61c9dcdea3af@ec2-3-221-178-194.compute-1.amazonaws.com:17279')
+conn = redis.from_url(redis_url)
 
-# urllib.parse.uses_netloc.append('redis')
-# print(conn)
+urllib.parse.uses_netloc.append('redis')
+print(conn)
 # url = urllib.parse.quote_plus(redis_url)
 # conn = Redis(host=url.hostname, port=url.port, db=0, password=url.password)
-
-KVSessionExtension(store, app)
-
 
 # Config
 app.config.from_pyfile('appConfig.cfg')
