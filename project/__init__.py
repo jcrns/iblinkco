@@ -8,14 +8,6 @@ from flask_sessionstore import Session
 # Importing os to encode session variable
 import os
 
-# Importing redis for larger session
-import  urllib.parse
-
-
-# from redis import Redis
-import redis
-from rq import Worker, Queue, Connection
-
 # Importing Views
 from project.homepage.views import homepage
 
