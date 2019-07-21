@@ -127,6 +127,7 @@ def getTwitterData(username):
 	for tweet in tweets:
 		tweetDict = {}
 		tweetDict['tweet'] = tweet
+		tweetDict['tips'] = ['']
 		print(tweet)
 		for time in tweetTimes:
 			print(time)

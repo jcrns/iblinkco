@@ -13,6 +13,9 @@ import random
 # Importing time 
 from datetime import datetime
 
+# Importing SequenceMatcher to detect how often certain words and characters are used
+from difflib import SequenceMatcher
+
 api = Blueprint('api', __name__)
 
 # FIREBASE AUTHENTICATION
@@ -237,7 +240,7 @@ def tips(userReturn):
 		print(e)
 
 # Getting statistics
-def statistics(userReturn, uid):
+def statistics(userReturn):
 	try:
 		print('statsasfswef\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n')
 		returnedData = {}
@@ -443,6 +446,7 @@ def instagramPostsFormat(instagramPosts):
 		postDict['number_of_comments'] = numberOfComments
 		postDict['picture_text'] = pictureText
 		postDict['caption'] = caption
+		postDict['tips'] = ['']
 		formattedDictionary.append(postDict)
 	return formattedDictionary
 
@@ -510,7 +514,7 @@ def createUserFunc(email, password, firstname, lastname, software):
 
 		# Default jsons
 		addTwitterDefault = {"followers":0, "following": 0, 'likes': 0, "username": ''}
-		addTwitterTweetDefault = { "time" : "", "tweet" : "" }
+		addTwitterTweetDefault = { "time" : "", "tweet" : "", "tips" : [""] }
 		addTwitterDefaultHistoryFollowers = [{ "date" : "null",  "followers_count" : 0 }]
 		addTwitterDefaultHistoryFollowing = [{ "date" : "null",  "following_count" : 0 }]
 
@@ -1033,7 +1037,7 @@ def disconnectTwitterAPI():
 def disconnectTwitter(uid):
 	try:
 		addTwitterDefault = {"followers":0, "following": 0, 'likes': 0, "username": ''}
-		addTwitterTweetDefault = { "time" : "", "tweet" : "" }
+		addTwitterTweetDefault = { "time" : "", "tweet" : "", "tips" : [""] }
 		addTwitterDefaultHistoryFollowers = [{ "date" : "null",  "followers_count" : 0 }]
 		addTwitterDefaultHistoryFollowing = [{ "date" : "null",  "following_count" : 0 }]
 
@@ -1306,8 +1310,9 @@ def dataUpdating(uid):
 	print('aaaalllllaa')
 
 	# Getting stats
-	stats = statistics(databaseData, uid)
+	stats = statistics(databaseData)
 
+	# Updating stats
 	try:
 		print('gertgwrategqart\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n')
 		print(stats)
@@ -1321,15 +1326,60 @@ def dataUpdating(uid):
 		print('asds')
 		database.child("users").child(uid).child("statistics").child("averageAmountOfFollowers").set(averageAmountOfFollowers)
 		database.child("users").child(uid).child("statistics").child("minAmountOfFollowers").set(minAmountOfFollowers)
-		database.child("users").child(uid).child("statistics").child("averageAmountOfFollowers").set(maxAmountOfFollowers)
+		database.child("users").child(uid).child("statistics").child("maxAmountOfFollowers").set(maxAmountOfFollowers)
 
 		database.child("users").child(uid).child("statistics").child("instagramRecentAvgComments").set(instagramRecentAvgComments)
 		database.child("users").child(uid).child("statistics").child("instagramRecentAvgDescriptionLen").set(instagramRecentAvgDescriptionLen)
-		database.child("users").child(uid).child("statistics").child("instagramRecentAvgDescriptionLen").set(instagramRecentAvgDescriptionLen)
+		database.child("users").child(uid).child("statistics").child("instagramRecentAvgLikes").set(instagramRecentAvgLikes)
 
+		# Updating post/tweets tips
+		try:
+			# Instagram
+			instagramPost = databaseData['instagram']['instagramPosts']
+			tweets = databaseData['twitter']['tweets']
+			postCounter = 0
+			for post in instagramPost:
+				postTips = []
+				if len(post['caption']) < 300:
+					captionLengthTip = "The caption of this post isn't long enough try going into more detail"
+					postTips.append(captionLengthTip)
+				if "#" not in post['caption']:
+					noHashtagsInCaption = "There aren't any hashtags in this post. We recommend that you use at least 3."
+					postTips.append(noHashtagsInCaption)
+				if post['caption'].count('#') < 3:
+					notEnoughHashtags = "Good job using hashtags on this post but we recommend you use more. How about 3?"
+					postTips.append(notEnoughHashtags)
+				if SequenceMatcher(None, post['caption'], post['picture_text']).ratio() > 0.1:
+					pictureTextAndCaptionTooAlike = "The text on your picture is very simular to your caption."
+					postTips.append(pictureTextAndCaptionTooAlike)
+				elif SequenceMatcher(None, post['caption'], post['picture_text']).ratio() < 0.03:
+					pictureTextAndCaptionTextLookNothingAlike = "Your picture text and caption are nothing alike. Try to make the caption and picture text more related"
+					postTips.append(pictureTextAndCaptionTextLookNothingAlike)
+				if len(postTips) == 0:
+					postTips = ['']
+				database.child("users").child(uid).child("instagram").child("instagramPosts").child(postCounter).child("tips").set(postTips)
+				postCounter += 1
+			# Twitter
+			for tweet in tweets:
+				tweetTips = []
+				tweetCounter = 0
+				if len(tweet['tweet']) < 124:
+					tweetNotLongEnough = "This tweet is not long enough. Try making it 124 characters"
+					tweetTips.append(tweetNotLongEnough)
+				if "#" not in tweet['tweet']:
+					tweetHashtagNotInTweet = "Hashtags not in tweet"
+					tweetTips.append(tweetHashtagNotInTweet)
+				if len(tweetTips) == 0:
+					tweetTips = ['']
+				database.child("users").child(uid).child("twitter").child("tweets").child(tweetCounter).child("tips").set(tweetTips)
+				tweetCounter += 1
+		except Exception as e:
+			print(e)
+			print("TIPS FAILED")
 	except Exception as e:
 		print(e)
 		print("instagram not connected")
+
 	
 	session['statistics'] = stats
 	
@@ -1337,15 +1387,11 @@ def dataUpdating(uid):
 	database.child("users").child(uid).child("tips").set(returnedTips)
 
 	# Getting followers' data
-	followersData = followerData(databaseData)
-	session['followersData'] = followersData
 	print('aaall')
 	value = 'success'
 	print(value)
 
 	# Saving formated follower data
-	database.child("users").child(uid).child("twitter").child("followersFormated").set(followersData)
-
 	print('aaaa\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n')
 
 	# Getting history
@@ -1362,7 +1408,6 @@ def dataUpdating(uid):
 	print(session)
 	
 	session['statistics'] = stats
-	session['followersData'] = followersData
 	session['history'] = historyData
 	session['websiteData'] = websiteData
 

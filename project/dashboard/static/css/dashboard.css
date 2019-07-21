@@ -343,3 +343,9 @@ html,body
   max-height: 300px;
   max-width: 300px;
 }
+
+/*tips icon*/
+.tips-icon img {
+  height: 24px;
+  width: 24px;
+}
