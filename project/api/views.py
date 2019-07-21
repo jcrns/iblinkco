@@ -543,6 +543,8 @@ def createUserFunc(email, password, firstname, lastname, software):
 		database.child("users").child(uid).child("statistics").child("twitterRecentAvgLikes").set(0.0)
 		database.child("users").child(uid).child("statistics").child("twitterRecentAvgComments").set(0.0)
 		database.child("users").child(uid).child("statistics").child("twitterRecentAvgDescriptionLen").set(0.0)
+		# database.child("users").child(uid).child("statistics").child("beginFollowerCount").set(0)
+		# database.child("users").child(uid).child("statistics").child("currentFollowerCount").set(0)
 
 
 	except Exception as e:
@@ -979,7 +981,7 @@ def connectInstagram(username):
 		print(private)
 	except Exception as e:
 		print(e)
-		results['is_private'] = 'false'
+		results['is_private'] = False
 	returnedData = [results,instagramPosts]
 	return returnedData
 
