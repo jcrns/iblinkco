@@ -514,7 +514,7 @@ def createUserFunc(email, password, firstname, lastname, software):
 
 		# Default jsons
 		addTwitterDefault = {"followers":0, "following": 0, 'likes': 0, "username": ''}
-		addTwitterTweetDefault = { "time" : "", "tweet" : "", "tips" : [""] }
+		addTwitterTweetDefault = { "time" : "", "tweet" : "", "tips" : ["null"] }
 		addTwitterDefaultHistoryFollowers = [{ "date" : "null",  "followers_count" : 0 }]
 		addTwitterDefaultHistoryFollowing = [{ "date" : "null",  "following_count" : 0 }]
 
@@ -1356,7 +1356,7 @@ def dataUpdating(uid):
 					pictureTextAndCaptionTextLookNothingAlike = "Your picture text and caption are nothing alike. Try to make the caption and picture text more related"
 					postTips.append(pictureTextAndCaptionTextLookNothingAlike)
 				if len(postTips) == 0:
-					postTips = ['']
+					postTips = ['null']
 				database.child("users").child(uid).child("instagram").child("instagramPosts").child(postCounter).child("tips").set(postTips)
 				postCounter += 1
 			# Twitter
@@ -1370,7 +1370,7 @@ def dataUpdating(uid):
 					tweetHashtagNotInTweet = "Hashtags not in tweet"
 					tweetTips.append(tweetHashtagNotInTweet)
 				if len(tweetTips) == 0:
-					tweetTips = ['']
+					tweetTips = ['null']
 				database.child("users").child(uid).child("twitter").child("tweets").child(tweetCounter).child("tips").set(tweetTips)
 				tweetCounter += 1
 		except Exception as e:

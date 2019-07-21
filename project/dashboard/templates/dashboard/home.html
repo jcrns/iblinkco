@@ -249,6 +249,7 @@
 					<h4>Stream Instagram
 						<span><a class="stream-text" href="#"><img src="{{ url_for('dashboard.static', filename = 'img/info.png') }}"><span class="stream-description-text">This is what you are saying and posting on all the social media accounts that you've connected</span></a></span>
 					</h4>
+					<hr>
 					{% for post in session['userInstagramData']['instagramPosts'] %}
 						<br>
 						<img src="{{ post['pic_url'] }}" class="instagram-stream-img text-center float-center">
@@ -267,6 +268,7 @@
 					<h4>Stream Twitter
 						<span><a class="stream-text" href="#"><img src="{{ url_for('dashboard.static', filename = 'img/info.png') }}"><span class="stream-description-text">This is what you are saying and posting on all the social media accounts that you've connected</span></a></span>
 					</h4>
+					<hr>
 					{% for tweet in session['userTwitterData'][0] %}
 						<p class="h6">{{ tweet.tweet }}</p>
 						<small><span>{{ tweet.time }}</span></small>
@@ -351,8 +353,8 @@
 
 			{% else %}
 				<p class="text-secondary">Twitter or Instagram Required To Procceed</p>
-			
 			{% endif %}
+			<small>Account must be public!</small>
 			<p><input id="setup-submit" class="btn btn-secondary" required="true" type="submit" value="Go!"></p>
 			<p id="setup-form-message" class="text-primary"></p>
 		</form>	
@@ -375,7 +377,6 @@
 							<input type="text" name="instagram-username" placeholder="Instagram Username">
 						</p>
 						<input class="btn btn-primary" type="submit" value="Connect">
-						<small>Account must be public!</small>
 					</form>
 				</div>
 			</div>
