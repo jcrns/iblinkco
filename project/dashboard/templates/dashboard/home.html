@@ -264,7 +264,7 @@
 					<h4>Stream Instagram
 						<span><a class="stream-text" href="#"><img src="{{ url_for('dashboard.static', filename = 'img/info.png') }}"><span class="stream-description-text">This is what you are saying and posting on all the social media accounts that you've connected</span></a></span>
 					</h4>
-					<p><span>Ratings</span><span>Tips</span><span>Success</span></p>
+					<!-- <p><span>Ratings</span><span>Tips</span><span>Success</span></p> -->
 					{% for post in session['userInstagramData']['instagramPosts'] %}
 						<br>
 						<div class="card">
@@ -424,59 +424,59 @@
 			var dateList = [] ;
 			var followerNumberListTwitter = [];
 			var followerNumberListInstagram = [];
-
+			
+			// Creating datasets
+			var graphDatasets = [];
 			{% if session['history'] %}
 
 				{% if session['history']['twitter'] %}
-					// Formating twitter data
-					if (dateList.length == 0) {
-						{% for follower in session['history']['twitter'][0] %}
-						follower = '{{ follower }}'
-						dateList.push(follower)
-						{% endfor %}
-					}
+					{% if session['history']['twitter'][0][0] != 'null' %}
+						// Formating twitter data
+						if (dateList.length == 0) {
+							{% for follower in session['history']['twitter'][0] %}
+							follower = '{{ follower }}'
+							dateList.push(follower)
+							{% endfor %}
+						}
 
-					{% for follower in session['history']['twitter'][1] %}
-						follower = '{{ follower }}'
-						followerNumberListTwitter.push(follower)
-					{% endfor %}
+						{% for follower in session['history']['twitter'][1] %}
+							follower = '{{ follower }}'
+							followerNumberListTwitter.push(follower)
+						{% endfor %}
+						twitterData = {
+							data: followerNumberListTwitter,
+							label: "Twitter",
+							borderColor: "#28aae1",
+							fill: false
+						}
+						graphDatasets.push(twitterData)
+					{% endif %}
 				{% endif %}
 
 				{% if session['history']['instagram'] %}
-					// Formating instagram data
-					if (dateList.length == 0) {
-						{% for follower in session['history']['instagram'][0] %}
-						follower = '{{ follower }}'
-						dateList.push(follower)
+					{% if session['history']['instagram'][0][0] != 'null' %}
+						// Formating instagram data
+						if (dateList.length == 0) {
+							{% for follower in session['history']['instagram'][0] %}
+							follower = '{{ follower }}'
+							dateList.push(follower)
+							{% endfor %}
+						}
+
+						{% for follower in session['history']['instagram'][1] %}
+							follower = '{{ follower }}'
+							followerNumberListInstagram.push(follower)
 						{% endfor %}
-					}
-
-					{% for follower in session['history']['instagram'][1] %}
-					follower = '{{ follower }}'
-					followerNumberListInstagram.push(follower)
-					{% endfor %}
-				{% endif %}
-
-				// Creating datasets
-				var graphDatasets = [];
-				{% if session['history']['twitter'] %}
-					twitterData = {
-						data: followerNumberListTwitter,
-						label: "Twitter",
-						borderColor: "#28aae1",
-						fill: false
-					}
-					graphDatasets.push(twitterData)
-				{% endif %}
-
-				{% if session['history']['instagram'] %}
-					instagramData = {
-						data: followerNumberListInstagram,
-						label: "Instagram",
-						borderColor: "#d81dac",
-						fill: false
-					}
-					graphDatasets.push(instagramData)
+						instagramData = {
+							data: followerNumberListInstagram,
+							label: "Instagram",
+							borderColor: "#d81dac",
+							fill: false
+						}
+						graphDatasets.push(instagramData)
+					{% else %}
+						alert("fgsrthgjwrgk")
+					{% endif %}
 				{% endif %}
 
 				// Creating graph

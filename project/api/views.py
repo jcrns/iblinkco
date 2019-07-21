@@ -508,25 +508,29 @@ def createUserFunc(email, password, firstname, lastname, software):
 		# Website empty json
 		addWebsite = { "website_name" : '', "website_url" : '', "header_text" : "", "links": ["null"] }
 
-		# Making empty json for twitter
+		# Default jsons
 		addTwitterDefault = {"followers":0, "following": 0, 'likes': 0, "username": ''}
 		addTwitterTweetDefault = { "time" : "", "tweet" : "" }
+		addTwitterDefaultHistoryFollowers = [{ "date" : "null",  "followers_count" : 0 }]
+		addTwitterDefaultHistoryFollowing = [{ "date" : "null",  "following_count" : 0 }]
 
 		addInstagramDefault = { "biography" : "", "business_category_name" : "", "edge_felix_video_timeline" : 0, "edge_follow" : 0, "edge_followed_by" : 0, "edge_media_collections" : 0, "edge_mutual_followed_by" : 0, "edge_saved_media" : 0, "external_url" : "", "external_url_linkshimmed" : "", "full_name" : "", "username" : "" }
 		addInstagramPostDefault = [{ "caption" : "", "number_of_comments" : 0, "number_of_likes" : 0, "pic_url" : "", "picture_text" : "", "tips" : ["null"], " success": 0 }]
+		addInstagramDefaultHistoryFollowers = [{ "date" : "null",  "followers_count" : 0 }]
+		addInstagramDefaultHistoryFollowing = [{ "date" : "null",  "following_count" : 0 }]
 
 		# Creating branches
 		database.child("users").child(uid).child("account").set(userAccount)
 		database.child("users").child(uid).child("website").set(addWebsite)
 		database.child("users").child(uid).child("user").set(user)
 		database.child("users").child(uid).child("twitter").set(addTwitterDefault)
-		database.child("users").child(uid).child("twitter").child("history").child("followers").set(['null'])
-		database.child("users").child(uid).child("twitter").child("history").child("following").set(['null'])
+		database.child("users").child(uid).child("twitter").child("history").child("followers").set(addTwitterDefaultHistoryFollowers)
+		database.child("users").child(uid).child("twitter").child("history").child("following").set(addTwitterDefaultHistoryFollowing)
 		database.child("users").child(uid).child("twitter").child("tweets").set(addTwitterTweetDefault)
 		database.child("users").child(uid).child("instagram").set(addInstagramDefault)
 		database.child("users").child(uid).child("instagram").child("instagramPosts").set(addInstagramPostDefault)
-		database.child("users").child(uid).child("instagram").child("history").child("followers").set(['null'])
-		database.child("users").child(uid).child("instagram").child("history").child("following").set(['null'])
+		database.child("users").child(uid).child("instagram").child("history").child("followers").set(addInstagramDefaultHistoryFollowers)
+		database.child("users").child(uid).child("instagram").child("history").child("following").set(addInstagramDefaultHistoryFollowing)
 		database.child("users").child(uid).child("competition").child("link").set(['null'])
 		database.child("users").child(uid).child("competition").child("title").set(['null'])
 		database.child("users").child(uid).child("tips").set(['null'])
@@ -996,12 +1000,14 @@ def disconnectInstagram(uid):
 	try:
 		addInstagramDefault = { "biography" : "", "business_category_name" : "", "edge_felix_video_timeline" : 0, "edge_follow" : 0, "edge_followed_by" : 0, "edge_media_collections" : 0, "edge_mutual_followed_by" : 0, "edge_saved_media" : 0, "external_url" : "", "external_url_linkshimmed" : "", "full_name" : "", "username" : "" }
 		addInstagramPostDefault = [{ "caption" : "", "number_of_comments" : 0, "number_of_likes" : 0, "pic_url" : "", "picture_text" : "", "tips" : ["null"], " success": 0 }]
+		addInstagramDefaultHistoryFollowers = [{ "date" : "null",  "followers_count" : 0 }]
+		addInstagramDefaultHistoryFollowing = [{ "date" : "null",  "following_count" : 0 }]
 
 		# Setting instagram data back to default
 		database.child("users").child(uid).child("instagram").remove()
 		database.child("users").child(uid).child("instagram").set(addInstagramDefault)
-		database.child("users").child(uid).child("instagram").child("history").child("followers").set(['null'])
-		database.child("users").child(uid).child("instagram").child("history").child("following").set(['null'])
+		database.child("users").child(uid).child("instagram").child("history").child("followers").set(addInstagramDefaultHistoryFollowers)
+		database.child("users").child(uid).child("instagram").child("history").child("following").set(addInstagramDefaultHistoryFollowing)
 		database.child("users").child(uid).child("instagram").child("instagramPosts").set(addInstagramPostDefault)
 		return 'success'
 	except Exception as e:
@@ -1026,13 +1032,16 @@ def disconnectTwitter(uid):
 	try:
 		addTwitterDefault = {"followers":0, "following": 0, 'likes': 0, "username": ''}
 		addTwitterTweetDefault = { "time" : "", "tweet" : "" }
+		addTwitterDefaultHistoryFollowers = [{ "date" : "null",  "followers_count" : 0 }]
+		addTwitterDefaultHistoryFollowing = [{ "date" : "null",  "following_count" : 0 }]
+
 
 		# Setting twitter data back to default
 		database.child("users").child(uid).child("twitter").remove()
 		database.child("users").child(uid).child("twitter").set(addTwitterDefault)
 		database.child("users").child(uid).child("twitter").child("tweets").set(addTwitterTweetDefault)
-		database.child("users").child(uid).child("twitter").child("history").child("followers").set(['null'])
-		database.child("users").child(uid).child("twitter").child("history").child("following").set(['null'])
+		database.child("users").child(uid).child("twitter").child("history").child("followers").set(addTwitterDefaultHistoryFollowers)
+		database.child("users").child(uid).child("twitter").child("history").child("following").set(addTwitterDefaultHistoryFollowing)
 		return 'success'
 	except Exception as e:
 		print(e)
@@ -1115,51 +1124,57 @@ def requestTwitter(uid):
 			try:
 				print('aasnnnnfnfn')
 
-				if historyData['followers'][0] == 'null':
+				if historyData['followers'][0]['date'] == 'null':
+					todayAlreadyIn = True
+					print('aargwrtgrwg')
 					database.child("users").child(uid).child("twitter").child("history").child("followers").child(0).set({'followers_count': twitterStats['followers'], 'date': date_time_api })
-				if historyData['following'][0] == 'null':
+				if historyData['following'][0]['date'] == 'null':
+					print('aargwrtgrwgrfgt')
+					todayAlreadyIn = True
 					database.child("users").child(uid).child("twitter").child("history").child("following").child(0).set({'following_count': twitterStats['following'], 'date': date_time_api })
 			except Exception as e:
 				print('not a new account')
 			print('aasnnnnfnfn')
-			todayAlreadyIn = False
 			for followerItem in historyData['followers']:
+				print(followerItem['date'])
 				if str(date_time_api) == followerItem['date']:
 					todayAlreadyIn = True
 					break
 				else:
 					counterFollowers += 1
 			if todayAlreadyIn == False:
+				print("gfaergqaertgwetrg")
 				database.child("users").child(uid).child("twitter").child("history").child("followers").child(counterFollowers).set({'followers_count': twitterStats['followers'], 'date': date_time_api })
+				database.child("users").child(uid).child("twitter").child("history").child("following").child(counterFollowers).set({'following_count': twitterStats['following'], 'date': date_time_api })
 			print('aasnnnnfnfn')
 
-			print(historyData['followers'])
+			# print(historyData['followers'])
 
-			counterFollowing = 0
-			followingDateList = []
-			followingCountList = []
-			print('\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n')
+			# counterFollowing = 0
+			# followingDateList = []
+			# followingCountList = []
+			# print('\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n')
 
-			print(historyData)
-			# Getting following
-			for followingItem in historyData['following']:
-				# Getting data
-				date = followerItem['date']
-				followingCount = followingItem['following_count']
+			# print(historyData)
+			# # Getting following
+			# for followingItem in historyData['following']:
+			# 	# Getting data
+			# 	date = followerItem['date']
+			# 	followingCount = followingItem['following_count']
 
-				print(counterFollowing)
-				print(date)
-				print(followingCount)
+			# 	print(counterFollowing)
+			# 	print(date)
+			# 	print(followingCount)
 
-				# Appending to list
-				followingDateList.append(date)
-				followingCountList.append(followingCount)
-				counterFollowing += 1
-				if date_time_api != followingDateList[-1]:
-					database.child("users").child(uid).child("twitter").child("history").child("following").child(counterFollowing).update({'following_count': twitterStats['following'], 'date': date_time_api })
-					break
-				else:
-					continue
+			# 	# Appending to list
+			# 	followingDateList.append(date)
+			# 	followingCountList.append(followingCount)
+			# 	counterFollowing += 1
+			# 	if date_time_api != followingDateList[-1]:
+			# 		database.child("users").child(uid).child("twitter").child("history").child("following").child(counterFollowing).update({'following_count': twitterStats['following'], 'date': date_time_api })
+			# 		break
+			# 	else:
+			# 		continue
 		except Exception as e:
 			print('Exception for loop')
 			print(e)
@@ -1223,49 +1238,56 @@ def requestInstagram(uid):
 		historyData = dict(database.child("users").child(uid).child("instagram").child("history").get().val())
 
 		counterFollowers = 0
-		todayAlreadyInFollowers = False
+		todayAlreadyIn = False
 		followersDateList = []
 		followersCountList = []
 		
 		# Checking if user is new if so updating data
 		try:
-			if historyData['followers'][0] == 'null':
+			if historyData['followers'][0]['date'] == 'null':
+				todayAlreadyIn = True
 				database.child("users").child(uid).child("instagram").child("history").child("followers").child(0).set({'followers_count': numberOfFollowers, 'date': date_time_api })
-			if historyData['following'][0] == 'null':
+			if historyData['following'][0]['date'] == 'null':
+				todayAlreadyIn = True
 				database.child("users").child(uid).child("instagram").child("history").child("following").child(0).set({'following_count': numberOfFollowing, 'date': date_time_api })
 		except Exception as e:
 			print('not a new account')
 
+		print('mbmmmbyyrgergreg')
 		for followerItem in historyData['followers']:
+			print(followerItem)
 			if str(date_time_api) == followerItem['date']:
-				todayAlreadyInFollowers = True
+				todayAlreadyIn = True
 				break
 			else:
 				counterFollowers += 1
-		if todayAlreadyInFollowers == False:
+		if todayAlreadyIn == False:
 			database.child("users").child(uid).child("instagram").child("history").child("followers").child(counterFollowers).set({'followers_count': numberOfFollowers, 'date': date_time_api })
-
+			database.child("users").child(uid).child("instagram").child("history").child("following").child(counterFollowers).set({'following_count': numberOfFollowing, 'date': date_time_api })
+		print('rgergreg')
 		# Adding following history
 		counterFollowing = 0
 		todayAlreadyInFollowing = False
 		followingDateList = []
 		followingCountList = []
 
-		for followingItem in historyData['following']:
-			if str(date_time_api) == followingItem['date']:
-				todayAlreadyInFollowing = True
-				break
-			else:
-				counterFollowing += 1
-		if todayAlreadyInFollowing == False:
-			database.child("users").child(uid).child("instagram").child("history").child("following").child(counterFollowing).set({'following_count': numberOfFollowing, 'date': date_time_api })
+		# print('qqqrpwoeofnwrbhfgergreg')
+		# for followingItem in historyData['following']:
+		# 	if str(date_time_api) == followingItem['date']:
+		# 		todayAlreadyInFollowing = True
+		# 		break
+		# 	else:
+		# 		counterFollowing += 1
+		# if todayAlreadyInFollowing == False:
+		# 	database.child("users").child(uid).child("instagram").child("history").child("following").child(counterFollowing).set({'following_count': numberOfFollowing, 'date': date_time_api })
 
-		# Checking if instagram is connected
+		# # Checking if instagram is connected
 		try:
 			instagramData = dict(database.child("users").child(uid).child("instagram").get().val())
 		except Exception as e:
 			print('instagram not connected')
 
+		print('sdjrbgiaejgbujrgergreg')
 		return instagramData
 	except Exception as e:
 		print(e)

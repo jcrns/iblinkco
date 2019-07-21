@@ -78,7 +78,7 @@ def home():
 
 		sessionRequest = dataUpdating(uid)
 		formatData = creationFormating(databaseData)
-		print(twitterFormatted)
+		print(instagramFormatted)
 	return render_template('dashboard/home.html')
 
 # Setup and Website Update
