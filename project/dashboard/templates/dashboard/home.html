@@ -16,8 +16,8 @@
 
 	{% set totalFollowersCount = 0 %}
 	{% if session['userTwitterData'] %}
-		{% if session['userTwitterData'][1] %}
-			{% set totalFollowersCount = totalFollowersCount + session['userTwitterData'][1]['followers'] %}
+		{% if session['userTwitterData'] %}
+			{% set totalFollowersCount = totalFollowersCount + session['userTwitterData']['followers'] %}
 		{% endif %}
 	{% endif %}
 
@@ -29,9 +29,7 @@
 
 	{% set totalFollowingCount = 0 %}
 	{% if session['userTwitterData'] %}
-		{% if session['userTwitterData'][1] %}
-			{% set totalFollowingCount = totalFollowingCount + session['userTwitterData'][1]['following'] %}
-		{% endif %}
+		{% set totalFollowingCount = totalFollowingCount + session['userTwitterData']['following'] %}
 	{% endif %}
 	{% if session['userInstagramData'] %}
 		{% if session['userInstagramData']['edge_follow'] %}
@@ -42,8 +40,8 @@
 	<div id="header-bar" class="bg-dark">
 		{% if session['userTwitterData'] %}
 			<p>
-				<span id="header-bar-name"><b>{{ session['userTwitterData'][1]['name'] }}</b></span>
-				<span id="header-bar-description">    {{ session['userTwitterData'][1]['description'] }}</span>
+				<span id="header-bar-name"><b>{{ session['userTwitterData']['name'] }}</b></span>
+				<span id="header-bar-description">    {{ session['userTwitterData']['description'] }}</span>
 			</p>
 		{% elif session['userInstagramData'] %}
 			<p>
@@ -139,7 +137,7 @@
 							<p>
 								<span>Twitter:</span>
 								<span class="text-success">
-									{{ session['userTwitterData'][1]['username'] }}
+									{{ session['userTwitterData']['username'] }}
 								</span>
 							</p>
 							{# Disconnecting twitter button #}
@@ -188,7 +186,7 @@
 				<h5>{{ session['email'] }}</h5>
 				<h6>
 					{% if session['userTwitterData'] %}
-						{{ session['userTwitterData'][1]['location'] }}
+						{{ session['userTwitterData']['location'] }}
 					{% else %}
 
 					{% endif %}
@@ -252,10 +250,19 @@
 					<hr>
 					{% for post in session['userInstagramData']['instagramPosts'] %}
 						<br>
-						<img src="{{ post['pic_url'] }}" class="instagram-stream-img text-center float-center">
-						<p>{{ post['caption'] }}</p>	
-						<p>{{ post['number_of_likes'] }} Likes</p>
-						<p>{{ post['number_of_comments'] }} Comments</p>
+						{% if post.tips|length > 2 %}
+							<img src="{{ post['pic_url'] }}" class="instagram-stream-img text-center float-center bg-warning">
+						{% else %}
+							<img src="{{ post['pic_url'] }}" class="instagram-stream-img text-center float-center">
+						{% endif %}
+						<p>{{ post.caption }}</p>	
+						<p>{{ post.number_of_likes }} Likes</p>
+						<p>{{ post.number_of_comments }} Comments</p>
+						{% if post.tips != 'null' %}
+							{% for tip in post.tips %}	
+								<p class="text-center text-secondary">{{ tip }}</p>
+							{% endfor %}
+						{% endif %}
 						<hr>
 						<br>
 					{% endfor %}
@@ -269,9 +276,14 @@
 						<span><a class="stream-text" href="#"><img src="{{ url_for('dashboard.static', filename = 'img/info.png') }}"><span class="stream-description-text">This is what you are saying and posting on all the social media accounts that you've connected</span></a></span>
 					</h4>
 					<hr>
-					{% for tweet in session['userTwitterData'][0] %}
+					{% for tweet in session['userTwitterData']['tweets'] %}
 						<p class="h6">{{ tweet.tweet }}</p>
 						<small><span>{{ tweet.time }}</span></small>
+						{% if tweet.tip != 'null' %}
+							{% for tip in tweet.tips %}
+								<p class="text-center text-secondary">{{ tip }}</p>
+							{% endfor %}
+						{% endif %}
 						<hr>
 					{% endfor %}
 				</div>
@@ -344,7 +356,7 @@
 			<br>
 			<br>
 			{% if session['userTwitterData'] %}
-				<h4>{{ session['userTwitterData'][1]['username'] }}</h4>
+				<h4>{{ session['userTwitterData']['username'] }}</h4>
 			{% endif %}
 			{% if session['userInstagramData'] %}
 				<h4>{{ session['userInstagramData']['username'] }}</h4>

@@ -1153,39 +1153,35 @@ def requestTwitter(uid):
 				database.child("users").child(uid).child("twitter").child("history").child("followers").child(counterFollowers).set({'followers_count': twitterStats['followers'], 'date': date_time_api })
 				database.child("users").child(uid).child("twitter").child("history").child("following").child(counterFollowers).set({'following_count': twitterStats['following'], 'date': date_time_api })
 			print('aasnnnnfnfn')
-
-			# print(historyData['followers'])
-
-			# counterFollowing = 0
-			# followingDateList = []
-			# followingCountList = []
-			# print('\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n')
-
-			# print(historyData)
-			# # Getting following
-			# for followingItem in historyData['following']:
-			# 	# Getting data
-			# 	date = followerItem['date']
-			# 	followingCount = followingItem['following_count']
-
-			# 	print(counterFollowing)
-			# 	print(date)
-			# 	print(followingCount)
-
-			# 	# Appending to list
-			# 	followingDateList.append(date)
-			# 	followingCountList.append(followingCount)
-			# 	counterFollowing += 1
-			# 	if date_time_api != followingDateList[-1]:
-			# 		database.child("users").child(uid).child("twitter").child("history").child("following").child(counterFollowing).update({'following_count': twitterStats['following'], 'date': date_time_api })
-			# 		break
-			# 	else:
-			# 		continue
 		except Exception as e:
 			print('Exception for loop')
 			print(e)
 		print(twitterScrapped)
-		return twitterScrapped
+		try:
+			# Twitter tips
+			tweets = database.child("users").child(uid).child("twitter").child("tweets").get().val()
+			tweetCounter = 0
+			for tweet in tweets:
+				tweetTips = []
+				if len(tweet['tweet']) < 124:
+					tweetNotLongEnough = "This tweet is not long enough. Try making it 124 characters"
+					tweetTips.append(tweetNotLongEnough)
+				if "#" not in tweet['tweet']:
+					tweetHashtagNotInTweet = "Hashtags not in tweet"
+					tweetTips.append(tweetHashtagNotInTweet)
+				if len(tweetTips) == 0:
+					tweetTips = 'null'
+				database.child("users").child(uid).child("twitter").child("tweets").child(tweetCounter).child("tips").set(tweetTips)
+				tweetCounter += 1
+			print('wergkwemgskrtlgnwrtjgkwrnjgwrkg')
+		except Exception as e:
+			print(e)
+			print("twitter tips didn't work")
+		try:
+			twitterData = dict(database.child("users").child(uid).child("twitter").get().val())
+		except Exception as e:
+			return 'failed'
+		return twitterData
 	except Exception as e:
 		print(e)
 		print('twitter login failed')
@@ -1277,17 +1273,35 @@ def requestInstagram(uid):
 		followingDateList = []
 		followingCountList = []
 
-		# print('qqqrpwoeofnwrbhfgergreg')
-		# for followingItem in historyData['following']:
-		# 	if str(date_time_api) == followingItem['date']:
-		# 		todayAlreadyInFollowing = True
-		# 		break
-		# 	else:
-		# 		counterFollowing += 1
-		# if todayAlreadyInFollowing == False:
-		# 	database.child("users").child(uid).child("instagram").child("history").child("following").child(counterFollowing).set({'following_count': numberOfFollowing, 'date': date_time_api })
-
-		# # Checking if instagram is connected
+		try:
+			# Instagram
+			instagramPost = databaseData['instagram']['instagramPosts']
+			tweets = databaseData['twitter']['tweets']
+			postCounter = 0
+			for post in instagramPost:
+				postTips = []
+				if len(post['caption']) < 300:
+					captionLengthTip = "The caption of this post isn't long enough try going into more detail"
+					postTips.append(captionLengthTip)
+				if "#" not in post['caption']:
+					noHashtagsInCaption = "There aren't any hashtags in this post. We recommend that you use at least 3."
+					postTips.append(noHashtagsInCaption)
+				elif post['caption'].count('#') < 3:
+					notEnoughHashtags = "Good job using hashtags on this post but we recommend you use more. How about 3?"
+					postTips.append(notEnoughHashtags)
+				if SequenceMatcher(None, post['caption'], post['picture_text']).ratio() > 0.1:
+					pictureTextAndCaptionTooAlike = "The text on your picture is very simular to your caption."
+					postTips.append(pictureTextAndCaptionTooAlike)
+				elif SequenceMatcher(None, post['caption'], post['picture_text']).ratio() < 0.03:
+					pictureTextAndCaptionTextLookNothingAlike = "Your picture text and caption are nothing alike. Try to make the caption and picture text more related"
+					postTips.append(pictureTextAndCaptionTextLookNothingAlike)
+				if len(postTips) == 0:
+					postTips = 'null'
+				database.child("users").child(uid).child("instagram").child("instagramPosts").child(postCounter).child("tips").set(postTips)
+				postCounter += 1
+		except Exception as e:
+			print(e)
+			print("Post Tips Failed")
 		try:
 			instagramData = dict(database.child("users").child(uid).child("instagram").get().val())
 		except Exception as e:
@@ -1331,51 +1345,6 @@ def dataUpdating(uid):
 		database.child("users").child(uid).child("statistics").child("instagramRecentAvgComments").set(instagramRecentAvgComments)
 		database.child("users").child(uid).child("statistics").child("instagramRecentAvgDescriptionLen").set(instagramRecentAvgDescriptionLen)
 		database.child("users").child(uid).child("statistics").child("instagramRecentAvgLikes").set(instagramRecentAvgLikes)
-
-		# Updating post/tweets tips
-		try:
-			# Instagram
-			instagramPost = databaseData['instagram']['instagramPosts']
-			tweets = databaseData['twitter']['tweets']
-			postCounter = 0
-			for post in instagramPost:
-				postTips = []
-				if len(post['caption']) < 300:
-					captionLengthTip = "The caption of this post isn't long enough try going into more detail"
-					postTips.append(captionLengthTip)
-				if "#" not in post['caption']:
-					noHashtagsInCaption = "There aren't any hashtags in this post. We recommend that you use at least 3."
-					postTips.append(noHashtagsInCaption)
-				if post['caption'].count('#') < 3:
-					notEnoughHashtags = "Good job using hashtags on this post but we recommend you use more. How about 3?"
-					postTips.append(notEnoughHashtags)
-				if SequenceMatcher(None, post['caption'], post['picture_text']).ratio() > 0.1:
-					pictureTextAndCaptionTooAlike = "The text on your picture is very simular to your caption."
-					postTips.append(pictureTextAndCaptionTooAlike)
-				elif SequenceMatcher(None, post['caption'], post['picture_text']).ratio() < 0.03:
-					pictureTextAndCaptionTextLookNothingAlike = "Your picture text and caption are nothing alike. Try to make the caption and picture text more related"
-					postTips.append(pictureTextAndCaptionTextLookNothingAlike)
-				if len(postTips) == 0:
-					postTips = ['null']
-				database.child("users").child(uid).child("instagram").child("instagramPosts").child(postCounter).child("tips").set(postTips)
-				postCounter += 1
-			# Twitter
-			for tweet in tweets:
-				tweetTips = []
-				tweetCounter = 0
-				if len(tweet['tweet']) < 124:
-					tweetNotLongEnough = "This tweet is not long enough. Try making it 124 characters"
-					tweetTips.append(tweetNotLongEnough)
-				if "#" not in tweet['tweet']:
-					tweetHashtagNotInTweet = "Hashtags not in tweet"
-					tweetTips.append(tweetHashtagNotInTweet)
-				if len(tweetTips) == 0:
-					tweetTips = ['null']
-				database.child("users").child(uid).child("twitter").child("tweets").child(tweetCounter).child("tips").set(tweetTips)
-				tweetCounter += 1
-		except Exception as e:
-			print(e)
-			print("TIPS FAILED")
 	except Exception as e:
 		print(e)
 		print("instagram not connected")
