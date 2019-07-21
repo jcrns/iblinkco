@@ -339,7 +339,7 @@ html,body
   max-height: 75vh;
   overflow-y: scroll;
   -webkit-overflow-scrolling: touch;
-  height:100%; /*A value other than height:auto needs to be set*/
+  height:100%; 
 }
 .instagram-stream-img {
   max-height: 300px;

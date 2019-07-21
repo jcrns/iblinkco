@@ -251,12 +251,11 @@
 					</h4>
 					{% for post in session['userInstagramData']['instagramPosts'] %}
 						<br>
-						<div class="card">
-							<img src="{{ post['pic_url'] }}" class="instagram-stream-img text-center float-center">
-							<p>{{ post['caption'] }}</p>	
-							<p>{{ post['number_of_likes'] }} Likes</p>
-							<p>{{ post['number_of_comments'] }} Comments</p>
-						</div>
+						<img src="{{ post['pic_url'] }}" class="instagram-stream-img text-center float-center">
+						<p>{{ post['caption'] }}</p>	
+						<p>{{ post['number_of_likes'] }} Likes</p>
+						<p>{{ post['number_of_comments'] }} Comments</p>
+						<hr>
 						<br>
 					{% endfor %}
 				</div>
@@ -269,10 +268,9 @@
 						<span><a class="stream-text" href="#"><img src="{{ url_for('dashboard.static', filename = 'img/info.png') }}"><span class="stream-description-text">This is what you are saying and posting on all the social media accounts that you've connected</span></a></span>
 					</h4>
 					{% for tweet in session['userTwitterData'][0] %}
-						<div class="card">
-							<p class="h6">{{ tweet.tweet }}</p>
-							<small><span>{{ tweet.time }}</span></small>
-						</div>
+						<p class="h6">{{ tweet.tweet }}</p>
+						<small><span>{{ tweet.time }}</span></small>
+						<hr>
 					{% endfor %}
 				</div>
 			{% endif %}
