@@ -258,11 +258,11 @@
 						<p>{{ post.caption }}</p>	
 						<p>{{ post.number_of_likes }} Likes</p>
 						<p>{{ post.number_of_comments }} Comments</p>
-						{% if post.tips != 'null' %}
-							{% for tip in post.tips %}	
-								<p class="text-center text-secondary">{{ tip }}</p>
-							{% endfor %}
-						{% endif %}
+						{% for tip in post.tips %}	
+							{% if tip != 'null' %}
+							<p class="text-center text-secondary">{{ tip }}</p>
+							{% endif %}
+						{% endfor %}
 						<hr>
 						<br>
 					{% endfor %}
@@ -279,11 +279,11 @@
 					{% for tweet in session['userTwitterData']['tweets'] %}
 						<p class="h6">{{ tweet.tweet }}</p>
 						<small><span>{{ tweet.time }}</span></small>
-						{% if tweet.tip != 'null' %}
-							{% for tip in tweet.tips %}
-								<p class="text-center text-secondary">{{ tip }}</p>
-							{% endfor %}
-						{% endif %}
+						{% for tip in tweet.tips %}
+							{% if tip != 'null' %}
+							<p class="text-center text-secondary">{{ tip }}</p>
+							{% endif %}
+						{% endfor %}
 						<hr>
 					{% endfor %}
 				</div>

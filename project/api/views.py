@@ -1170,7 +1170,7 @@ def requestTwitter(uid):
 					tweetHashtagNotInTweet = "Hashtags not in tweet"
 					tweetTips.append(tweetHashtagNotInTweet)
 				if len(tweetTips) == 0:
-					tweetTips = 'null'
+					tweetTips = ['null']
 				database.child("users").child(uid).child("twitter").child("tweets").child(tweetCounter).child("tips").set(tweetTips)
 				tweetCounter += 1
 			print('wergkwemgskrtlgnwrtjgkwrnjgwrkg')
@@ -1296,7 +1296,7 @@ def requestInstagram(uid):
 					pictureTextAndCaptionTextLookNothingAlike = "Your picture text and caption are nothing alike. Try to make the caption and picture text more related"
 					postTips.append(pictureTextAndCaptionTextLookNothingAlike)
 				if len(postTips) == 0:
-					postTips = 'null'
+					postTips = ['null']
 				database.child("users").child(uid).child("instagram").child("instagramPosts").child(postCounter).child("tips").set(postTips)
 				postCounter += 1
 		except Exception as e:
