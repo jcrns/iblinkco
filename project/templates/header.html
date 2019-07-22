@@ -41,7 +41,7 @@
         <!-- responsive Navigation Bar -->
         <nav class="navbar navbar-expand-md navbar-default sticky-top" style="background:rgba(238,238,238,0.5);">
             <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#collapse_target" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon bg-dark"></span>
+                <span class="navbar-toggler-icon bg-dark"><img src="https://img.icons8.com/material/24/000000/menu.png"></span>
             </button>
             <a href="{{ url_for('homepage.home') }}#" class="navbar-brand"><img src="{{ url_for('homepage.static', filename = 'img/logo.png') }}"></a>
             <a href="{{ url_for('dashboard.home') }}"><span class="font-weight-bold" style="color: #212121">{{ session['name'] }}</span></a>
