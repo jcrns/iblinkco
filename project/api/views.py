@@ -1070,7 +1070,8 @@ def connectTwitterAPI():
 		database.child("users").child(uid).child("twitter").child("tweets").set(returnedData[0])
 		print(returnedData)
 		print("returnedData")
-		session['userTwitterData'] = returnedData
+		twitterData = dict(database.child("users").child(uid).child("twitter").get().val())
+		session['userTwitterData'] = twitterData
 		return redirect(url_for('dashboard.home'))
 	except Exception as e:
 		print(e)

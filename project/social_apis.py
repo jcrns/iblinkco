@@ -150,6 +150,23 @@ def getTwitterData(username):
 def websiteScrapping(website):
 	print('aaalll')
 	# Making Request
+
+	# Checking if www in link
+	try:
+		if "https://" in website:
+			print("https")
+			if "www." not in website:
+				website = "https://www." + website[8:]
+				print("L")
+				print(website)
+
+		if "http://" in website:
+			print("http")
+			if "www." not in website:
+				website = "http://www." + website[7:]
+				print("L")
+	except Exception as e:
+		raise e
 	r = rq.get(str(website))
 	print('aaaaa\n\n\n\n')
 	print(website)
