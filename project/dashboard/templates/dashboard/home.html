@@ -244,9 +244,7 @@
 			{# Instagram Stream #}
 			{% if session['userInstagramData'] %}
 				<div class="card stream">
-					<h4>Stream Instagram
-						<span><a class="stream-text" href="#"><img src="{{ url_for('dashboard.static', filename = 'img/info.png') }}"><span class="stream-description-text">This is what you are saying and posting on all the social media accounts that you've connected</span></a></span>
-					</h4>
+					<h4>Stream Instagram</h4>
 					<hr>
 					{% for post in session['userInstagramData']['instagramPosts'] %}
 						<br>
@@ -272,9 +270,7 @@
 			{# Twitter Stream #}
 			{% if session['userTwitterData'] %}
 				<div class="card stream">
-					<h4>Stream Twitter
-						<span><a class="stream-text" href="#"><img src="{{ url_for('dashboard.static', filename = 'img/info.png') }}"><span class="stream-description-text">This is what you are saying and posting on all the social media accounts that you've connected</span></a></span>
-					</h4>
+					<h4>Stream Twitter</h4>
 					<hr>
 					{% for tweet in session['userTwitterData']['tweets'] %}
 						<p class="h6">{{ tweet.tweet }}</p>
