@@ -514,7 +514,7 @@ def createUserFunc(email, password, firstname, lastname, software):
 
 		# Default jsons
 		addTwitterDefault = {"followers":0, "following": 0, 'likes': 0, "username": ''}
-		addTwitterTweetDefault = { "time" : "", "tweet" : "", "tips" : ["null"] }
+		addTwitterTweetDefault = [{ "time" : "", "tweet" : "", "tips" : ["null"] }]
 		addTwitterDefaultHistoryFollowers = [{ "date" : "null",  "followers_count" : 0 }]
 		addTwitterDefaultHistoryFollowing = [{ "date" : "null",  "following_count" : 0 }]
 
@@ -1037,7 +1037,7 @@ def disconnectTwitterAPI():
 def disconnectTwitter(uid):
 	try:
 		addTwitterDefault = {"followers":0, "following": 0, 'likes': 0, "username": ''}
-		addTwitterTweetDefault = { "time" : "", "tweet" : "", "tips" : [""] }
+		addTwitterTweetDefault = [{ "time" : "", "tweet" : "", "tips" : [""] }]
 		addTwitterDefaultHistoryFollowers = [{ "date" : "null",  "followers_count" : 0 }]
 		addTwitterDefaultHistoryFollowing = [{ "date" : "null",  "following_count" : 0 }]
 
