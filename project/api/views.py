@@ -743,7 +743,7 @@ def disconnectWebsite():
 		uid = user['localId']
 
 		# Returning website data to default 
-		addWebsite = { "website_name" : '', "website_url" : '' }
+		addWebsite = { "website_name" : '', "website_url" : '', "links" : ['null'], "header_text" : '' }
 		database.child("users").child(uid).child("website").set(addWebsite)
 
 		# Trying to put data in session
