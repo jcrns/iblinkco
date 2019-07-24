@@ -1036,7 +1036,7 @@ def disconnectTwitterAPI():
 
 def disconnectTwitter(uid):
 	try:
-		addTwitterDefault = {"followers":0, "following": 0, 'likes': 0, "username": ''}
+		addTwitterDefault = {"followers":0, "following": 0, "description" : "", "location" : "", 'likes': 0, "username": ''}
 		addTwitterTweetDefault = [{ "time" : "", "tweet" : "", "tips" : [""] }]
 		addTwitterDefaultHistoryFollowers = [{ "date" : "null",  "followers_count" : 0 }]
 		addTwitterDefaultHistoryFollowing = [{ "date" : "null",  "following_count" : 0 }]
