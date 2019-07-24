@@ -17,6 +17,9 @@ from project.dashboard.views import dashboard
 
 from project.api.views import api
 
+# Importing conf email
+from flask_mail import Mail, Message
+
 # Importing ssl
 import ssl
 
@@ -53,6 +56,8 @@ app.config.from_pyfile('appConfig.cfg')
 # External flask session library
 app.config.from_object(__name__)
 Session(app)
+
+mail = Mail(app)
 
 @app.route('/')
 def root():

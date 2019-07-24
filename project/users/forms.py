@@ -19,9 +19,7 @@ class LoginForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired()])
     submit = SubmitField('Login')
 
-class ContactUs(FlaskForm):
+class forgotPassForm(FlaskForm):
     # Setting login fields
-    name = StringField('Name', validators=[DataRequired()])
     email = StringField('Email', validators=[DataRequired(), Email()])
-    message = TextAreaField('Message', validators=[DataRequired()])
-    submit = SubmitField('Submit')
+    submit = SubmitField('Verify')

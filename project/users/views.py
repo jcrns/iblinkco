@@ -1,6 +1,9 @@
 # Importing all needed Flask classes
 from flask import Flask, render_template, session, flash, redirect, url_for, Blueprint, jsonify
 
+# Importing conf email
+from flask_mail import Mail, Message
+
 # Importing forms
 from project.users.forms import RegistrationForm, LoginForm, ContactUs
 
