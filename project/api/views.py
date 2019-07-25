@@ -942,25 +942,30 @@ def refreshFollowers():
 @api.route("/connect-instagram-api", methods=['GET','POST'])
 def connectInstagramAPI():
 	try:
-		print('connecting instagram api\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n')
-		username = request.form['instagram-username']
-		returnedData = connectInstagram(username)
-		if returnedData == 'failed':
-			flash('Connecting Instagram Failed')
-			return redirect(url_for('dashboard.home'))
-		# Getting user session
-		user = session['user']
-		uid = user['localId']
+		try:
+			print('connecting instagram api\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n')
+			username = request.form['instagram-username']
+			returnedData = connectInstagram(username)
+			if returnedData == 'failed':
+				flash('Connecting Instagram Failed')
+				return redirect(url_for('dashboard.home'))
+			# Getting user session
+			user = session['user']
+			uid = user['localId']
 
-		database.child("users").child(uid).child("instagram").update(returnedData[0])
-		databaseData = dict(database.child("users").child(uid).get().val())
-		instagramDataFomated = instagramPostsFormat(returnedData[1])
-		
-		database.child("users").child(uid).child("instagram").child("instagramPosts").set(instagramDataFomated)
-		
-		print('erghwrthwjrkthjwrt hkwrth\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n')
-		session['userInstagramData'] = databaseData['instagram']
-		return redirect(url_for('dashboard.home'))
+			database.child("users").child(uid).child("instagram").update(returnedData[0])
+			databaseData = dict(database.child("users").child(uid).get().val())
+			instagramDataFomated = instagramPostsFormat(returnedData[1])
+			
+			database.child("users").child(uid).child("instagram").child("instagramPosts").set(instagramDataFomated)
+			
+			print('erghwrthwjrkthjwrt hkwrth\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n')
+			session['userInstagramData'] = databaseData['instagram']
+			return redirect(url_for('dashboard.home'))
+		except Exception as e:
+			print(e)
+			flash('Failed')
+			return redirect(url_for('dashboard.home')) 
 	except Exception as e:
 		print(e)
 		username = request.get_json()['username']
@@ -1056,23 +1061,28 @@ def disconnectTwitter(uid):
 @api.route("/connect-twitter-api", methods=['GET','POST'])
 def connectTwitterAPI():
 	try:
-		print('connecting instagram api')
-		print(request.form)
-		username = request.form['twitter-username']
-		returnedData = connectTwitter(username)
-		if returnedData == 'failed':
-			flash('Connecting Twitter Failed')
+		try:
+			print('connecting instagram api')
+			print(request.form)
+			username = request.form['twitter-username']
+			returnedData = connectTwitter(username)
+			if returnedData == 'failed':
+				flash('Connecting Twitter Failed')
+				return redirect(url_for('dashboard.home'))
+			# Getting user session
+			user = session['user']
+			uid = user['localId']
+			database.child("users").child(uid).child("twitter").update(returnedData[1])
+			database.child("users").child(uid).child("twitter").child("tweets").set(returnedData[0])
+			print(returnedData)
+			print("returnedData")
+			twitterData = dict(database.child("users").child(uid).child("twitter").get().val())
+			session['userTwitterData'] = twitterData
 			return redirect(url_for('dashboard.home'))
-		# Getting user session
-		user = session['user']
-		uid = user['localId']
-		database.child("users").child(uid).child("twitter").update(returnedData[1])
-		database.child("users").child(uid).child("twitter").child("tweets").set(returnedData[0])
-		print(returnedData)
-		print("returnedData")
-		twitterData = dict(database.child("users").child(uid).child("twitter").get().val())
-		session['userTwitterData'] = twitterData
-		return redirect(url_for('dashboard.home'))
+		except Exception as e:
+			print(e)
+			flash("Failed")
+			return redirect(url_for('dashboard.home'))
 	except Exception as e:
 		print(e)
 		username = request.get_json()['username']
