@@ -197,6 +197,7 @@
 				<div id="followers-history-graph">
 					<canvas id="followers-history"></canvas>
 				</div>
+				<div id="perecent-growth"></div>
 				<div id="graph-data">
 					<small>Some Stats</small>
 					<p>
@@ -504,6 +505,39 @@
 				}
 			}
 		});
+
+		function percentGrowth(){
+			var historyStart = []
+			var historyNow = []
+			{% if session['history']['instagram'] %}
+				var historyInstagramStart =  "{{ session['history']['instagram'][1][0] }}";
+				historyStart.push(parseInt(historyInstagramStart))
+
+				var historyInstagramNow =  "{{ session['history']['instagram'][1][-1] }}";
+				historyNow.push(parseInt(historyInstagramNow))
+			{% endif %}
+
+			{% if session['history']['twitter'] %}
+				var historyTwitterStart = "{{ session['history']['twitter'][1][0] }}";
+				historyStart.push(parseInt(historyTwitterStart))
+
+				var historyInstagramNow =  "{{ session['history']['twitter'][1][-1] }}";
+				historyNow.push(parseInt(historyInstagramNow))
+			{% endif %}
+			var startValue = historyStart.reduce((a, b) => a + b, 0)
+			var finalValue = historyNow.reduce((a, b) => a + b, 0)
+			var diffValue = finalValue - startValue
+			var diffValue2 = diffValue/startValue
+			var finalPercentage = diffValue2*100
+			var rounded = Math.round( finalPercentage * 10 ) / 10;
+
+			return rounded
+		}
+		var percentageGrowth = percentGrowth()
+		if(percentageGrowth > 0){
+			alert(percentageGrowth);
+			$("#perecent-growth").html("<h3>" + percentageGrowth + "% <span style='font-size: 20px;'>Growth Since Accounts were Connected<span></h3>")
+		}
 
 		function competition(){
 
