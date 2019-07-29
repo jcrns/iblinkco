@@ -351,3 +351,10 @@ html,body
   height: 24px;
   width: 24px;
 }
+
+.table .text {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  max-width: 0;
+}

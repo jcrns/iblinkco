@@ -223,7 +223,7 @@
 				<p>Click these links to find other businesses like yours</p>
 				{% if session['competition'] is defined %}
 					{% if session['competition']['link'][0] != 'null' %}
-						<table id="competition-table"></table>
+						<table id="competition-table" class="table"></table>
 						<button class="btn btn-secondary" id="disconnect-niche-competition">Remove Niche & Competition</button>
 						<p class="expand"><a id="expand-competition" onclick="expandCompetition()" href="#"><ion-icon name="expand"></ion-icon></a></p>
 					{% else %}
@@ -425,7 +425,7 @@
 			}
 		{% endif %}
 
-	    function history(){
+	    function getFollowersHistory(){
 			// Follower graph list
 			var dateList = [] ;
 			var followerNumberListTwitter = [];
@@ -484,26 +484,27 @@
 		
 					{% endif %}
 				{% endif %}
-
-				// Creating graph
-				new Chart(document.getElementById("followers-history"), {
-					type: 'line',
-					data: {
-						labels: dateList,
-						datasets: graphDatasets
-					},
-					options: {
-						title: {
-							display: true,
-							text: 'Your Trend of Followers'
-						}
-					}
-				});
 			{% endif %}
-
+			return [dateList, graphDatasets]
 		}
-		history();
+		var followersHistory = getFollowersHistory();
 		
+		// Creating graph
+		var followersChart = new 
+		Chart(document.getElementById("followers-history"), {
+			type: 'line',
+			data: {
+				labels: followersHistory[0],
+				datasets: followersHistory[1]
+			},
+			options: {
+				title: {
+					display: true,
+					text: 'Your Trend of Followers'
+				}
+			}
+		});
+
 		function competition(){
 
 			// Defining list variables
@@ -525,35 +526,32 @@
 				// Putting data in table
 				var opperationTable = document.getElementById('competition-table'); 
 
+
+				var titleHead = document.createElement('thead');
+				
 				var titleRow = document.createElement('tr');
 
-
-				var titleName = document.createElement('td');
+				var titleName = document.createElement('th');
 				titleName.innerHTML = "<b>Title</b>";
 
-				var titleUrl = document.createElement('td');
-				titleUrl.innerHTML = "<b>Url</b>";
-
 				titleRow.append(titleName)
-				titleRow.append(titleUrl)
-				opperationTable.appendChild(titleRow)
+				titleHead.append(titleRow)
+				opperationTable.appendChild(titleHead)
 
+				var titleBody = document.createElement('tbody');
+				opperationTable.appendChild(titleBody)
 				for(var i = 0; i < searchTitleList.length; i++){
 
 					// Creating Elements
 					var itemRow = document.createElement('tr');
 					var itemDataRowName = document.createElement('td');
-					var itemDataRowUrl = document.createElement('td');
-
-	          		// Adding content
-	          		itemDataRowUrl.innerHTML = "<a href='" + searchUrlList[i] + "' ' target='_blank'> " + searchUrlList[i] + "</a>";
 	          		
-	          		itemDataRowName.innerHTML = searchTitleList[i];
+	          		// Adding content
+	          		itemDataRowName.innerHTML = "<a href='" + searchUrlList[i] + "' ' target='_blank'> " + searchTitleList[i] + "</a>";
 
 	          		// Appending content
 	          		itemRow.appendChild(itemDataRowName);
-	          		itemRow.appendChild(itemDataRowUrl);
-	          		opperationTable.appendChild(itemRow);
+	          		titleBody.appendChild(itemRow);
 	          	}
 	          	{% endif %}
 
@@ -627,7 +625,6 @@
 		$(document).ready(function(){
   		  // Checking if there are tips
   		  numberOfTips = document.getElementsByClassName("tip-card").length;
-  		  console.log(numberOfTips)
   		  if(numberOfTips == 0){
   		  	noneDivText = document.getElementById('tips-div');
   		  	var noneDiv = document.createElement('p');
