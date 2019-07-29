@@ -204,7 +204,7 @@ def googleSearch(niche, location, start):
 
 	# Getting user data to search
 	url = "https://www.googleapis.com/customsearch/v1"
-	userInput = str(niche) + " company in " + str(location)
+	userInput = str(niche) + " companies " + str(location)
 
 	while len(title_list) < 10:
 		# Running function to google search

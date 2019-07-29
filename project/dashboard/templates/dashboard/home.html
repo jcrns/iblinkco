@@ -220,7 +220,7 @@
 				<p id="find-competition-refresh">
 					<a href="#">Show More<img id="refresh-website" src="{{ url_for('dashboard.static', filename = 'img/refresh.png') }}"></a>
 				</p>
-				<p>Click these links to find other businesses like yours</p>
+				<p>Click these links to get a better idea of your market.</p>
 				{% if session['competition'] is defined %}
 					{% if session['competition']['link'][0] != 'null' %}
 						<table id="competition-table" class="table"></table>
