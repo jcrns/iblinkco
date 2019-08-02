@@ -26,7 +26,13 @@ from flask_sslify import SSLify
 # Importing Time
 from datetime import timedelta
 
+# Adding flask mail for email verification and password reset
+from flask_mail import Mail, Message
+
 ssl._create_default_https_context = ssl._create_unverified_context
+
+# String serializer library
+from itsdangerous import URLSafeTimedSerializer, SignatureExpired
 
 # Defing app which is nessisary for flask to run
 app = Flask(__name__)
@@ -43,12 +49,14 @@ app.register_blueprint(api)
 sslify = SSLify(app)
 SESSION_TYPE = 'filesystem'
 
-# 
-# url = urllib.parse.quote_plus(redis_url)
-# conn = Redis(host=url.hostname, port=url.port, db=0, password=url.password)
-
 # Config
 app.config.from_pyfile('appConfig.cfg')
+
+
+safeTimedUrlSerializer = URLSafeTimedSerializer(app.secret_key)
+
+# Initializing email functions
+mail = Mail(app)
 
 # External flask session library
 app.config.from_object(__name__)

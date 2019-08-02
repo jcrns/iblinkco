@@ -1,0 +1,5 @@
+{% extends "header.html" %}
+{% block content %}
+	<h1>Email confirmed for {{ email }}</h1>
+	<h3><a href="{{ url_for('users.login') }}">Sign In Now</a></h3>
+{% endblock %}

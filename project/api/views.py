@@ -504,7 +504,7 @@ def createUserFunc(email, password, firstname, lastname, software):
 		user = authe.create_user_with_email_and_password(email,password)
 
 		# Assigning json data to variable to return to database
-		userAccount = {"firstname" : firstname, "lastname" : lastname, "email" : email, "setup_complete" : False, "niche" : ""}
+		userAccount = {"firstname" : firstname, "lastname" : lastname, "email" : email, "setup_complete" : False, "niche" : "", "email_confirmed": False }
 
 		# Assigning uid which will be used to create paths in database
 		uid = user['localId']
@@ -639,23 +639,6 @@ def signInFunc(email, password):
 		userReturn['instagram']['instagramPosts'] = formatedPostData
 	except Exception as e:
 		print(e)
-
-	# Appending valid formated data to final dictionary
-	# userReturn['user'] = user
-	# userReturn['history'] = historyReturned
-	# userReturn['website'] = websitesData
-
-	# print('ppppppp\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n')
-	# print(competition)
-	# for i in competition:
-	# 	print(i)
-
-	# print('pppp\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n')
-
-	# userReturn['tips'] = returnedTips
-	# userReturn['competition'] = competition
-
-	# print(userReturn)
 	print('aaalaaaalllalaasdgergertg\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n')
 	# Returning main data
 	return userReturn
@@ -824,6 +807,29 @@ def disconnectNiche():
 		value = 'failed'
 	return value
 
+@api.route("/user-verified-confirmed", methods=['GET','POST'])
+def userVerifiedAPI():
+	userConfirmed = userVerified(email)
+
+def userVerified(email):
+	try:
+		try:
+			# adding email to list of verified accounts
+			verifiedAccounts = dict(database.child("verified-accounts").get().val())
+			counter = 0
+			if verifiedAccounts != None:		
+				for i in verifiedAccounts:
+					counter += 1
+				database.child("verified-accounts").child(counter).set({"email" : email})
+			else:
+				database.child("verified-accounts").child(0).set({"email" : email})
+			return 'success'	
+		except Exception as e:
+			print(e)
+			database.child("verified-accounts").child(0).set({"email" : email})
+	except Exception as e:
+		print(e)
+		return 'failed'
 
 @api.route("/refresh-search", methods=['GET','POST'])
 def refreshSearch():

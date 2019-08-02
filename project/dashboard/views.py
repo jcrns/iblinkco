@@ -40,6 +40,9 @@ def home():
 	uid = user['localId']
 	databaseData = dict(database.child("users").child(uid).get().val())
 	setup_complete = databaseData['account']['setup_complete']
+
+	userVerified = False
+
 	if setup_complete == True:
 		try:
 			twitterRequest = requestTwitter(uid)
@@ -79,6 +82,20 @@ def home():
 		sessionRequest = dataUpdating(uid)
 		formatData = creationFormating(databaseData)
 		print(twitterFormatted)
+		try:
+			verifiedUsers = database.child("verified-accounts").get().val()
+			print(verifiedUsers)
+
+			for user in verifiedUsers:
+				if user['email'] == session['email']:
+					userVerified = True
+					break
+			if userVerified == False:
+				return redirect(url_for('users.verifyNow'))
+		except Exception as e:
+			print(e)
+			return redirect(url_for('users.verifyNow'))
+
 	return render_template('dashboard/home.html')
 
 # Setup and Website Update

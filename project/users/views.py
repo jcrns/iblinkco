@@ -1,5 +1,5 @@
 # Importing all needed Flask classes
-from flask import Flask, render_template, session, flash, redirect, url_for, Blueprint, jsonify
+from flask import Flask, render_template, session, flash, redirect, url_for, Blueprint, jsonify, request
 
 # Importing forms
 from project.users.forms import RegistrationForm, LoginForm, ContactUs
@@ -11,7 +11,10 @@ from project.decorators import login_required
 import requests
 
 # Importing auth functions
-from project.api.views import createUserFunc, signInFunc
+from project.api.views import createUserFunc, signInFunc, userVerified
+
+# Adding flask mail for email verification and password reset
+from flask_mail import Mail, Message
 
 # Defining Blueprint var
 users = Blueprint('users', __name__, template_folder='templates', static_folder='static')
@@ -67,6 +70,10 @@ def creationFormating(returnedData):
         print('Twitter not connected')
         print(e)
 
+
+from project.__init__ import mail, safeTimedUrlSerializer
+from itsdangerous import SignatureExpired
+
 # Register page url and function
 @users.route("/register", methods=['GET', 'POST'])
 def register():
@@ -81,6 +88,12 @@ def register():
             # Running auth function
             createUser = createUserFunc(form.email.data, form.password.data, form.firstname.data, form.lastname.data, 'web')
 
+            token = safeTimedUrlSerializer.dumps(form.email.data, salt='email-confirm')
+
+            # Sending email
+            link = url_for('users.confirmEmail', token=token, _external=True)
+            send = sendEmailVerified(form.email.data, link)
+
             # Getting returned data
             returnedData = createUser
             print('aaaa')
@@ -94,14 +107,47 @@ def register():
             session['email'] = email
 
             # Alerting user account was created
-            flash(f'Account Created for {form.email.data} !', 'success')
-            return redirect(url_for('dashboard.home'))
+            flash(f'Email Confirmation Sent to {form.email.data} !', 'success')
+            return redirect(url_for('users.login'))
         except Exception as e:
             print(e)
             flash(f'Failed to Create Account')
 
     return render_template('users/register.html', title='Register', form=form)
 
+
+def sendEmailVerified(email, link):
+    msg = Message('Confirm Email', sender='iblinkcompany@gmail.com', recipients=[email] )
+
+    msg.body = 'Confirm your email now! {}'.format(link)
+
+    mail.send(msg)
+    return 'success'
+
+@users.route("/confirm_email/<token>", methods=['GET', 'POST'])
+def confirmEmail(token):
+    try:
+        email = safeTimedUrlSerializer.loads(token, salt='email-confirm', max_age=6000)
+        # Running function for
+        verified = userVerified(email)
+        return render_template('users/confirm_email.html', title='Email Confirmed', email=email)
+    except SignatureExpired:
+        return '<h1>Url Expired</h1>'
+
+@users.route("/verify-now", methods=['GET', 'POST'])
+def verifyNow():
+    email = session['email']
+    if request.method == 'POST':
+        token = safeTimedUrlSerializer.dumps(email, salt='email-confirm')
+
+        # Sending email
+        link = url_for('users.confirmEmail', token=token, _external=True)
+        send = sendEmailVerified(email, link)
+
+        flash(f'Confirmation Email Sent')
+    return render_template('users/verify_now.html', title='Confirm Email')
+
+    
 @users.route("/login", methods=['GET', 'POST'])
 def login():
 
