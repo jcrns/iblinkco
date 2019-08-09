@@ -11,7 +11,7 @@ from project.decorators import login_required
 from project.users.views import creationFormating
 
 # Importing tips function
-from project.api.views import tips, history, followerData, websites, statistics, instagramPostsFormat, requestTwitter, requestInstagram, dataUpdating
+from project.api.views import tips, history, websites, statistics, instagramPostsFormat, requestTwitter, requestInstagram, dataUpdating
 
 # Importing counter tool
 import itertools

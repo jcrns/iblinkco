@@ -392,44 +392,6 @@ def history(userReturn):
 		print('Trouble getting history')
 		print(e)
 
-# Getting followers' data
-def followerData(userReturn):
-	try:
-		print('followw\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n')
-		followersLocatonList = []
-		followersNameList = []
-		print(userReturn)
-		# Getting followers info from database
-		followers = userReturn['twitter']['followers']['users']
-
-		# counter
-		x = 0
-
-		# For loop getting location and name
-		for follow in followers:
-			x += 1
-			followerLocation = follow['location']
-			print(followerLocation)
-			followersLocatonList.append(followerLocation)
-
-			followerName = follow['name']
-			print(followerName)
-
-			followersNameList.append(followerName)
-
-			if x > 9:
-				break
-		print(followersLocatonList)
-		print(followersNameList)
-		data = {}
-		data['name'] = followersNameList
-		data['location'] = followersLocatonList
-		print('\n\n\n\n\n\n\n\n\n\n\n\n')
-		return data
-	except Exception as e:
-		print('Trouble getting follower data returned')
-		print(e)
-
 def instagramPostsFormat(instagramPosts):
 	print(instagramPosts)
 	formattedDictionary = []
@@ -816,11 +778,9 @@ def userVerified(email):
 		try:
 			# adding email to list of verified accounts
 			verifiedAccounts = dict(database.child("verified-accounts").get().val())
-			counter = 0
 			if verifiedAccounts != None:		
-				for i in verifiedAccounts:
-					counter += 1
-				database.child("verified-accounts").child(counter).set({"email" : email})
+				for counter, i in enumerate(verifiedAccounts):
+					database.child("verified-accounts").child(counter).set({"email" : email})
 			else:
 				database.child("verified-accounts").child(0).set({"email" : email})
 			return 'success'	
@@ -860,86 +820,6 @@ def refreshSearch():
 		value = 'success'
 	except Exception as e:
 		print('Refresh search failed')
-		print(e)
-		value = 'failed'
-
-	return value
-
-@api.route("/refresh-followers", methods=['GET','POST'])
-def refreshFollowers():
-	print('aaaaa')
-	try:
-
-		currentFollowersShowingName = []
-		currentFollowersShowingLocation = []
-		followersLocatonList = []
-		followersNameList = []
-		print('aaaaa')
-
-		# Getting firebase data
-		user = session['user']
-		uid = user['localId']
-
-		# Getting number of followers
-		followers = database.child("users").child(uid).child("twitter").child("followers").child("users").get().val()
-
-		for currentItem in session['followersData'][0]:
-			currentFollowersShowingName.append(currentItem)
-
-		for currentItem in session['followersData'][1]:
-			currentFollowersShowingLocation.append(currentItem)
-
-		print()
-		# counter
-		x = 0
-		print('aaaaa')
-
-		# For loop getting location and name
-		for follow in followers:
-
-			# Checking if name is current
-			if follow['name'] in currentFollowersShowingName:
-				print('found')
-				continue
-			x += 1
-			followerLocation = follow['location']
-			print(followerLocation)
-			followersLocatonList.append(followerLocation)
-
-			followerName = follow['name']
-			print(followerName)
-
-			followersNameList.append(followerName)
-
-			if x > 9:
-				break
-
-		print("x")
-		print(x)
-		if x < 9:
-			print('aaaaa')
-			for currentItem in currentFollowersShowingName:
-				print(currentItem)
-				currentFollowerName = currentItem
-				followersNameList.append(currentFollowerName)
-
-			for currentItem in currentFollowersShowingLocation:
-				x += 1
-				currentFollowerLocation = currentItem
-				followersLocatonList.append(currentFollowerLocation)
-
-				if x > 9:
-					break
-		print(followersNameList)
-		print(followersLocatonList)
-
-		data = []
-		data.append(followersNameList)
-		data.append(followersLocatonList)
-		print(data)
-		session['followersData'] = data
-		value = 'success'
-	except Exception as e:
 		print(e)
 		value = 'failed'
 
@@ -1158,13 +1038,11 @@ def requestTwitter(uid):
 			except Exception as e:
 				print('not a new account')
 			print('aasnnnnfnfn')
-			for followerItem in historyData['followers']:
+			for counterFollowers, followerItem in enumerate(historyData['followers']):
 				print(followerItem['date'])
 				if str(date_time_api) == followerItem['date']:
 					todayAlreadyIn = True
 					break
-				else:
-					counterFollowers += 1
 			if todayAlreadyIn == False:
 				print("gfaergqaertgwetrg")
 				database.child("users").child(uid).child("twitter").child("history").child("followers").child(counterFollowers).set({'followers_count': twitterStats['followers'], 'date': date_time_api })
@@ -1178,7 +1056,7 @@ def requestTwitter(uid):
 			# Twitter tips
 			tweets = database.child("users").child(uid).child("twitter").child("tweets").get().val()
 			tweetCounter = 0
-			for tweet in tweets:
+			for tweetCounter, tweet in enumerate(tweets):
 				tweetTips = []
 				if len(tweet['tweet']) < 124:
 					tweetNotLongEnough = "This tweet is not long enough. Try making it 124 characters"
@@ -1256,7 +1134,6 @@ def requestInstagram(uid):
 		# Instagram History
 		historyData = dict(database.child("users").child(uid).child("instagram").child("history").get().val())
 
-		counterFollowers = 0
 		todayAlreadyIn = False
 		followersDateList = []
 		followersCountList = []
@@ -1273,13 +1150,11 @@ def requestInstagram(uid):
 			print('not a new account')
 
 		print('mbmmmbyyrgergreg')
-		for followerItem in historyData['followers']:
+		for counterFollowers, followerItem in enumerate(historyData['followers']):
 			print(followerItem)
 			if str(date_time_api) == followerItem['date']:
 				todayAlreadyIn = True
 				break
-			else:
-				counterFollowers += 1
 		if todayAlreadyIn == False:
 			database.child("users").child(uid).child("instagram").child("history").child("followers").child(counterFollowers).set({'followers_count': numberOfFollowers, 'date': date_time_api })
 			database.child("users").child(uid).child("instagram").child("history").child("following").child(counterFollowers).set({'following_count': numberOfFollowing, 'date': date_time_api })
@@ -1294,8 +1169,7 @@ def requestInstagram(uid):
 			# Instagram
 			instagramPost = databaseData['instagram']['instagramPosts']
 			tweets = databaseData['twitter']['tweets']
-			postCounter = 0
-			for post in instagramPost:
+			for postCounter, post in enumerate(instagramPost):
 				postTips = []
 				if len(post['caption']) < 300:
 					captionLengthTip = "The caption of this post isn't long enough try going into more detail"
@@ -1315,7 +1189,6 @@ def requestInstagram(uid):
 				if len(postTips) == 0:
 					postTips = ['null']
 				database.child("users").child(uid).child("instagram").child("instagramPosts").child(postCounter).child("tips").set(postTips)
-				postCounter += 1
 		except Exception as e:
 			print(e)
 			print("Post Tips Failed")
