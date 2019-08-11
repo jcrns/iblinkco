@@ -509,10 +509,9 @@ def createUserFunc(email, password, firstname, lastname, software):
 		database.child("users").child(uid).child("statistics").child("twitterRecentAvgLikes").set(0.0)
 		database.child("users").child(uid).child("statistics").child("twitterRecentAvgComments").set(0.0)
 		database.child("users").child(uid).child("statistics").child("twitterRecentAvgDescriptionLen").set(0.0)
-		# database.child("users").child(uid).child("statistics").child("beginFollowerCount").set(0)
-		# database.child("users").child(uid).child("statistics").child("currentFollowerCount").set(0)
 
-
+		# Setting user verification to false by default
+		database.child("verified-accounts").child(email).set(False)
 	except Exception as e:
 		print("problem with creation")
 		print(e)
@@ -771,22 +770,25 @@ def disconnectNiche():
 
 @api.route("/user-verified-confirmed", methods=['GET','POST'])
 def userVerifiedAPI():
-	userConfirmed = userVerified(email)
+	userConfirmed = userVerified(uid)
 
-def userVerified(email):
+def userVerified(uid):
 	try:
-		try:
-			# adding email to list of verified accounts
-			verifiedAccounts = dict(database.child("verified-accounts").get().val())
-			if verifiedAccounts != None:		
-				for counter, i in enumerate(verifiedAccounts):
-					database.child("verified-accounts").child(counter).set({"email" : email})
-			else:
-				database.child("verified-accounts").child(0).set({"email" : email})
-			return 'success'	
-		except Exception as e:
-			print(e)
-			database.child("verified-accounts").child(0).set({"email" : email})
+		# try:
+		# 	# adding email to list of verified accounts
+		# 	verifiedAccounts = dict(database.child("verified-accounts").get().val())
+		# 	if verifiedAccounts != None:		
+		# 		for counter, i in enumerate(verifiedAccounts):
+		# 			database.child("verified-accounts").child(counter).set({"email" : email})
+		# 	else:
+		# 		database.child("verified-accounts").child(0).set({"email" : email})
+		# 	return 'success'	
+		# except Exception as e:
+		# 	print(e)
+		# 	database.child("verified-accounts").child(0).set({"email" : email})
+
+		# verifiedCheck = database.child("verified-accounts").child(uid).get().val()
+		database.child("verified-accounts").child(uid).set(True)
 	except Exception as e:
 		print(e)
 		return 'failed'

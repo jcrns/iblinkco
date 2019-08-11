@@ -83,14 +83,21 @@ def home():
 		formatData = creationFormating(databaseData)
 		print(twitterFormatted)
 		try:
-			verifiedUsers = database.child("verified-accounts").get().val()
-			print(verifiedUsers)
+			# verifiedUsers = database.child("verified-accounts").get().val()
+			# print(verifiedUsers)
 
-			for user in verifiedUsers:
-				if user['email'] == session['email']:
-					userVerified = True
-					break
-			if userVerified == False:
+			# for user in verifiedUsers:
+			# 	if user['email'] == session['email']:
+			# 		userVerified = True
+			# 		break
+			# if userVerified == False:
+			# 	return redirect(url_for('users.verifyNow'))
+			email = session['email']
+			verifiedCheck = database.child("verified-accounts").child(uid).get().val()
+			print(verifiedCheck)
+			if verifiedCheck == True:
+				pass
+			else:
 				return redirect(url_for('users.verifyNow'))
 		except Exception as e:
 			print(e)

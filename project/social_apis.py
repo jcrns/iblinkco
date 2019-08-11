@@ -1,5 +1,4 @@
-import pyrebase, json, requests
-import json
+import pyrebase, json
 from random import choice
 from flask_oauthlib.client import OAuth
 import requests as rq

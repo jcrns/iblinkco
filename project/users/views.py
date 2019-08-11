@@ -88,7 +88,10 @@ def register():
             # Running auth function
             createUser = createUserFunc(form.email.data, form.password.data, form.firstname.data, form.lastname.data, 'web')
 
-            token = safeTimedUrlSerializer.dumps(form.email.data, salt='email-confirm')
+            user = createUser[1]
+            uid = user['localId']
+            emailDict = { "email" : form.email.data, "uid" : uid }
+            token = safeTimedUrlSerializer.dumps(emailDict, salt='email-confirm')
 
             # Sending email
             link = url_for('users.confirmEmail', token=token, _external=True)
@@ -127,9 +130,11 @@ def sendEmailVerified(email, link):
 @users.route("/confirm_email/<token>", methods=['GET', 'POST'])
 def confirmEmail(token):
     try:
-        email = safeTimedUrlSerializer.loads(token, salt='email-confirm', max_age=6000)
+        emailDict = safeTimedUrlSerializer.loads(token, salt='email-confirm', max_age=6000)
+        email = emailDict['email']
+        uid = emailDict['uid']
         # Running function for
-        verified = userVerified(email)
+        verified = userVerified(uid)
         return render_template('users/confirm_email.html', title='Email Confirmed', email=email)
     except SignatureExpired:
         return '<h1>Url Expired</h1>'
@@ -137,8 +142,12 @@ def confirmEmail(token):
 @users.route("/verify-now", methods=['GET', 'POST'])
 def verifyNow():
     email = session['email']
+    user = session['user']
+    uid = user['localId']
+    emailDict = { "email" : email, "uid" : uid }
+
     if request.method == 'POST':
-        token = safeTimedUrlSerializer.dumps(email, salt='email-confirm')
+        token = safeTimedUrlSerializer.dumps(emailDict, salt='email-confirm')
 
         # Sending email
         link = url_for('users.confirmEmail', token=token, _external=True)
