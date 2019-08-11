@@ -3,7 +3,9 @@
 {% block content %}
 <link href="{{ url_for('dashboard.static', filename = 'css/dashboard.css') }}" rel="stylesheet">
 {# DISPLAYING MESSAGES #}
-
+<script type="text/javascript">
+	alert("{{ session['userTwitterData']['followers'] }}")
+</script>
 {% if session['setup_complete'] == True %}
 	{% with messages = get_flashed_messages(with_categories=true) %}
 		{% if messages %}

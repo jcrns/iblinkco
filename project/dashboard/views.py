@@ -81,7 +81,7 @@ def home():
 
 		sessionRequest = dataUpdating(uid)
 		formatData = creationFormating(databaseData)
-		print(twitterFormatted)
+		print(instagramFormatted)
 		try:
 			# verifiedUsers = database.child("verified-accounts").get().val()
 			# print(verifiedUsers)
@@ -102,7 +102,7 @@ def home():
 		except Exception as e:
 			print(e)
 			return redirect(url_for('users.verifyNow'))
-
+		print("agwejgwrgbwretkgubwru")
 	return render_template('dashboard/home.html')
 
 # Setup and Website Update
