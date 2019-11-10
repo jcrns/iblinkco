@@ -1,9 +1,8 @@
 # Importing all needed Flask classes
 from flask import Flask, render_template, session, flash, redirect, url_for, session
 
-# Importing session
-from flask_sessionstore import Session
-
+# Session lib for increase session
+from flask_session import Session
 
 # Importing os to encode session variable
 import os
@@ -47,9 +46,17 @@ app.register_blueprint(dashboard)
 app.register_blueprint(api)
 
 sslify = SSLify(app)
-SESSION_TYPE = 'filesystem'
 
-# Config
+# Session config
+app.config['SESSION_PERMANENT'] = True
+app.config['PERMANENT_SESSION_LIFETIME'] =  timedelta(minutes=40000)
+app.config['SESSION_TYPE'] = 'filesystem'
+app.config['SESSION_FILE_THRESHOLD'] = 500  
+
+sess = Session()
+sess.init_app(app)
+
+# Config file link
 app.config.from_pyfile('appConfig.cfg')
 
 
@@ -60,7 +67,6 @@ mail = Mail(app)
 
 # External flask session library
 app.config.from_object(__name__)
-Session(app)
 
 @app.route('/')
 def root():

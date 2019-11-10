@@ -85,9 +85,12 @@ def register():
     if form.validate_on_submit():
 
         try:
-            # Running auth function
-            createUser = createUserFunc(form.email.data, form.password.data, form.firstname.data, form.lastname.data, 'web')
+            print('user')
 
+            # Running auth function
+            createUser = createUserFunc(form.email.data, form.password.data, form.firstname.data, form.lastname.data)
+            print(createUser)
+            print('aaaa')
             user = createUser[1]
             uid = user['localId']
             emailDict = { "email" : form.email.data, "uid" : uid }

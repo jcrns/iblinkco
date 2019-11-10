@@ -400,7 +400,11 @@ def instagramPostsFormat(instagramPosts):
 		picUrl = post['display_url']
 		numberOfLikes = post['edge_liked_by']['count']
 		numberOfComments = post['edge_media_to_comment']['count']
-		pictureText = post['accessibility_caption']
+		try:
+			pictureText = post['accessibility_caption']
+		except Exception as e:
+			pictureText = ''
+
 		caption = post['edge_media_to_caption']['edges'][0]['node']['text']
 
 		postDict['pic_url'] = picUrl
@@ -441,6 +445,7 @@ def signUp():
 	# Getting posted data and putting it in a dictionary
 	print(request.get_json)
 	print(request.json)
+	print('aaaa')
 	# Assigning variables to sign in to database
 	firstname = request.json['firstname']
 	lastname = request.json['lastname']
@@ -448,12 +453,14 @@ def signUp():
 	password = request.json['password']
 	software = request.json['software']
 
+	print('aaaa')
 
-	createdUser = createUserFunc(email, password, firstname, lastname, software)
+	createdUser = createUserFunc(email, password, firstname, lastname)
+	print(createdUser)
 	return jsonify(createdUser)
 
 # Signin function
-def createUserFunc(email, password, firstname, lastname, software):
+def createUserFunc(email, password, firstname, lastname):
 	try:
 		userReturn = []
 		userData = dict()
@@ -461,10 +468,10 @@ def createUserFunc(email, password, firstname, lastname, software):
 		userData['lastname'] = lastname
 		userData['password'] = password
 		userData['email'] = email
-
+		print('aaa')
 		# Attemptingto sign in to backend
 		user = authe.create_user_with_email_and_password(email,password)
-
+		print('dssdss')
 		# Assigning json data to variable to return to database
 		userAccount = {"firstname" : firstname, "lastname" : lastname, "email" : email, "setup_complete" : False, "niche" : "", "email_confirmed": False }
 
@@ -485,6 +492,7 @@ def createUserFunc(email, password, firstname, lastname, software):
 		addInstagramDefaultHistoryFollowers = [{ "date" : "null",  "followers_count" : 0 }]
 		addInstagramDefaultHistoryFollowing = [{ "date" : "null",  "following_count" : 0 }]
 
+		print('dssdss')
 		# Creating branches
 		database.child("users").child(uid).child("account").set(userAccount)
 		database.child("users").child(uid).child("website").set(addWebsite)
@@ -509,9 +517,9 @@ def createUserFunc(email, password, firstname, lastname, software):
 		database.child("users").child(uid).child("statistics").child("twitterRecentAvgLikes").set(0.0)
 		database.child("users").child(uid).child("statistics").child("twitterRecentAvgComments").set(0.0)
 		database.child("users").child(uid).child("statistics").child("twitterRecentAvgDescriptionLen").set(0.0)
-
+		print(uid)
 		# Setting user verification to false by default
-		database.child("verified-accounts").child(email).set(False)
+		database.child("verified-accounts").child(uid).set(False)
 	except Exception as e:
 		print("problem with creation")
 		print(e)
@@ -837,10 +845,13 @@ def connectInstagramAPI():
 			if returnedData == 'failed':
 				flash('Connecting Instagram Failed')
 				return redirect(url_for('dashboard.home'))
+			print(returnedData)
+			print('okkkkkkkk \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n')
 			# Getting user session
 			user = session['user']
 			uid = user['localId']
 
+			print('asasasassdfsdfgrtg')
 			database.child("users").child(uid).child("instagram").update(returnedData[0])
 			databaseData = dict(database.child("users").child(uid).get().val())
 			instagramDataFomated = instagramPostsFormat(returnedData[1])
@@ -849,6 +860,7 @@ def connectInstagramAPI():
 			
 			print('erghwrthwjrkthjwrt hkwrth\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n')
 			session['userInstagramData'] = databaseData['instagram']
+			print('aaasasasasasasasa')
 			return redirect(url_for('dashboard.home'))
 		except Exception as e:
 			print(e)
@@ -950,7 +962,7 @@ def disconnectTwitter(uid):
 def connectTwitterAPI():
 	try:
 		try:
-			print('connecting instagram api')
+			print('connecting twitter api')
 			print(request.form)
 			username = request.form['twitter-username']
 			returnedData = connectTwitter(username)
@@ -960,11 +972,15 @@ def connectTwitterAPI():
 			# Getting user session
 			user = session['user']
 			uid = user['localId']
+			print("preData\n\n\n\n\n\n\n")
+
+			print(returnedData[1])
 			database.child("users").child(uid).child("twitter").update(returnedData[1])
 			database.child("users").child(uid).child("twitter").child("tweets").set(returnedData[0])
-			print(returnedData)
+			# print(returnedData)
 			print("returnedData")
 			twitterData = dict(database.child("users").child(uid).child("twitter").get().val())
+			print(uid)
 			session['userTwitterData'] = twitterData
 			return redirect(url_for('dashboard.home'))
 		except Exception as e:
