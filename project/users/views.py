@@ -127,8 +127,12 @@ def sendEmailVerified(email, link):
 
     msg.body = 'Confirm your email now! {}'.format(link)
 
-    mail.send(msg)
-    return 'success'
+    try:
+        mail.send(msg)
+        return 'success'
+    except Exception as e:
+        print(e)
+        return 'failed'
 
 @users.route("/confirm_email/<token>", methods=['GET', 'POST'])
 def confirmEmail(token):
