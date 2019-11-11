@@ -113,7 +113,7 @@ def register():
             session['email'] = email
 
             # Alerting user account was created
-            flash(f'Email Confirmation Sent to {form.email.data} !', 'success')
+            flash(f'Email Confirmation Sent to {form.email.data} ! If not seen in your inbox check junk mail.', 'success')
             return redirect(url_for('users.login'))
         except Exception as e:
             print(e)
