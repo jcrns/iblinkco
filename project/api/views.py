@@ -10,7 +10,7 @@ import itertools
 # Importing random
 import random
 
-# Importing time 
+# Importing datetime 
 from datetime import datetime
 
 # Importing SequenceMatcher to detect how often certain words and characters are used
@@ -483,7 +483,7 @@ def createUserFunc(email, password, firstname, lastname):
 
 		# Default jsons
 		addTwitterDefault = {"followers":0, "following": 0, 'likes': 0, "username": ''}
-		addTwitterTweetDefault = [{ "time" : "", "tweet" : "", "tips" : ["null"] }]
+		addTwitterTweetDefault = [{ "time" : "", "tweet" : "", "tips" : ["null"], "time_since" : "" }]
 		addTwitterDefaultHistoryFollowers = [{ "date" : "null",  "followers_count" : 0 }]
 		addTwitterDefaultHistoryFollowing = [{ "date" : "null",  "following_count" : 0 }]
 
@@ -1016,9 +1016,119 @@ def requestTwitter(uid):
 		twitterScrapped = getTwitterData(username)
 		tweets = twitterScrapped[0]
 		twitterStats = twitterScrapped[1]
-		print(tweets)
+		print("aserfgnueirgqeborgiwuetrgbwryougwtnug\n\n\n\n\n\n\n")
+		print(twitterScrapped)
+		print('finding time since tweets')
+
+
+		# Updating twitter data in database
 		database.child("users").child(uid).child("twitter").update(twitterStats)
 		database.child("users").child(uid).child("twitter").child("tweets").set(tweets)
+
+		# Getting current year to filter time
+		now = datetime.now()
+		year = str(now.year)
+
+		# Count to keep track of tweet in loop
+		i = 0
+
+		# Getting current timestamp to compare with given timestamps
+		currentTime = datetime.timestamp(now)
+
+		# Finding time since each tweet using date of
+		for tweet in tweets:
+			time = str(tweet['time'])
+
+			try:
+				print(time)
+
+				if 'minutes' in time or 'minute' in time:
+					digit = time.split('m')
+					digit = int(digit[0])
+
+					# Times digit by 60 to get true amount of min
+					digit = digit * 60
+
+					# Getting and formating time posted
+					timeBetween = currentTime - digit
+					datetimeObj = datetime.fromtimestamp(timeBetween)
+					finalDate = datetimeObj.strftime("%b %d %Y")
+					print(finalDate)
+
+					# Saving data in database
+					database.child("users").child(uid).child("twitter").child("tweets").child(i).child("time_since").set(digit)
+					database.child("users").child(uid).child("twitter").child("tweets").child(i).child("time").set(finalDate)
+
+				elif 'seconds' in time or 'second' in time:
+					digit = time.split('s')
+					digit = int(digit[0])
+
+					# Getting and formating time posted
+					timeBetween = currentTime - digit
+					datetimeObj = datetime.fromtimestamp(timeBetween)
+					finalDate = datetimeObj.strftime("%b %d %Y")
+					print(finalDate)
+
+					# Saving data in database
+					database.child("users").child(uid).child("twitter").child("tweets").child(i).child("time_since").set(digit)
+					database.child("users").child(uid).child("twitter").child("tweets").child(i).child("time").set(finalDate)
+
+				elif 'hours' in time or 'hour' in time:
+					digit = time.split('h')
+					digit = int(digit[0])
+					digit = digit * 3600
+
+					# Getting and formating time posted
+					timeBetween = currentTime - digit
+					datetimeObj = datetime.fromtimestamp(timeBetween)
+					finalDate = datetimeObj.strftime("%b %d %Y")
+
+					# Saving data in database
+					database.child("users").child(uid).child("twitter").child("tweets").child(i).child("time_since").set(digit)
+					database.child("users").child(uid).child("twitter").child("tweets").child(i).child("time").set(finalDate)
+			
+				elif 'days' in time:
+					digit = time.split('d')
+					digit = digit[0]
+					digit = digit * 86400
+
+					# Getting and formating time posted
+					timeBetween = currentTime - digit
+					datetimeObj = datetime.fromtimestamp(timeBetween)
+					finalDate = datetimeObj.strftime("%b %d %Y")
+
+					# Saving data in database
+					database.child("users").child(uid).child("twitter").child("tweets").child(i).child("time_since").set(digit)
+					database.child("users").child(uid).child("twitter").child("tweets").child(i).child("time").set(finalDate)
+
+				else:
+					try:
+						print('good')
+						if year not in time:
+							time = time + ' ' + year
+						dateFormat = "%b %d %Y"
+						datetimeObj = datetime.strptime(time, dateFormat)
+						print(time)
+						print("Datetime:", datetimeObj)
+						print("Time since")
+						timeSince = now - datetimeObj
+						print("Time since in seconds")
+						secSince = timeSince.total_seconds()
+						print(secSince)
+						
+						# Saving data in database
+						database.child("users").child(uid).child("twitter").child("tweets").child(i).child("time_since").set(secSince)
+						database.child("users").child(uid).child("twitter").child("tweets").child(i).child("time").set(time)
+						print(i)
+					except Exception as e:
+						print(e)
+						print('not it')
+			except Exception as e:
+				print(e)
+
+			i += 1
+
+			
 
 		# Getting current time 
 		now = datetime.now()
@@ -1048,10 +1158,14 @@ def requestTwitter(uid):
 				if historyData['followers'][0]['date'] == 'null':
 					todayAlreadyIn = True
 					print('aargwrtgrwg')
+
+					# Saving data in database
 					database.child("users").child(uid).child("twitter").child("history").child("followers").child(0).set({'followers_count': twitterStats['followers'], 'date': date_time_api })
 				if historyData['following'][0]['date'] == 'null':
 					print('aargwrtgrwgrfgt')
 					todayAlreadyIn = True
+
+					# Saving data in database
 					database.child("users").child(uid).child("twitter").child("history").child("following").child(0).set({'following_count': twitterStats['following'], 'date': date_time_api })
 			except Exception as e:
 				print('not a new account')
@@ -1063,6 +1177,8 @@ def requestTwitter(uid):
 					break
 			if todayAlreadyIn == False:
 				print("gfaergqaertgwetrg")
+
+				# Saving data in database
 				database.child("users").child(uid).child("twitter").child("history").child("followers").child(counterFollowers).set({'followers_count': twitterStats['followers'], 'date': date_time_api })
 				database.child("users").child(uid).child("twitter").child("history").child("following").child(counterFollowers).set({'following_count': twitterStats['following'], 'date': date_time_api })
 			print('aasnnnnfnfn')
@@ -1144,6 +1260,69 @@ def requestInstagram(uid):
 		# Getting current time 
 		now = datetime.now()
 
+		# Timestamp now
+		currentTime = datetime.timestamp(now)
+
+		# Getting date of recent post to format all data by time
+		try:
+			print("Trying to format time \n\n\n\n\n\n\n")
+
+			# Count to keep track of tweet in loop
+			i = 0
+
+			for post in instagramPosts:
+				print(i)
+				# Getting timestamp from post
+				time = post['taken_at_timestamp']
+
+				# Converting timestamp into datetime
+				datetimeObj = datetime.fromtimestamp(time)
+
+				# Getting time since time stamp
+				timeSince = currentTime - time
+
+				# Formatted time put in database
+				formattedDate = datetimeObj.strftime("%b %d %Y")
+
+
+				print("Time Since", timeSince)
+				print("Date", datetimeObj)
+				print("Formatted Date", formattedDate)
+
+				# Saving data in database
+				database.child("users").child(uid).child("instagram").child("instagramPosts").child(i).child("time_since").set(timeSince)
+				database.child("users").child(uid).child("instagram").child("instagramPosts").child(i).child("time").set(formattedDate)
+				i += 1
+		except Exception as e:
+			print(e)
+
+		# Calculating popularity using post activity(likes and comments)
+		try:
+			print('hahahahah')
+			for post in instagramPosts:
+				# Going through each post
+				likeVar = 1
+				commentVar = 1.2
+				i = 0
+				for post in instagramPosts:
+
+					# Calculating likes
+					likes = post['number_of_likes']
+					totalLikes = likes * likeVar
+
+					# Calculating comments
+					comments = post['number_of_comments']
+					totalComments = comments * commentVar
+
+					# Creating popularity variable
+					popularity = totalLikes + totalComments
+
+					# Saving data in database
+					database.child("users").child(uid).child("instagram").child("instagramPosts").child(i).child("popularity").set(formattedDate)
+					i += 1
+		except Exception as e:
+			print(e)
+
 		date_time = now.strftime("%m-%d-%Y")
 		date_time_api = now.strftime("%m_%d_%Y")
 		print(numberOfFollowers)
@@ -1219,8 +1398,33 @@ def requestInstagram(uid):
 		return instagramData
 	except Exception as e:
 		print(e)
-		print('Instagram Get Data failed')
+		print('Instagram Get Data failed\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n')
 		return 'failed'
+
+# Sorting stream data
+def stream(twitter=0, instagram=0):
+
+	# Checking if data was given else returning function
+	if instagram == 0 and twitter == 0:
+		return 'no data given'
+
+	# Creating list that will have sorted data
+	preSortList = []
+
+	if instagram != 0:
+		posts = instagram['instagramPosts']
+		for post in posts:
+			preSortList.append(post)
+
+
+	if twitter != 0:
+		tweets = twitter['tweets']
+		for tweet in tweets:
+			preSortList.append(tweet)
+
+	finalSortedList = sorted(preSortList, key=lambda time: time['time_since'])
+	return finalSortedList
+
 
 # Getting data and creating sessions after social platform functions run
 def dataUpdating(uid):

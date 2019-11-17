@@ -11,7 +11,7 @@ from project.decorators import login_required
 from project.users.views import creationFormating
 
 # Importing tips function
-from project.api.views import tips, history, websites, statistics, instagramPostsFormat, requestTwitter, requestInstagram, dataUpdating
+from project.api.views import tips, history, websites, statistics, instagramPostsFormat, requestTwitter, requestInstagram, stream, dataUpdating
 
 # Importing counter tool
 import itertools
@@ -32,16 +32,24 @@ twitter = twitterConnect()
 @dashboard.route("/dashboard", methods=['GET', 'POST'])
 @login_required
 def home():
-	# Checking if twitter oauth is in session
-	# if session.get('twitter_oauth') is not None:
-	# 	# Running twitter request function if session exist
+
 	# Getting data
 	user = session['user']
 	uid = user['localId']
 	databaseData = dict(database.child("users").child(uid).get().val())
 	setup_complete = databaseData['account']['setup_complete']
 
-	userVerified = False
+	# Checking if user email is confirmed
+	try:
+		verifiedCheck = database.child("verified-accounts").child(uid).get().val()
+		print(verifiedCheck)
+		if verifiedCheck == True:
+			pass
+		else:
+			return redirect(url_for('users.verifyNow'))
+	except Exception as e:
+		print(e)
+		return redirect(url_for('users.verifyNow'))
 
 	if setup_complete == True:
 		try:
@@ -52,6 +60,8 @@ def home():
 				print(e)
 				twitterFormatted = twitterRequest
 			if twitterFormatted == 'failed':
+				# Because twitter failed changing to 0 for stream func
+				twitterFormatted = 0
 				if session.get('userTwitterData'):
 					session.pop('userTwitterData')
 			else:
@@ -70,6 +80,9 @@ def home():
 			
 
 			if instagramFormatted == 'failed':
+
+				# Because instagram failed changing to 0 for stream func
+				instagramFormatted = 0
 				if session.get('userInstagramData'):
 					session.pop('userInstagramData')
 			else:
@@ -79,29 +92,18 @@ def home():
 			print(e)
 			print("aergergqergqrthetyjtyrgkwr thwkrth wtyhk ety etjyektyjytjetyj\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n")
 
+		# Updating sessions and starts with this func
 		sessionRequest = dataUpdating(uid)
 		formatData = creationFormating(databaseData)
-		print(instagramFormatted)
-		try:
-			# verifiedUsers = database.child("verified-accounts").get().val()
-			# print(verifiedUsers)
 
-			# for user in verifiedUsers:
-			# 	if user['email'] == session['email']:
-			# 		userVerified = True
-			# 		break
-			# if userVerified == False:
-			# 	return redirect(url_for('users.verifyNow'))
-			email = session['email']
-			verifiedCheck = database.child("verified-accounts").child(uid).get().val()
-			print(verifiedCheck)
-			if verifiedCheck == True:
-				pass
-			else:
-				return redirect(url_for('users.verifyNow'))
-		except Exception as e:
-			print(e)
-			return redirect(url_for('users.verifyNow'))
+
+		# Running function to get sorted data
+		formattedInStream = stream(twitterFormatted, instagramFormatted)
+		print(formattedInStream)
+
+		# Putting sorted data in session
+		session['stream'] = formattedInStream
+
 		print("agwejgwrgbwretkgubwru")
 	return render_template('dashboard/home.html')
 

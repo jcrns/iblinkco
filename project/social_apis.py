@@ -113,8 +113,10 @@ def getTwitterData(username):
 		tweets.append(child.text)
 	
 	for child in streamChildrenTime:
+		print("child")
+		print(child.text)
 		if 'hours ago' in child.text:
-			recentTime = child.text[:4]
+			recentTime = child.text
 			print(recentTime)
 			tweetTimes.append(recentTime)
 		else:	

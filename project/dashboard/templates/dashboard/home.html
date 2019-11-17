@@ -240,46 +240,39 @@
 
 		<!-- Stream and Website Divs -->
 		<div class="col-xs-12 col-sm-12 col-md-5 col-lg-5" id="right-container">
-			{# Instagram Stream #}
-			{% if session['userInstagramData'] %}
+			{# Stream #}
+			{% if session['stream'] %}
 				<div class="card stream">
-					<h4>Stream Instagram</h4>
-					<hr>
-					{% for post in session['userInstagramData']['instagramPosts'] %}
-						<br>
-						{% if post.tips|length > 2 %}
-							<img src="{{ post['pic_url'] }}" class="instagram-stream-img text-center float-center bg-warning">
-						{% else %}
-							<img src="{{ post['pic_url'] }}" class="instagram-stream-img text-center float-center">
+					<p><span class="h4">Stream</span> <span><select><option>By Date</option></select></span></p>
+					{% for item in session['stream'] %}
+						{% if item.tweet %}
+							<p><b class="h5">{{ session['userTwitterData']['username'] }}</b></p>
+							<p class="h6">{{ item.tweet }}</p>
+							<small><span>{{ item.time }}</span></small>
+							{% for tip in item.tips %}
+								{% if tip != 'null' %}
+									<p class="text-center text-secondary">{{ tip }}</p>
+								{% endif %}
+							{% endfor %}
+							<hr>
+						{% elif item.caption %}
+							<p><b class="h5">{{ session['userInstagramData']['username'] }}</b></p>
+							{% if item.tips|length > 2 %}
+								<img src="{{ item['pic_url'] }}" class="instagram-stream-img text-center float-center bg-warning">
+							{% else %}
+								<img src="{{ item['pic_url'] }}" class="instagram-stream-img text-center float-center">
+							{% endif %}
+							<p>{{ item.caption }} <span>{{ item.time }}</span></p>	
+							<p>{{ item.number_of_likes }} Likes</p>
+							<p>{{ item.number_of_comments }} Comments</p>
+							{% for tip in item.tips %}	
+								{% if tip != 'null' %}
+									<p class="text-center text-secondary">{{ tip }}</p>
+								{% endif %}
+							{% endfor %}
+							<hr>
+							<br>
 						{% endif %}
-						<p>{{ post.caption }}</p>	
-						<p>{{ post.number_of_likes }} Likes</p>
-						<p>{{ post.number_of_comments }} Comments</p>
-						{% for tip in post.tips %}	
-							{% if tip != 'null' %}
-								<p class="text-center text-secondary">{{ tip }}</p>
-							{% endif %}
-						{% endfor %}
-						<hr>
-						<br>
-					{% endfor %}
-				</div>
-			{% endif %}
-
-			{# Twitter Stream #}
-			{% if session['userTwitterData'] %}
-				<div class="card stream">
-					<h4>Stream Twitter</h4>
-					<hr>
-					{% for tweet in session['userTwitterData']['tweets'] %}
-						<p class="h6">{{ tweet.tweet }}</p>
-						<small><span>{{ tweet.time }}</span></small>
-						{% for tip in tweet.tips %}
-							{% if tip != 'null' %}
-							<p class="text-center text-secondary">{{ tip }}</p>
-							{% endif %}
-						{% endfor %}
-						<hr>
 					{% endfor %}
 				</div>
 			{% endif %}
