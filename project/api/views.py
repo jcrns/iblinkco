@@ -723,7 +723,10 @@ def postNiche():
 		user = session['user']
 		uid = user['localId']
 
-		location = database.child("users").child(uid).child("twitter").child("userData").child("location").get().val()
+		try:
+			location = database.child("users").child(uid).child("twitter").child("location").get().val()
+		except Exception as e:
+			raise e
 		
 		# Getting competitiors on google
 		searchResults = googleSearch(nichePost, location, 1)
@@ -811,7 +814,11 @@ def refreshSearch():
 
 		# Getting parameter data from firebase
 		niche = database.child("users").child(uid).child("account").child("niche").get().val()
-		location = database.child("users").child(uid).child("twitter").child("userData").child("location").get().val()
+
+		try:
+			location = database.child("users").child(uid).child("twitter").child("location").get().val()
+		except Exception as e:
+			raise e
 
 		# Running function
 		randomInt = random.randint(1,7)
@@ -1128,7 +1135,7 @@ def requestTwitter(uid):
 
 			i += 1
 
-			
+
 
 		# Getting current time 
 		now = datetime.now()
@@ -1460,9 +1467,6 @@ def dataUpdating(uid):
 	except Exception as e:
 		print(e)
 		print("instagram not connected")
-
-	
-	session['statistics'] = stats
 	
 	# Updating tips in firebase
 	database.child("users").child(uid).child("tips").set(returnedTips)
@@ -1479,7 +1483,6 @@ def dataUpdating(uid):
 	historyData = history(databaseData)
 	print('a')
 	print(historyData)
-	session['history'] = historyData
 	print('aaaa')
 
 	# Getting website data
@@ -1488,7 +1491,13 @@ def dataUpdating(uid):
 	print(databaseData)
 	print(session)
 	
+	# Getting competition data
+	competition = databaseData['competition']
+	print(competition)
+	print('wefqergfqergqeggre \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n')
+
 	session['statistics'] = stats
 	session['history'] = historyData
 	session['websiteData'] = websiteData
+	session['competition'] = competition
 

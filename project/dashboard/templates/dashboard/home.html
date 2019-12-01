@@ -504,48 +504,50 @@
 			var searchUrlList = [];
 
 			{% if session['competition'] %}
-				// Getting data from session
-				{% for title in session['competition']['title'] %}
-				title = '{{ title }}'
-				searchTitleList.push(title)
-				{% endfor %}
+				{% if session['competition']['link'][0] != 'null' %}
+					// Getting data from session
+					{% for title in session['competition']['title'] %}
+					title = '{{ title }}'
+					searchTitleList.push(title)
+					{% endfor %}
 
-				{% for url in session['competition']['link'] %}
-				url = '{{ url }}'
-				searchUrlList.push(url)
-				{% endfor %}
+					{% for url in session['competition']['link'] %}
+					url = '{{ url }}'
+					searchUrlList.push(url)
+					{% endfor %}
 
-				// Putting data in table
-				var opperationTable = document.getElementById('competition-table'); 
+					// Putting data in table
+					var opperationTable = document.getElementById('competition-table'); 
 
 
-				var titleHead = document.createElement('thead');
-				
-				var titleRow = document.createElement('tr');
+					var titleHead = document.createElement('thead');
+					
+					var titleRow = document.createElement('tr');
 
-				var titleName = document.createElement('th');
-				titleName.innerHTML = "<b>Title</b>";
+					var titleName = document.createElement('th');
+					titleName.innerHTML = "<b>Title</b>";
 
-				titleRow.append(titleName)
-				titleHead.append(titleRow)
-				opperationTable.appendChild(titleHead)
+					titleRow.append(titleName)
+					titleHead.append(titleRow)
+					opperationTable.append(titleHead)
 
-				var titleBody = document.createElement('tbody');
-				opperationTable.appendChild(titleBody)
-				for(var i = 0; i < searchTitleList.length; i++){
+					var titleBody = document.createElement('tbody');
+					opperationTable.appendChild(titleBody)
+					for(var i = 0; i < searchTitleList.length; i++){
 
-					// Creating Elements
-					var itemRow = document.createElement('tr');
-					var itemDataRowName = document.createElement('td');
-	          		
-	          		// Adding content
-	          		itemDataRowName.innerHTML = "<a href='" + searchUrlList[i] + "' ' target='_blank'> " + searchTitleList[i] + "</a>";
+						// Creating Elements
+						var itemRow = document.createElement('tr');
+						var itemDataRowName = document.createElement('td');
+		          		
+		          		// Adding content
+		          		itemDataRowName.innerHTML = "<a href='" + searchUrlList[i] + "' ' target='_blank'> " + searchTitleList[i] + "</a>";
 
-	          		// Appending content
-	          		itemRow.appendChild(itemDataRowName);
-	          		titleBody.appendChild(itemRow);
-	          	}
-	          	{% endif %}
+		          		// Appending content
+		          		itemRow.appendChild(itemDataRowName);
+		          		titleBody.appendChild(itemRow);
+		          	}
+		        {% endif %}
+	        {% endif %}
 
 	    }
 	    competition();
