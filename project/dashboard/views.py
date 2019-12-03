@@ -16,6 +16,9 @@ from project.api.views import tips, history, websites, statistics, instagramPost
 # Importing counter tool
 import itertools
 
+# Importing time
+import time
+
 # Creating blueprint for app
 dashboard = Blueprint('dashboard', __name__, static_folder='static' , template_folder='templates', static_url_path='/static/dashboard')
 
@@ -32,7 +35,7 @@ twitter = twitterConnect()
 @dashboard.route("/dashboard", methods=['GET', 'POST'])
 @login_required
 def home():
-
+	t0 = time.time()
 	# Getting data
 	user = session['user']
 	uid = user['localId']
@@ -105,6 +108,9 @@ def home():
 		session['stream'] = formattedInStream
 
 		print("agwejgwrgbwretkgubwru")
+		t1 = time.time()
+		total = t1-t0
+		print(total)
 	return render_template('dashboard/home.html')
 
 # Setup and Website Update

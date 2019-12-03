@@ -395,6 +395,13 @@ def history(userReturn):
 def instagramPostsFormat(instagramPosts):
 	print(instagramPosts)
 	formattedDictionary = []
+
+	# Getting current time 
+	now = datetime.now()
+
+	# Timestamp now
+	currentTime = datetime.timestamp(now)
+	
 	for post in instagramPosts:
 		postDict = {}
 		picUrl = post['display_url']
@@ -413,6 +420,47 @@ def instagramPostsFormat(instagramPosts):
 		postDict['picture_text'] = pictureText
 		postDict['caption'] = caption
 		postDict['tips'] = ['']
+
+		# Getting timestamp from post
+		time = post['taken_at_timestamp']
+
+		# Converting timestamp into datetime
+		datetimeObj = datetime.fromtimestamp(time)
+
+		# Getting time since time stamp
+		timeSince = currentTime - time
+
+		# Formatted time put in database
+		formattedDate = datetimeObj.strftime("%b %d %Y")
+
+
+		print("Time Since", timeSince)
+		print("Date", datetimeObj)
+		print("Formatted Date", formattedDate)
+
+		postDict['time_since'] = timeSince
+		postDict['time'] = formattedDate
+
+		# Providing tips per post
+		postTips = []
+		if len(post['caption']) < 300:
+			captionLengthTip = "The caption of this post isn't long enough try going into more detail"
+			postTips.append(captionLengthTip)
+		if "#" not in post['caption']:
+			noHashtagsInCaption = "There aren't any hashtags in this post. We recommend that you use at least 3."
+			postTips.append(noHashtagsInCaption)
+		elif post['caption'].count('#') < 3:
+			notEnoughHashtags = "Good job using hashtags on this post but we recommend you use more. How about 3?"
+			postTips.append(notEnoughHashtags)
+		if SequenceMatcher(None, post['caption'], post['picture_text']).ratio() > 0.1:
+			pictureTextAndCaptionTooAlike = "The text on your picture is very simular to your caption."
+			postTips.append(pictureTextAndCaptionTooAlike)
+		elif SequenceMatcher(None, post['caption'], post['picture_text']).ratio() < 0.03:
+			pictureTextAndCaptionTextLookNothingAlike = "Your picture text and caption are nothing alike. Try to make the caption and picture text more related"
+			postTips.append(pictureTextAndCaptionTextLookNothingAlike)
+		if len(postTips) == 0:
+			postTips = ['null']
+		postDict['tips'] = postTips
 		formattedDictionary.append(postDict)
 	return formattedDictionary
 
@@ -1018,7 +1066,11 @@ def connectTwitter(username):
 def requestTwitter(uid):
 	# Trying to run webscrapping function
 	try:
-		username = database.child("users").child(uid).child("twitter").child("username").get().val()
+		try:
+			twitterData = dict(database.child("users").child(uid).child("twitter").get().val())
+		except Exception as e:
+			return 'failed'
+		username = twitterData['username']
 		print("Request Twitter\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n")
 		twitterScrapped = getTwitterData(username)
 		tweets = twitterScrapped[0]
@@ -1030,7 +1082,7 @@ def requestTwitter(uid):
 
 		# Updating twitter data in database
 		database.child("users").child(uid).child("twitter").update(twitterStats)
-		database.child("users").child(uid).child("twitter").child("tweets").set(tweets)
+		# database.child("users").child(uid).child("twitter").child("tweets").set(tweets)
 
 		# Getting current year to filter time
 		now = datetime.now()
@@ -1042,10 +1094,11 @@ def requestTwitter(uid):
 		# Getting current timestamp to compare with given timestamps
 		currentTime = datetime.timestamp(now)
 
+		finalTweetList = []
 		# Finding time since each tweet using date of
 		for tweet in tweets:
 			time = str(tweet['time'])
-
+			print(tweet)
 			try:
 				print(time)
 
@@ -1062,9 +1115,16 @@ def requestTwitter(uid):
 					finalDate = datetimeObj.strftime("%b %d %Y")
 					print(finalDate)
 
+					# Getting tips for tweet
+					tips = twitterTweetTips(tweet['tweet'])
+
+					# Adding data to dict
+					finalTweetList.append({ "time_since" : digit, "time" : finalDate, "tweet" : tweet['tweet'], "tips" : tips })
+
+
 					# Saving data in database
-					database.child("users").child(uid).child("twitter").child("tweets").child(i).child("time_since").set(digit)
-					database.child("users").child(uid).child("twitter").child("tweets").child(i).child("time").set(finalDate)
+					# database.child("users").child(uid).child("twitter").child("tweets").child(i).child("time_since").set(digit)
+					# database.child("users").child(uid).child("twitter").child("tweets").child(i).child("time").set(finalDate)
 
 				elif 'seconds' in time or 'second' in time:
 					digit = time.split('s')
@@ -1076,9 +1136,15 @@ def requestTwitter(uid):
 					finalDate = datetimeObj.strftime("%b %d %Y")
 					print(finalDate)
 
+					# Getting tips for tweet
+					tips = twitterTweetTips(tweet['tweet'])
+
+					# Adding data to dict
+					finalTweetList.append({ "time_since" : digit, "time" : finalDate, "tweet" : tweet['tweet'], "tips" : tips })
+					
 					# Saving data in database
-					database.child("users").child(uid).child("twitter").child("tweets").child(i).child("time_since").set(digit)
-					database.child("users").child(uid).child("twitter").child("tweets").child(i).child("time").set(finalDate)
+					# database.child("users").child(uid).child("twitter").child("tweets").child(i).child("time_since").set(digit)
+					# database.child("users").child(uid).child("twitter").child("tweets").child(i).child("time").set(finalDate)
 
 				elif 'hours' in time or 'hour' in time:
 					digit = time.split('h')
@@ -1090,9 +1156,15 @@ def requestTwitter(uid):
 					datetimeObj = datetime.fromtimestamp(timeBetween)
 					finalDate = datetimeObj.strftime("%b %d %Y")
 
+					# Getting tips for tweet
+					tips = twitterTweetTips(tweet['tweet'])
+
+					# Adding data to dict
+					finalTweetList.append({ "time_since" : digit, "time" : finalDate, "tweet" : tweet['tweet'], "tips" : tips })
+
 					# Saving data in database
-					database.child("users").child(uid).child("twitter").child("tweets").child(i).child("time_since").set(digit)
-					database.child("users").child(uid).child("twitter").child("tweets").child(i).child("time").set(finalDate)
+					# database.child("users").child(uid).child("twitter").child("tweets").child(i).child("time_since").set(digit)
+					# database.child("users").child(uid).child("twitter").child("tweets").child(i).child("time").set(finalDate)
 			
 				elif 'days' in time:
 					digit = time.split('d')
@@ -1104,9 +1176,15 @@ def requestTwitter(uid):
 					datetimeObj = datetime.fromtimestamp(timeBetween)
 					finalDate = datetimeObj.strftime("%b %d %Y")
 
+					# Getting tips for tweet
+					tips = twitterTweetTips(tweet['tweet'])
+
+					# Adding data to dict
+					finalTweetList.append({ "time_since" : digit, "time" : finalDate, "tweet" : tweet['tweet'], "tips" : tips })
+
 					# Saving data in database
-					database.child("users").child(uid).child("twitter").child("tweets").child(i).child("time_since").set(digit)
-					database.child("users").child(uid).child("twitter").child("tweets").child(i).child("time").set(finalDate)
+					# database.child("users").child(uid).child("twitter").child("tweets").child(i).child("time_since").set(digit)
+					# database.child("users").child(uid).child("twitter").child("tweets").child(i).child("time").set(finalDate)
 
 				else:
 					try:
@@ -1123,19 +1201,29 @@ def requestTwitter(uid):
 						secSince = timeSince.total_seconds()
 						print(secSince)
 						
+						# Getting tips for tweet
+						tips = twitterTweetTips(tweet['tweet'])
+
+						# Adding data to dict
+						finalTweetList.append({ "time_since" : secSince, "time" : time, "tweet" : tweet['tweet'], "tips" : tips })
+
 						# Saving data in database
-						database.child("users").child(uid).child("twitter").child("tweets").child(i).child("time_since").set(secSince)
-						database.child("users").child(uid).child("twitter").child("tweets").child(i).child("time").set(time)
+						# database.child("users").child(uid).child("twitter").child("tweets").child(i).child("time_since").set(secSince)
+						# database.child("users").child(uid).child("twitter").child("tweets").child(i).child("time").set(time)
 						print(i)
 					except Exception as e:
 						print(e)
-						print('not it')
+						print('not it else')
 			except Exception as e:
 				print(e)
 
 			i += 1
 
 
+		# Posting formated twitter data to database
+		print("finalTweetList\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n")
+		print(finalTweetList)
+		database.child("users").child(uid).child("twitter").child("tweets").set(finalTweetList)
 
 		# Getting current time 
 		now = datetime.now()
@@ -1193,35 +1281,29 @@ def requestTwitter(uid):
 			print('Exception for loop')
 			print(e)
 		print(twitterScrapped)
-		try:
-			# Twitter tips
-			tweets = database.child("users").child(uid).child("twitter").child("tweets").get().val()
-			tweetCounter = 0
-			for tweetCounter, tweet in enumerate(tweets):
-				tweetTips = []
-				if len(tweet['tweet']) < 124:
-					tweetNotLongEnough = "This tweet is not long enough. Try making it 124 characters"
-					tweetTips.append(tweetNotLongEnough)
-				if "#" not in tweet['tweet']:
-					tweetHashtagNotInTweet = "Hashtags not in tweet"
-					tweetTips.append(tweetHashtagNotInTweet)
-				if len(tweetTips) == 0:
-					tweetTips = ['null']
-				database.child("users").child(uid).child("twitter").child("tweets").child(tweetCounter).child("tips").set(tweetTips)
-				tweetCounter += 1
-			print('wergkwemgskrtlgnwrtjgkwrnjgwrkg')
-		except Exception as e:
-			print(e)
-			print("twitter tips didn't work")
-		try:
-			twitterData = dict(database.child("users").child(uid).child("twitter").get().val())
-		except Exception as e:
-			return 'failed'
 		return twitterData
 	except Exception as e:
 		print(e)
 		print('twitter login failed')
 		return 'failed'
+
+# Function to provide tips for every tweet
+def twitterTweetTips(tweet):
+	print('sefwergwrf')
+	tweetTips = []
+	if len(tweet) < 124:
+		tweetNotLongEnough = "This tweet is not long enough. Try making it 124 characters"
+		tweetTips.append(tweetNotLongEnough)
+	if "#" not in tweet:
+		tweetHashtagNotInTweet = "Hashtags not in tweet"
+		tweetTips.append(tweetHashtagNotInTweet)
+	if len(tweetTips) == 0:
+		tweetTips = ['null']
+
+	# Returning null list if tweet is empty
+	if not tweetTips:
+		tweetTips.append('null') 
+	return tweetTips
 
 # Instagram 
 def requestInstagram(uid):
@@ -1269,39 +1351,6 @@ def requestInstagram(uid):
 
 		# Timestamp now
 		currentTime = datetime.timestamp(now)
-
-		# Getting date of recent post to format all data by time
-		try:
-			print("Trying to format time \n\n\n\n\n\n\n")
-
-			# Count to keep track of tweet in loop
-			i = 0
-
-			for post in instagramPosts:
-				print(i)
-				# Getting timestamp from post
-				time = post['taken_at_timestamp']
-
-				# Converting timestamp into datetime
-				datetimeObj = datetime.fromtimestamp(time)
-
-				# Getting time since time stamp
-				timeSince = currentTime - time
-
-				# Formatted time put in database
-				formattedDate = datetimeObj.strftime("%b %d %Y")
-
-
-				print("Time Since", timeSince)
-				print("Date", datetimeObj)
-				print("Formatted Date", formattedDate)
-
-				# Saving data in database
-				database.child("users").child(uid).child("instagram").child("instagramPosts").child(i).child("time_since").set(timeSince)
-				database.child("users").child(uid).child("instagram").child("instagramPosts").child(i).child("time").set(formattedDate)
-				i += 1
-		except Exception as e:
-			print(e)
 
 		# Calculating popularity using post activity(likes and comments)
 		try:
@@ -1369,33 +1418,6 @@ def requestInstagram(uid):
 		followingDateList = []
 		followingCountList = []
 
-		try:
-			# Instagram
-			instagramPost = databaseData['instagram']['instagramPosts']
-			tweets = databaseData['twitter']['tweets']
-			for postCounter, post in enumerate(instagramPost):
-				postTips = []
-				if len(post['caption']) < 300:
-					captionLengthTip = "The caption of this post isn't long enough try going into more detail"
-					postTips.append(captionLengthTip)
-				if "#" not in post['caption']:
-					noHashtagsInCaption = "There aren't any hashtags in this post. We recommend that you use at least 3."
-					postTips.append(noHashtagsInCaption)
-				elif post['caption'].count('#') < 3:
-					notEnoughHashtags = "Good job using hashtags on this post but we recommend you use more. How about 3?"
-					postTips.append(notEnoughHashtags)
-				if SequenceMatcher(None, post['caption'], post['picture_text']).ratio() > 0.1:
-					pictureTextAndCaptionTooAlike = "The text on your picture is very simular to your caption."
-					postTips.append(pictureTextAndCaptionTooAlike)
-				elif SequenceMatcher(None, post['caption'], post['picture_text']).ratio() < 0.03:
-					pictureTextAndCaptionTextLookNothingAlike = "Your picture text and caption are nothing alike. Try to make the caption and picture text more related"
-					postTips.append(pictureTextAndCaptionTextLookNothingAlike)
-				if len(postTips) == 0:
-					postTips = ['null']
-				database.child("users").child(uid).child("instagram").child("instagramPosts").child(postCounter).child("tips").set(postTips)
-		except Exception as e:
-			print(e)
-			print("Post Tips Failed")
 		try:
 			instagramData = dict(database.child("users").child(uid).child("instagram").get().val())
 		except Exception as e:
