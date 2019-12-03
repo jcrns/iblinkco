@@ -443,19 +443,19 @@ def instagramPostsFormat(instagramPosts):
 
 		# Providing tips per post
 		postTips = []
-		if len(post['caption']) < 300:
+		if len(caption) < 300:
 			captionLengthTip = "The caption of this post isn't long enough try going into more detail"
 			postTips.append(captionLengthTip)
-		if "#" not in post['caption']:
+		if "#" not in caption:
 			noHashtagsInCaption = "There aren't any hashtags in this post. We recommend that you use at least 3."
 			postTips.append(noHashtagsInCaption)
-		elif post['caption'].count('#') < 3:
+		elif caption.count('#') < 3:
 			notEnoughHashtags = "Good job using hashtags on this post but we recommend you use more. How about 3?"
 			postTips.append(notEnoughHashtags)
-		if SequenceMatcher(None, post['caption'], post['picture_text']).ratio() > 0.1:
+		if SequenceMatcher(None, caption, caption).ratio() > 0.1:
 			pictureTextAndCaptionTooAlike = "The text on your picture is very simular to your caption."
 			postTips.append(pictureTextAndCaptionTooAlike)
-		elif SequenceMatcher(None, post['caption'], post['picture_text']).ratio() < 0.03:
+		elif SequenceMatcher(None, caption, pictureText).ratio() < 0.03:
 			pictureTextAndCaptionTextLookNothingAlike = "Your picture text and caption are nothing alike. Try to make the caption and picture text more related"
 			postTips.append(pictureTextAndCaptionTextLookNothingAlike)
 		if len(postTips) == 0:
