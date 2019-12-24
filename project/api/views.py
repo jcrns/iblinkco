@@ -590,7 +590,7 @@ def signIn():
 	# Getting posted data and putting it in a dictionary
 	print("request.get_json")
 	print(request.get_json)
-	data = request.get_json()
+	data = request.get_json['email']
 	print(data)
 	print("request.json")
 	print(request.json)
