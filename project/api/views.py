@@ -593,13 +593,14 @@ def signIn():
 	# Getting posted data and putting it in a dictionary
 	print("request.get_json")
 	print(request.get_json)
+	print(request.get_json())
 	url = "https://www.iblinkco.com/signin"
 	data = requests.get(url).json
 	print(data)
 	print("request.json")
 	print(request.json)
-	print("request.form")
-	print(request.form)
+	print("requests.form")
+	print(requests.form)
 
 
 
