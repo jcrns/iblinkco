@@ -590,9 +590,8 @@ def signIn():
 	# Getting posted data and putting it in a dictionary
 	print("request.get_json")
 	print(request.get_json)
-	data = request.get_json['email']
-	if data is none:
-		data = request.json
+	# data = request.get_json['email']
+	data = request.json
 	print(data)
 	print("request.json")
 	print(request.json)
