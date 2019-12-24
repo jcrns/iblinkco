@@ -591,6 +591,8 @@ def signIn():
 	print("request.get_json")
 	print(request.get_json)
 	data = request.get_json['email']
+	if data is none:
+		data = request.json
 	print(data)
 	print("request.json")
 	print(request.json)
