@@ -638,6 +638,8 @@ def signIn():
 
 # Signin function
 def signInFunc(email, password):
+	print(email)
+	print(password)
 	# Creating list ready to return later
 	userData = dict()
 	try:
