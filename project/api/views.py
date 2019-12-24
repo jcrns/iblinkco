@@ -591,10 +591,15 @@ def signIn():
 	print(request.get_json)
 	print(request.json)
 
-	# Getting email and pass
-	email = request.json['email']
-	password = request.json['password']
-	software = request.json['software']
+	try:
+		# Getting email and pass
+		email = request.json['email']
+		password = request.json['password']
+		software = request.json['software']
+	except Exception as e:
+		email = request.get_json()['email']
+		password = request.get_json()['password']
+		software = request.get_json()['software']
 
 	# Assigning variables to sign in to database
 	signIn = signInFunc(email, password)
