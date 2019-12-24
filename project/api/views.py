@@ -595,6 +595,9 @@ def signIn():
 	print(data)
 	print("request.json")
 	print(request.json)
+	print("request.form")
+	print(request.form)
+
 
 
 	try:
