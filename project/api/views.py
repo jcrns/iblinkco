@@ -588,7 +588,9 @@ def createUserFunc(email, password, firstname, lastname):
 @api.route("/signin", methods=['GET', 'POST'])
 def signIn():
 	# Getting posted data and putting it in a dictionary
+	print("request.get_json")
 	print(request.get_json)
+	print("request.json")
 	print(request.json)
 
 	try:
