@@ -590,23 +590,21 @@ def signIn():
 	# Getting posted data and putting it in a dictionary
 	print("request.get_json")
 	print(request.get_json)
+	data = request.get_json()
+	print(data)
 	print("request.json")
 	print(request.json)
 
+
 	try:
-		email = request.form.get('email')
-		password = request.form.get('password')
-		software = request.form.get('software')
+		# Getting email and pass
+		email = request.json['email']
+		password = request.json['password']
+		software = request.json['software']
 	except Exception as e:
-		try:
-			# Getting email and pass
-			email = request.json['email']
-			password = request.json['password']
-			software = request.json['software']
-		except Exception as e:
-			email = request.get_json()['email']
-			password = request.get_json()['password']
-			software = request.get_json()['software']
+		email = request.get_json()['email']
+		password = request.get_json()['password']
+		software = request.get_json()['software']
 
 	# Assigning variables to sign in to database
 	signIn = signInFunc(email, password)
@@ -638,8 +636,6 @@ def signIn():
 
 # Signin function
 def signInFunc(email, password):
-	print(email)
-	print(password)
 	# Creating list ready to return later
 	userData = dict()
 	try:
