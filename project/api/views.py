@@ -1,6 +1,9 @@
 # Importing all needed Flask classes
 from flask import Flask, session, redirect, Blueprint, request, jsonify, g, url_for, make_response, Response, flash
 
+# Importing libraries to handle request
+import requests, json
+
 # Firebase connection
 from project.social_apis import firebaseConnect, websiteScrapping, googleSearch, getTwitterData, InstagramScraper
 
