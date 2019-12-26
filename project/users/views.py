@@ -122,18 +122,24 @@ def register():
     return render_template('users/register.html', title='Register', form=form)
 
 
+# Function sending email to new users
 def sendEmailVerified(email, link):
+
+    # Creating msg
     msg = Message('Confirm Email', sender='iblinkcompany@gmail.com', recipients=[email] )
 
+    # Creating body email
     msg.body = 'Confirm your email now! {}'.format(link)
 
     try:
+        # Sending email
         mail.send(msg)
         return 'success'
     except Exception as e:
         print(e)
         return 'failed'
 
+# Creating url for email 
 @users.route("/confirm_email/<token>", methods=['GET', 'POST'])
 def confirmEmail(token):
     try:
@@ -146,6 +152,7 @@ def confirmEmail(token):
     except SignatureExpired:
         return '<h1>Url Expired</h1>'
 
+# Creating verify now page
 @users.route("/verify-now", methods=['GET', 'POST'])
 def verifyNow():
     email = session['email']
@@ -163,7 +170,8 @@ def verifyNow():
         flash(f'Confirmation Email Sent')
     return render_template('users/verify_now.html', title='Confirm Email')
 
-    
+
+# Login page
 @users.route("/login", methods=['GET', 'POST'])
 def login():
 
@@ -181,44 +189,18 @@ def login():
         try:
             print('aaaaaa')
             print(finalizedData)
+
+            # Putting data in recieved data in sessions
             session['user'] = finalizedData['user']
             session['tips'] = finalizedData['tips']
-            returnedData = finalizedData['user']
-
-            # print(finalizedData[1])
-            # print(returnedData)
-
-            # Getting history
-
-            # # Getting followers' data
-            # session['followersData'] = finalizedData['twitter']['followersFormated']
-
-            # Stream
-            print('\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n')
-
-            print(finalizedData['website'])
-
-            print('\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n')
-            
-            # Getting website data
             session['websiteData'] = finalizedData['website']
-            # print(finalizedData[5])
+            session['competition'] = finalizedData['competition']  
 
-            # print(finalizedData[2]) 
         except Exception as e:
             print(e)
             return redirect(url_for('users.login'))
             flash(f'signin failed')
 
-        try:
-            print('sssssss\n\n\n\n\n\n\n\n\n')
-            session['competition'] = finalizedData['competition']  
-            print(session['competition'])
-        except Exception as e:
-            print(e)
-            print('sssssss\n\n\n\n\n\n\n\n\n')
-
-            print('no competition')
         try:
 
             createFormat = creationFormating(finalizedData)

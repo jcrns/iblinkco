@@ -599,8 +599,8 @@ def signIn():
 	print(data)
 	print("request.json")
 	print(request.json)
-	print("requests.form")
-	print(requests.form)
+	print("request.form")
+	print(request.form)
 
 
 
@@ -667,14 +667,6 @@ def signInFunc(email, password):
 		userData['message'] = 'failed'
 		return jsonify(userData)
 
-	try:
-		instagramPosts = userReturn['instagram']['instagramPosts']
-		formatedPostData = instagramPostsFormat(instagramPosts)
-		del userReturn['instagram']['instagramPosts']
-		userReturn['instagram']['instagramPosts'] = formatedPostData
-	except Exception as e:
-		print(e)
-	print('aaalaaaalllalaasdgergertg\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n')
 	# Returning main data
 	return userReturn
 
@@ -1266,16 +1258,16 @@ def requestTwitter(uid):
 
 			# Checking if user is new if so updating data
 			try:
-				print('aasnnnnfnfn')
+				print('aasnnnnfnfn\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n')
 
 				if historyData['followers'][0]['date'] == 'null':
 					todayAlreadyIn = True
-					print('aargwrtgrwg')
+					print('aargwrtgrwg\n\n\n\n\n\n\n\naargwrtgrwg\n\n\n\n\n\n\n\naargwrtgrwg\n\n\n\n\n\n\n\n')
 
 					# Saving data in database
 					database.child("users").child(uid).child("twitter").child("history").child("followers").child(0).set({'followers_count': twitterStats['followers'], 'date': date_time_api })
 				if historyData['following'][0]['date'] == 'null':
-					print('aargwrtgrwgrfgt')
+					print('aargwrtgrwg\n\n\n\n\n\n\n\naargwrtgrwg\n\n\n\n\n\n\n\naargwrtgrwg\n\n\n\n\n\n\n\n')
 					todayAlreadyIn = True
 
 					# Saving data in database
@@ -1283,17 +1275,18 @@ def requestTwitter(uid):
 			except Exception as e:
 				print('not a new account')
 			print('aasnnnnfnfn')
-			for counterFollowers, followerItem in enumerate(historyData['followers']):
+			for followerItem in historyData['followers']:
+				counterFollowers = counterFollowers + 1
 				print(followerItem['date'])
 				if str(date_time_api) == followerItem['date']:
 					todayAlreadyIn = True
 					break
 			if todayAlreadyIn == False:
-				print("gfaergqaertgwetrg")
-
+				print("gfaergqaertgwetrg\n\ngfaergqaertgwetrg\n\n")
 				# Saving data in database
 				database.child("users").child(uid).child("twitter").child("history").child("followers").child(counterFollowers).set({'followers_count': twitterStats['followers'], 'date': date_time_api })
 				database.child("users").child(uid).child("twitter").child("history").child("following").child(counterFollowers).set({'following_count': twitterStats['following'], 'date': date_time_api })
+			print(counterFollowers)
 			print('aasnnnnfnfn')
 		except Exception as e:
 			print('Exception for loop')
@@ -1405,6 +1398,7 @@ def requestInstagram(uid):
 		# Instagram History
 		historyData = dict(database.child("users").child(uid).child("instagram").child("history").get().val())
 
+		counterFollowers = 0
 		todayAlreadyIn = False
 		followersDateList = []
 		followersCountList = []
@@ -1421,8 +1415,9 @@ def requestInstagram(uid):
 			print('not a new account')
 
 		print('mbmmmbyyrgergreg')
-		for counterFollowers, followerItem in enumerate(historyData['followers']):
+		for followerItem in historyData['followers']:
 			print(followerItem)
+			counterFollowers = counterFollowers + 1
 			if str(date_time_api) == followerItem['date']:
 				todayAlreadyIn = True
 				break
