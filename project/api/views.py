@@ -1344,10 +1344,15 @@ def requestInstagram(uid):
 		try:
 			print('aaa')
 
-			# Getting username to create url for instagram
-			username = database.child("users").child(uid).child("instagram").child("username").get().val()
+			databaseData = dict(database.child("users").child(uid).get().val())
+
+			# Getting username to create request url for instagram
+			username = databaseData['instagram']['username']
 			url = 'https://www.instagram.com/' + username + '/'
+
+			# Scrapping the page for data
 			instagramConnection = InstagramScraper()
+
 			instagramPosts = instagramConnection.profile_page_recent_posts(url)
 			results = instagramConnection.profile_page_metrics(url)
 
@@ -1356,10 +1361,13 @@ def requestInstagram(uid):
 			numberOfFollowing = results['edge_follow']
 			database.child("users").child(uid).child("instagram").update(results)
 
-			databaseData = dict(database.child("users").child(uid).get().val())
 
+			# Formating instagram post
 			instagramDataFomated = instagramPostsFormat(instagramPosts)
-			database.child("users").child(uid).child("instagram").child("instagramPosts").set(instagramDataFomated)
+
+			# Checking if there are instagram post before saving
+			if instagramPosts:
+				database.child("users").child(uid).child("instagram").child("instagramPosts").set(instagramDataFomated)
 			print("instagramDataFomated\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n")
 			print(instagramDataFomated)
 		except Exception as e:
