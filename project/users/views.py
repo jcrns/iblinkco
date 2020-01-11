@@ -152,7 +152,7 @@ def confirmEmail(token):
     except SignatureExpired:
         return '<h1>Url Expired</h1>'
 
-# Creating verify now page
+# Creating verify now view
 @users.route("/verify-now", methods=['GET', 'POST'])
 def verifyNow():
     email = session['email']
@@ -171,7 +171,7 @@ def verifyNow():
     return render_template('users/verify_now.html', title='Confirm Email')
 
 
-# Login page
+# Login view
 @users.route("/login", methods=['GET', 'POST'])
 def login():
 
@@ -181,11 +181,9 @@ def login():
     # Checking if form is valid
     if form.validate_on_submit():
 
-        # Running auth function
+        # Running sign in function with form data
         finalizedData = signInFunc(form.email.data, form.password.data)
-        print("finalizedData\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n")
-        print(finalizedData)
-        print("finalizedData\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n")
+
         try:
             print('aaaaaa')
             print(finalizedData)
@@ -201,22 +199,10 @@ def login():
             return redirect(url_for('users.login'))
             flash(f'signin failed')
 
-        try:
-
-            createFormat = creationFormating(finalizedData)
-            session.permanent = True
-            print(finalizedData['tips'])
-            print('aaaa')
-
-            return redirect(url_for('dashboard.home'))
-
-        except Exception as e:
-            print("e")
-            print(e)
-            flash(f'signin failed')
-        print("aaaaaa")
+        return redirect(url_for('dashboard.home'))
     return render_template('users/login.html', title="Login", form=form)
 
+# Logout view
 @users.route("/logout")
 @login_required 
 def logout():

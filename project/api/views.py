@@ -54,7 +54,7 @@ def websites(userReturn):
 		 print('Getting Website failed')
 		 print(e)
 
-# Tips
+# Creating tips based on data
 def tips(userReturn):
 	tips = []
 	print('aaaa')
@@ -524,7 +524,7 @@ def createUserFunc(email, password, firstname, lastname):
 		user = authe.create_user_with_email_and_password(email,password)
 		print('dssdss')
 		# Assigning json data to variable to return to database
-		userAccount = {"firstname" : firstname, "lastname" : lastname, "email" : email, "setup_complete" : False, "niche" : "", "email_confirmed": False }
+		userAccount = {"firstname" : firstname, "lastname" : lastname, "email" : email, "setup_complete" : False, "niche" : "" }
 
 		# Assigning uid which will be used to create paths in database
 		uid = user['localId']
@@ -659,7 +659,7 @@ def signInFunc(email, password):
 		userReturn = dict(database.child("users").child(uid).get().val())
 		
 
-		update = dataUpdating(uid)
+		update = dataUpdating(uid, userReturn)
 
 	except Exception as e:
 		print("Signin error below")
@@ -1040,9 +1040,11 @@ def connectTwitterAPI():
 			print("preData\n\n\n\n\n\n\n")
 
 			print(returnedData[1])
+			print("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nreturnedData[1]")
+			print(returnedData)
 			database.child("users").child(uid).child("twitter").update(returnedData[1])
 			database.child("users").child(uid).child("twitter").child("tweets").set(returnedData[0])
-			# print(returnedData)
+
 			print("returnedData")
 			twitterData = dict(database.child("users").child(uid).child("twitter").get().val())
 			print(uid)
@@ -1089,10 +1091,9 @@ def requestTwitter(uid):
 		print(twitterScrapped)
 		print('finding time since tweets')
 
-
 		# Updating twitter data in database
 		database.child("users").child(uid).child("twitter").update(twitterStats)
-		# database.child("users").child(uid).child("twitter").child("tweets").set(tweets)
+		database.child("users").child(uid).child("twitter").child("tweets").set(tweets)
 
 		# Getting current year to filter time
 		now = datetime.now()
@@ -1199,10 +1200,17 @@ def requestTwitter(uid):
 				else:
 					try:
 						print('good')
-						if year not in time:
-							time = time + ' ' + year
-						dateFormat = "%b %d %Y"
-						datetimeObj = datetime.strptime(time, dateFormat)
+						dateFormat = "%d %b %Y"
+						try:
+							datetimeObj = datetime.strptime(time, dateFormat)
+						except Exception as e:
+							print(e)
+							try:
+								if year not in time:
+									time = time + ' ' + year
+								datetimeObj = datetime.strptime(time, dateFormat)
+							except Exception as e:
+								print(e)
 						print(time)
 						print("Datetime:", datetimeObj)
 						print("Time since")
@@ -1231,9 +1239,11 @@ def requestTwitter(uid):
 
 
 		# Posting formated twitter data to database
-		print("finalTweetList\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n")
+		print("finalTweetList\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n")
 		print(finalTweetList)
-		database.child("users").child(uid).child("twitter").child("tweets").set(finalTweetList)
+
+		if finalTweetList:
+			database.child("users").child(uid).child("twitter").child("tweets").set(finalTweetList)
 
 		# Getting current time 
 		now = datetime.now()
@@ -1460,17 +1470,21 @@ def stream(twitter=0, instagram=0):
 
 
 	if twitter != 0:
+		print(twitter)
 		tweets = twitter['tweets']
 		for tweet in tweets:
 			preSortList.append(tweet)
-
-	finalSortedList = sorted(preSortList, key=lambda time: time['time_since'])
+	print("preSortList")
+	print(preSortList)
+	### TEST
+	# for i in preSortList:
+	# 	print(i)
+	finalSortedList = sorted(preSortList, key=lambda time: time['time'])
 	return finalSortedList
 
 
-# Getting data and creating sessions after social platform functions run
-def dataUpdating(uid):
-	databaseData = dict(database.child("users").child(uid).get().val())
+# Getting and updating data then creating sessions after social platform functions run
+def dataUpdating(uid, databaseData):
 
 	# Getting Tips
 	returnedTips = tips(databaseData)
@@ -1480,9 +1494,9 @@ def dataUpdating(uid):
 	# Getting stats
 	stats = statistics(databaseData)
 
-	# Updating stats
+	# Trying to update instagram data
 	try:
-		print('gertgwrategqart\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n')
+		print('gertgwrategqart\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n')
 		print(stats)
 		instagramRecentAvgLikes = stats['instagramStats']['instagramRecentAvgLikes']
 		instagramRecentAvgComments = stats['instagramStats']['instagramRecentAvgComments']
@@ -1491,7 +1505,8 @@ def dataUpdating(uid):
 		averageAmountOfFollowers = stats['avgFollowers']
 		minAmountOfFollowers = stats['minFollowers']
 		maxAmountOfFollowers = stats['maxFollowers']
-		print('asds')
+
+		# Updating stats in database
 		database.child("users").child(uid).child("statistics").child("averageAmountOfFollowers").set(averageAmountOfFollowers)
 		database.child("users").child(uid).child("statistics").child("minAmountOfFollowers").set(minAmountOfFollowers)
 		database.child("users").child(uid).child("statistics").child("maxAmountOfFollowers").set(maxAmountOfFollowers)
@@ -1531,8 +1546,7 @@ def dataUpdating(uid):
 	print(competition)
 	print('wefqergfqergqeggre \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n')
 
-	session['statistics'] = stats
-	session['history'] = historyData
-	session['websiteData'] = websiteData
-	session['competition'] = competition
+	return stats, historyData, websiteData, competition
+
+
 

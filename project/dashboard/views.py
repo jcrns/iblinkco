@@ -35,13 +35,13 @@ twitter = twitterConnect()
 @dashboard.route("/dashboard", methods=['GET', 'POST'])
 @login_required
 def home():
-	t0 = time.time()
 	# Getting data
 	user = session['user']
 	uid = user['localId']
 	databaseData = dict(database.child("users").child(uid).get().val())
 	setup_complete = databaseData['account']['setup_complete']
-
+	print("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nsetup_complete\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n")
+	print(setup_complete)
 	# Checking if user email is confirmed
 	try:
 		verifiedCheck = database.child("verified-accounts").child(uid).get().val()
@@ -96,21 +96,28 @@ def home():
 			print("aergergqergqrthetyjtyrgkwr thwkrth wtyhk ety etjyektyjytjetyj\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n")
 
 		# Updating sessions and starts with this func
-		sessionRequest = dataUpdating(uid)
+		sessionRequest = dataUpdating(uid, databaseData)
 		formatData = creationFormating(databaseData)
 
-
+		
 		# Running function to get sorted data
 		formattedInStream = stream(twitterFormatted, instagramFormatted)
 		print(formattedInStream)
 
 		# Putting sorted data in session
 		session['stream'] = formattedInStream
+		print(sessionRequest)
+		print("setup_complete")
+		print(setup_complete)
+		session['statistics'] = sessionRequest[0]
+		session['history'] = sessionRequest[1]
+		session['websiteData'] = sessionRequest[2]
+		session['competition'] = sessionRequest[3]
 
 		print("agwejgwrgbwretkgubwru")
-		t1 = time.time()
-		total = t1-t0
-		print(total)
+		# t1 = time.time()
+		# total = t1-t0
+		# print(total)
 	return render_template('dashboard/home.html')
 
 # Setup and Website Update
