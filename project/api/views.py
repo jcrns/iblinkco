@@ -1466,7 +1466,7 @@ def stream(twitter=0, instagram=0):
 
 	# Checking if data was given else returning function
 	if instagram == 0 and twitter == 0:
-		return 'no data given'
+		return None
 
 	# Creating list that will have sorted data
 	preSortList = []

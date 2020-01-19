@@ -107,11 +107,6 @@ def register():
             firstname = returnedData[0]['firstname']
             lastname = returnedData[0]['lastname']
 
-            # Storing returned data
-            session['user'] = returnedData[1]
-            session['name'] = str(firstname) + " " + str(lastname)
-            session['email'] = email
-
             # Alerting user account was created
             flash(f'Email Confirmation Sent to {form.email.data} ! If not seen in your inbox check junk mail.', 'success')
             return redirect(url_for('users.login'))
@@ -146,7 +141,7 @@ def confirmEmail(token):
         emailDict = safeTimedUrlSerializer.loads(token, salt='email-confirm', max_age=6000)
         email = emailDict['email']
         uid = emailDict['uid']
-        # Running function for
+        # Running function for user verification
         verified = userVerified(uid)
         return render_template('users/confirm_email.html', title='Email Confirmed', email=email)
     except SignatureExpired:
@@ -155,6 +150,8 @@ def confirmEmail(token):
 # Creating verify now view
 @users.route("/verify-now", methods=['GET', 'POST'])
 def verifyNow():
+
+    # Getting user data
     email = session['email']
     user = session['user']
     uid = user['localId']
@@ -188,7 +185,10 @@ def login():
             print('aaaaaa')
             print(finalizedData)
 
+
+
             # Putting data in recieved data in sessions
+            session['email'] = form.email.data
             session['user'] = finalizedData['user']
             session['tips'] = finalizedData['tips']
             session['websiteData'] = finalizedData['website']
