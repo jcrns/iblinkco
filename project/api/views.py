@@ -28,7 +28,7 @@ database = databaseConnect['database']
 
 authe = databaseConnect['authe']
 
-# Website
+# Connecting Website
 def websites(userReturn):
 	websiteData = dict()
 	try:
@@ -250,23 +250,19 @@ def statistics(userReturn):
 		historyData = history(userReturn)
 
 		# Checking if twitter is connected
-		try:
+		if userReturn['twitter']['history']['followers'][0]['date'] != "null":
 			twitterFollowerNumberList = historyData['twitter'][1]
 			twitterConnected = True
-		except Exception as e:
-			print(e)
-			print('twitter not connected stats')
+		else:
 			twitterConnected = False
 
 		# Checking if instagram is connected
-		try:
-			instagramFollowerNumberList = historyData['instagram'][1]	
+		if userReturn['instagram']['history']['followers'][0]['date'] != "null":
 			instagramConnected = True
-		except Exception as e:
-			print(e)
-			print('instagram not connected stats')
+			instagramFollowerNumberList = historyData['instagram'][1]	
+		else:
 			instagramConnected = False
-		
+
 		# Followers min, max, and average
 		totalFollowersList = []
 		if twitterConnected == True:
@@ -287,15 +283,7 @@ def statistics(userReturn):
 		# Doing math
 		lowestAmountOfFollowers = min(totalFollowersList)
 		highestAmountOfFollowers = max(totalFollowersList)
-
-		# Getting sum of list
-		# sumOfFollowersList = 0
-		# print("totalFollowersList")
-		# for number in totalFollowersList:
-		# 	print(number)
-		# 	sumOfFollowersList+=number
 		averageAmountOfFollowers = sum(totalFollowersList) / len(totalFollowersList)
-		print("totalFollowersList")
 
 		# Saving data to dict
 		returnedData['minFollowers'] = lowestAmountOfFollowers
