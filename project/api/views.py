@@ -2,7 +2,7 @@
 from flask import Flask, session, redirect, Blueprint, request, jsonify, g, url_for, make_response, Response, flash
 
 # Importing libraries to handle request
-import requests, json
+import json
 
 # Firebase connection
 from project.social_apis import firebaseConnect, websiteScrapping, googleSearch, getTwitterData, InstagramScraper
@@ -579,28 +579,18 @@ def createUserFunc(email, password, firstname, lastname):
 @api.route("/signin", methods=['GET', 'POST'])
 def signIn():
 	# Getting posted data and putting it in a dictionary
-	print("request.get_json")
-	print(request.get_json)
-	print(request.get_json())
-	url = "https://www.iblinkco.com/signin"
-	data = requests.get(url).json
-	print(data)
-	print("request.json")
-	print(request.json)
-	print("request.form")
-	print(request.form)
-
-
-
+	data = request.get_json('data')
 	try:
 		# Getting email and pass
-		email = request.json['email']
-		password = request.json['password']
-		software = request.json['software']
+		email = data['email']
+		password = data['password']
+		software = data['software']
 	except Exception as e:
+		print(e)
 		email = request.get_json()['email']
 		password = request.get_json()['password']
 		software = request.get_json()['software']
+	print(email, password)
 
 	# Assigning variables to sign in to database
 	signIn = signInFunc(email, password)
