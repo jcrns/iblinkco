@@ -414,6 +414,7 @@
 {% endif %}
 	<script src="{{ url_for('dashboard.static', filename='js/ui.js') }}"></script>
 	<script type="text/javascript">
+		alert("{{ session['history'] }}")
 		// Changing setup submit button color
 		{% if session['userTwitterData'] %}
 			setupSubmit = document.getElementById('setup-submit')

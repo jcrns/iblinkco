@@ -1047,7 +1047,7 @@ def connectTwitterAPI():
 
 			print("returnedData")
 			twitterData = dict(database.child("users").child(uid).child("twitter").get().val())
-			print(uid)
+			print(twitterData)
 			session['userTwitterData'] = twitterData
 			return redirect(url_for('dashboard.home'))
 		except Exception as e:
@@ -1082,14 +1082,17 @@ def requestTwitter(uid):
 			twitterData = dict(database.child("users").child(uid).child("twitter").get().val())
 		except Exception as e:
 			return 'failed'
+
+		# Getting username to request data
 		username = twitterData['username']
 		print("Request Twitter\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n")
+		
+		# Scrapping twitter website for data
 		twitterScrapped = getTwitterData(username)
+
+		# Defining user twitter tweets and stats
 		tweets = twitterScrapped[0]
 		twitterStats = twitterScrapped[1]
-		print("aserfgnueirgqeborgiwuetrgbwryougwtnug\n\n\n\n\n\n\n")
-		print(twitterScrapped)
-		print('finding time since tweets')
 
 		# Updating twitter data in database
 		database.child("users").child(uid).child("twitter").update(twitterStats)
@@ -1330,24 +1333,15 @@ def twitterTweetTips(tweet):
 def requestInstagram(uid):
 	
 	try:
-		print("Request Instagram\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n")
-
-		# Getting user from session
-		# user = session['user']
-		# print(user)
-		
-		# # Assigning uid as a variable which will be used to go through branched in for loop
-		# uid = user['localId']
-		# print('aaa')
 
 		# Getting Data
 		try:
 			print('aaa')
 
-			databaseData = dict(database.child("users").child(uid).get().val())
+			instagramData = dict(database.child("users").child(uid).child("instagram").get().val())
 
 			# Getting username to create request url for instagram
-			username = databaseData['instagram']['username']
+			username = instagramData['username']
 			url = 'https://www.instagram.com/' + username + '/'
 
 			# Scrapping the page for data
@@ -1461,7 +1455,7 @@ def requestInstagram(uid):
 		print('Instagram Get Data failed\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n')
 		return 'failed'
 
-# Sorting stream data
+# Sorting social media data
 def stream(twitter=0, instagram=0):
 
 	# Checking if data was given else returning function
@@ -1491,7 +1485,7 @@ def stream(twitter=0, instagram=0):
 	return finalSortedList
 
 
-# Getting and updating data then creating sessions after social platform functions run
+# Getting and updating data in database then creating sessions after social platform functions run
 def dataUpdating(uid, databaseData):
 
 	# Getting Tips

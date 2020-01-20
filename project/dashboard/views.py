@@ -40,12 +40,8 @@ def home():
 	uid = user['localId']
 	print(uid)
 
-	# Getting all data
-	databaseData = dict(database.child("users").child(uid).get().val())
-
 	# Getting setup complete variable
-	setup_complete = databaseData['account']['setup_complete']
-
+	setup_complete = database.child("users").child(uid).child("account").child("setup_complete").get().val()
 
 	# Checking if user email is confirmed
 	try:
@@ -74,6 +70,9 @@ def home():
 			instagramFormatted = decodeJsonData(instagramRequest, userInstagramData)
 		except Exception as e:
 			print(e)
+
+		# Getting all data
+		databaseData = dict(database.child("users").child(uid).get().val())
 
 		# Updating sessions and starts with this func
 		sessionRequest = dataUpdating(uid, databaseData)

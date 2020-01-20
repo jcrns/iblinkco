@@ -52,16 +52,23 @@ def twitterConnect():
 # Twitter webscrapping
 def getTwitterData(username):
 	print(username)
+
+	# Scrapping users twitter website
 	r = rq.get('https://twitter.com/' + str(username))
 	# print(r.text)
+	# Looking for specific data using Beautiful Soup
 	soup = BeautifulSoup(r.text, 'html.parser')
+
+	# Getting user stats
 	numberTags = soup.find('ul',{'class': 'ProfileNav-list'} )
 	children = numberTags.findChildren("span" , recursive=True)
-	# numberTagChildren
-	# print(numberTags.prettify())
+
+	# Creating info dict to hold users stats and returnedData as final returned information
 	info = {}
 	returnedData = []
 	counter = 0
+
+	# Going through each number and define as variable
 	for child in children:
 		# print(child.text)
 		try:
@@ -91,13 +98,19 @@ def getTwitterData(username):
 	info['location'] = location.text[17:-11]
 	info['name'] = name.text
 
+	# Defining tweets
 	tweets = soup.find('div', {'class': 'stream'})
 	
+	# Getting tweets and tweet times
 	streamChildren = tweets.findChildren("p" , recursive=True)
 	streamChildrenTime = tweets.findChildren("small" , recursive=True)
+
+	# Creating list to hold tweets and tweet times
 	tweets = []
 	tweetTimes = []
 	finalTweetData = []
+
+	# Checking tweets and excluding unneeded data
 	for child in streamChildren:
 		if 'hours ago' in child.text or 'hour ago' in child.text or 'minutes ago' in child.text:
 			child.text = child.text[:2]
@@ -109,9 +122,10 @@ def getTwitterData(username):
 			continue
 		elif child.text == "Back to top ↑":
 			continue
-
+		# Adding tweets in list
 		tweets.append(child.text)
 	
+	# Checking tweets and excluding unneeded data
 	for child in streamChildrenTime:
 		print("child")
 		print(child.text)
@@ -231,28 +245,10 @@ def googleSearch(niche, location, start):
 				link_list.append(item['link'])
 				title_list.append(item['title'])
 		start += 1
-
-	# if len(link_list) < 10:
-	# 	print('found articles the first time looking for more businesses now')
-	# 	page = requests.request("GET", url, params=parameters)
-	# 	results = json.loads(page.text)
-		
-	# 	# Going through another loop to get 10 items
-	# 	for item in results['items']:
-	# 		if len(link_list) == 10:
-	# 			break
-	# 		title = item['title'].lower()
-	# 		for x in range(101):		
-	# 			if 'top ' + str(x) in title or 'top ' + str(x) in title or str(x) + ' best' in title or str(x) + ' best' in title or 'list of' in title:
-	# 				break
-	# 			else:
-	# 				link_list.append(item['link'])
-	# 				title_list.append(item['title'])
-	# 				break 
-
 	returnedData = [title_list, link_list]
 	return returnedData
 
+# Function to get google data
 def getGoogleSearchData(userInput, start, url):
 	# Connect google
 	parameters = {
