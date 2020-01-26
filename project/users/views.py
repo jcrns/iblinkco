@@ -180,31 +180,31 @@ def login():
 
         # Running sign in function with form data
         finalizedData = signInFunc(form.email.data, form.password.data)
+        print(finalizedData)
+        if finalizedData != 'failed':
+            try:
+                print('aaaaaa\n\n\n')
+                print(finalizedData)
 
-        try:
-            print('aaaaaa')
-            print(finalizedData)
 
 
+                # Putting data in recieved data in sessions
+                session['email'] = form.email.data
+                session['user'] = finalizedData['user']
+                session['tips'] = finalizedData['tips']
+                session['websiteData'] = finalizedData['website']
+                session['competition'] = finalizedData['competition']  
 
-            # Putting data in recieved data in sessions
-            session['email'] = form.email.data
-            session['user'] = finalizedData['user']
-            session['tips'] = finalizedData['tips']
-            session['websiteData'] = finalizedData['website']
-            session['competition'] = finalizedData['competition']  
-
-        except Exception as e:
-            print(e)
-            return redirect(url_for('users.login'))
-            flash(f'signin failed')
+            except Exception as e:
+                print(e)
+                return redirect(url_for('users.login'))
+                flash(f'signin failed')
 
         return redirect(url_for('dashboard.home'))
     return render_template('users/login.html', title="Login", form=form)
 
 # Logout view
 @users.route("/logout")
-@login_required 
 def logout():
     session.clear()
     flash("You have been logged out")

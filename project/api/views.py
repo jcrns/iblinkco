@@ -339,41 +339,19 @@ def history(userReturn):
 		returnedData = dict()
 		try:
 			historyInstagram = userReturn['instagram']['history']
-			instagramDateList = []
-			instagramFollowerList = []
-			for followerItem in historyInstagram['followers']:
-				print(followerItem)
-				date = followerItem['date']
-				followersCount = followerItem['followers_count']
-				instagramDateList.append(date)
-				instagramFollowerList.append(followersCount)
-			instagramData = []
-			instagramData.append(instagramDateList)
-			instagramData.append(instagramFollowerList)
+
+			# Running history format function
+			instagramData = historyFormat(historyInstagram)
 			returnedData['instagram'] = instagramData
 		except Exception as e:
 			print(e)
 			print("instagram no history")
 
 		try:
-			print(userReturn['twitter']['history'])
 			# print("userReturn['twitter']['history']")
 			historyTwitter = userReturn['twitter']['history']
-			print('aaaa')
-			twitterDateList = []
-			twitterFollowerList = []
-			print('aggg')
-			for followerItem in historyTwitter['followers']:
-				print(followerItem)
-				date = followerItem['date']
-				followersCount = followerItem['followers_count']
 
-				# Appending to list
-				twitterDateList.append(date)
-				twitterFollowerList.append(followersCount)
-			twitterData = []
-			twitterData.append(twitterDateList)
-			twitterData.append(twitterFollowerList)
+			twitterData = historyFormat(historyTwitter)
 			returnedData['twitter'] = twitterData
 		except Exception as e:
 			print(e)
@@ -383,6 +361,25 @@ def history(userReturn):
 		print('Trouble getting history')
 		print(e)
 
+# Function to format user history data from social media platforms
+def historyFormat(platformHistory):
+	# Creating seperate list for date and follower count
+	platformDateList = []
+	platformFollowerCountList = []
+	for followerItem in platformHistory:
+		date = followerItem['date']
+		followersCount = followerItem['followers_count']
+
+		# Appending data to related list
+		platformDateList.append(date)
+		platformFollowerCountList.append(followersCount)
+
+	returnedList = []
+	returnedList.append(platformDateList)
+	returnedList.append(platformFollowerCountList)
+	return returnedList
+
+# Formating instagram post data and assigning tips to post
 def instagramPostsFormat(instagramPosts):
 	print(instagramPosts)
 	formattedDictionary = []
@@ -624,7 +621,7 @@ def signInFunc(email, password):
 		print("Signin error below")
 		print(e)
 		userData['message'] = 'failed'
-		return jsonify(userData)
+		return 'failed'
 
 	# Returning main data
 	return userReturn
