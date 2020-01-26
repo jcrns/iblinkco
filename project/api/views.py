@@ -598,25 +598,6 @@ def signIn():
 	print(software)
 	if software == "ios":
 		print('signIn\n\n\n\n\n\n\n')
-		# # Deleting dictionaries from data
-		# try:
-		# 	del signIn['twitter']['followers']
-		# except Exception as e:
-		# 	print(e)
-		# 	print('Deleting followers failed')
-		# try:
-		# 	del signIn['user']
-		# except Exception as e:
-		# 	print(e)
-		# 	print('Deleting user failed')
-		# try:
-		# 	del signIn['twitter']['userData']['entities']
-		# except Exception as e:
-		# 	print(e)
-		# 	print('Deleting userdata entities failed')
-		
-		# signIn['message'] = 'success'
-		# print(signIn)
 
 	return jsonify(signIn)
 
