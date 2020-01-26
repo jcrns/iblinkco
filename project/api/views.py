@@ -332,7 +332,7 @@ def statistics(userReturn):
 
 # Get History
 def history(userReturn):
-	print('historyaaaa')
+	print('historyaaaa\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n')
 	print(userReturn)
 
 	try:
@@ -340,7 +340,7 @@ def history(userReturn):
 		try:
 			historyInstagram = userReturn['instagram']['history']
 
-			# Running history format function
+			# # Running history format function
 			instagramData = historyFormat(historyInstagram)
 			returnedData['instagram'] = instagramData
 		except Exception as e:
@@ -348,9 +348,10 @@ def history(userReturn):
 			print("instagram no history")
 
 		try:
-			# print("userReturn['twitter']['history']")
+			print("userReturn['twitter']['history']")
 			historyTwitter = userReturn['twitter']['history']
 
+			# Running history format function
 			twitterData = historyFormat(historyTwitter)
 			returnedData['twitter'] = twitterData
 		except Exception as e:
@@ -366,7 +367,7 @@ def historyFormat(platformHistory):
 	# Creating seperate list for date and follower count
 	platformDateList = []
 	platformFollowerCountList = []
-	for followerItem in platformHistory:
+	for followerItem in platformHistory['followers']:
 		date = followerItem['date']
 		followersCount = followerItem['followers_count']
 
