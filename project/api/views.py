@@ -729,7 +729,7 @@ def disconnectWebsite():
 
 # Posting niche
 @api.route("/post-niche", methods=['GET','POST'])
-def postNiche():
+def postNicheApi():
 	try:
 		print('aaaaaa\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n')
 		nichePost = request.form['niche_text']
@@ -738,25 +738,6 @@ def postNiche():
 		user = session['user']
 		uid = user['localId']
 
-		try:
-			location = database.child("users").child(uid).child("twitter").child("location").get().val()
-		except Exception as e:
-			raise e
-		
-		# Getting competitiors on google
-		searchResults = googleSearch(nichePost, location, 1)
-		print(searchResults)
-		compDict = {}
-		compDict['link'] = searchResults[1]
-		compDict['title'] = searchResults[0]
-
-		# Putting niche in database
-		database.child("users").child(uid).child("account").update({'niche' : nichePost })
-
-		# Putting competitors in database
-		database.child("users").child(uid).child("competition").set(compDict)
-		print('aaaaaa')
-
 		# Putting data in session
 		session['competition'] = compDict
 
@@ -764,8 +745,37 @@ def postNiche():
 	except Exception as e:
 		print('niche post failed')
 		print(e)
-		value = 'failed'
+		# Getting json data if request form
+		try:
+			uid = request.get_json()['uid']
+			nichePost = request.get_json()['niche']
+		except Exception as e:
+			print(e)
+	# Running func
+	postingNiche = postNicheFunc(nichePost, uid)
 	return value
+
+def postNicheFunc(niche, uid):
+	try:
+		location = database.child("users").child(uid).child("twitter").child("location").get().val()
+	except Exception as e:
+		raise e
+	
+	# Getting competitiors on google
+	searchResults = googleSearch(nichePost, location, 1)
+	print(searchResults)
+	compDict = {}
+	compDict['link'] = searchResults[1]
+	compDict['title'] = searchResults[0]
+
+	# Putting niche in database
+	database.child("users").child(uid).child("account").update({'niche' : nichePost })
+
+	# Putting competitors in database
+	database.child("users").child(uid).child("competition").set(compDict)
+	print('aaaaaa')
+
+	return 'success'
 
 # Disconnecting niche and competition
 @api.route("/disconnect-niche", methods=['GET','POST'])
