@@ -762,14 +762,14 @@ def postNicheFunc(niche, uid):
 		raise e
 	
 	# Getting competitiors on google
-	searchResults = googleSearch(nichePost, location, 1)
+	searchResults = googleSearch(niche, location, 1)
 	print(searchResults)
 	compDict = {}
 	compDict['link'] = searchResults[1]
 	compDict['title'] = searchResults[0]
 
 	# Putting niche in database
-	database.child("users").child(uid).child("account").update({'niche' : nichePost })
+	database.child("users").child(uid).child("account").update({'niche' : niche })
 
 	# Putting competitors in database
 	database.child("users").child(uid).child("competition").set(compDict)
