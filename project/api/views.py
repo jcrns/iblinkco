@@ -749,8 +749,10 @@ def postNicheApi():
 		try:
 			uid = request.get_json()['uid']
 			nichePost = request.get_json()['niche']
+			value = 'success'
 		except Exception as e:
 			print(e)
+			value = 'failed'
 	# Running func
 	postingNiche = postNicheFunc(nichePost, uid)
 	return value
