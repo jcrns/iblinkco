@@ -711,7 +711,7 @@ def disconnectWebsiteApi():
 
 		value = disconnectWebsite(uid)
 	except Exception as e:
-		 print(e)
+		print(e)
 		# Trying to get json
 		try:
 			# Getting uid
@@ -722,7 +722,7 @@ def disconnectWebsiteApi():
 			# value = { "results" : value }
 			return value
 		except Exception as e:
-			print(e)
+		print(e)
 
 	return value
 
