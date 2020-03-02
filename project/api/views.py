@@ -804,7 +804,8 @@ def disconnectNicheApi():
 
 			# Running disconnecting func
 			value = disconnectNiche(uid)
-			return { "results" : value}
+			value = { "results" : value }
+			return value
 		except Exception as e:
 			raise e
 	return value
