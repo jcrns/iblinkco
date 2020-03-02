@@ -727,16 +727,21 @@ def disconnectWebsiteApi():
 	return value
 
 def disconnectWebsite(uid):
-	# Returning website data to default 
-	addWebsite = { "website_name" : '', "website_url" : '', "links" : ['null'], "header_text" : '' }
-	database.child("users").child(uid).child("website").set(addWebsite)
-
-	# Trying to put data in session
 	try:
-		session['websiteData'] = dict(database.child("users").child(uid).child("website").get().val())
+		# Returning website data to default 
+		addWebsite = { "website_name" : '', "website_url" : '', "links" : ['null'], "header_text" : '' }
+		database.child("users").child(uid).child("website").set(addWebsite)
+
+		# Trying to put data in session
+		try:
+			session['websiteData'] = dict(database.child("users").child(uid).child("website").get().val())
+		except Exception as e:
+			 print('failed to add session')
+			 print(e)
+		return 'success'
 	except Exception as e:
-		 print('failed to add session')
-		 print(e)
+		print(e)
+		return 'failed'
 
 # Posting niche
 @api.route("/post-niche", methods=['GET','POST'])
