@@ -702,30 +702,41 @@ def connectWebsite():
 
 # Disconnect website function
 @api.route("/disconnect-website", methods=['GET','POST'])
-def disconnectWebsite():
+def disconnectWebsiteApi():
 	try:
 
 		# Getting firebase data
 		user = session['user']
 		uid = user['localId']
 
-		# Returning website data to default 
-		addWebsite = { "website_name" : '', "website_url" : '', "links" : ['null'], "header_text" : '' }
-		database.child("users").child(uid).child("website").set(addWebsite)
-
-		# Trying to put data in session
-		try:
-			session['websiteData'] = dict(database.child("users").child(uid).child("website").get().val())
-		except Exception as e:
-			 print('failed to add session')
-			 print(e)
-
-		value = 'success'
+		value = disconnectWebsite(uid)
 	except Exception as e:
-		 print('Disconnect Failed')
 		 print(e)
+		# Trying to get json
+		try:
+			# Getting uid
+			uid = request.get_json()['uid']
+
+			# Running disconnecting func
+			value = disconnectWebsite(uid)
+			# value = { "results" : value }
+			return value
+		except Exception as e:
+			print(e)
 
 	return value
+
+def disconnectWebsite(uid):
+	# Returning website data to default 
+	addWebsite = { "website_name" : '', "website_url" : '', "links" : ['null'], "header_text" : '' }
+	database.child("users").child(uid).child("website").set(addWebsite)
+
+	# Trying to put data in session
+	try:
+		session['websiteData'] = dict(database.child("users").child(uid).child("website").get().val())
+	except Exception as e:
+		 print('failed to add session')
+		 print(e)
 
 # Posting niche
 @api.route("/post-niche", methods=['GET','POST'])
