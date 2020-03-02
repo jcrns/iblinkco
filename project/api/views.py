@@ -805,7 +805,7 @@ def disconnectNicheApi():
 			# Running disconnecting func
 			value = disconnectNiche(uid)
 			value = { "results" : value }
-			return value
+			return [value]
 		except Exception as e:
 			raise e
 	return value
@@ -821,7 +821,7 @@ def disconnectNiche(uid):
 
 		return 'success'
 	except Exception as e:
-		raise e
+		print(e)
 		return 'failed'
 
 @api.route("/user-verified-confirmed", methods=['GET','POST'])
