@@ -781,14 +781,36 @@ def postNicheFunc(niche, uid):
 
 # Disconnecting niche and competition
 @api.route("/disconnect-niche", methods=['GET','POST'])
-def disconnectNiche():
+def disconnectNicheApi():
 	try:
 		print('disconnecting')
 		# Getting firebase data
 		user = session['user']
 		uid = user['localId']
 
+		# Running disconnecting func
+		value = disconnectNiche(uid)
 
+		# Popping niche from session
+		session.pop('competition', None)
+
+	except Exception as e:
+		print(e)
+
+		# Trying to get json
+		try:
+			# Getting uid
+			uid = request.get_json()['uid']
+
+			# Running disconnecting func
+			value = disconnectNiche(uid)
+			return { "results" : value}
+		except Exception as e:
+			raise e
+	return value
+
+def disconnectNiche(uid):
+	try:
 		# Putting niche in database
 		database.child("users").child(uid).child("account").update({'niche' : '' })
 
@@ -796,15 +818,10 @@ def disconnectNiche():
 		database.child("users").child(uid).child("competition").child("link").set(['null'])
 		database.child("users").child(uid).child("competition").child("title").set(['null'])
 
-		# Popping niche from session
-		session.pop('competition', None)
-
-		# Assigning message
-		value = 'success'
+		return 'success'
 	except Exception as e:
-		print(e)
-		value = 'failed'
-	return value
+		raise e
+		return 'failed'
 
 @api.route("/user-verified-confirmed", methods=['GET','POST'])
 def userVerifiedAPI():
