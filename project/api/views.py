@@ -683,7 +683,7 @@ def connectWebsiteApi():
 			uid = request.get_json()['uid']
 
 			websiteUrl = websiteUrl.lower()
-			websiteScrap = websiteScrapping(website_url)
+			websiteScrap = websiteScrapping(websiteUrl)
 			
 			addWebsite = { "website_name" : websiteName, "website_url" : websiteUrl, "header_text" : websiteScrap[0], "links" : websiteScrap[1] }
 
