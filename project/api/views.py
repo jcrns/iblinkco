@@ -639,7 +639,7 @@ def signOut():
 
 # Connect Website
 @api.route("/connect-website", methods=['GET','POST'])
-def connectWebsite():
+def connectWebsiteApi():
 	userData = dict()
 	userReturn = []
 	try:
@@ -700,6 +700,23 @@ def connectWebsite():
 
 			 return jsonify(value)
 
+def connectWebsite(websiteName, websiteUrl):
+	try:
+		# Defining variables
+		websiteName = userData['website_name']
+		websiteUrl = userData['website_url']
+		
+		websiteScrap = websiteScrapping(website_url)
+		
+		addWebsite = { "website_name" : website_name, "website_url" : website_url, "header_text" : websiteScrap[0], "links" : websiteScrap[1] }
+
+		# Importing data in firebase
+		database.child("users").child(uid).child("website").set(websiteData)
+		return 'success'
+	except Exception as e:
+		print(e)
+		return 'failed'
+		
 # Disconnect website function
 @api.route("/disconnect-website", methods=['GET','POST'])
 def disconnectWebsiteApi():
@@ -769,31 +786,37 @@ def postNicheApi():
 		except Exception as e:
 			print(e)
 			value = 'failed'
+			return value
 	# Running func
-	postingNiche = postNicheFunc(nichePost, uid)
+	value = postNicheFunc(nichePost, uid)
 	return value
 
 def postNicheFunc(niche, uid):
 	try:
-		location = database.child("users").child(uid).child("twitter").child("location").get().val()
-	except Exception as e:
-		raise e
+		try:
+			location = database.child("users").child(uid).child("twitter").child("location").get().val()
+		except Exception as e:
+			raise e
+		
+		# Getting competitiors on google
+		searchResults = googleSearch(niche, location, 1)
+		print(searchResults)
+		compDict = {}
+		compDict['link'] = searchResults[1]
+		compDict['title'] = searchResults[0]
+
+		# Putting niche in database
+		database.child("users").child(uid).child("account").update({'niche' : niche })
+
+		# Putting competitors in database
+		database.child("users").child(uid).child("competition").set(compDict)
+		print('aaaaaa')
+
+		return 'success'
 	
-	# Getting competitiors on google
-	searchResults = googleSearch(niche, location, 1)
-	print(searchResults)
-	compDict = {}
-	compDict['link'] = searchResults[1]
-	compDict['title'] = searchResults[0]
-
-	# Putting niche in database
-	database.child("users").child(uid).child("account").update({'niche' : niche })
-
-	# Putting competitors in database
-	database.child("users").child(uid).child("competition").set(compDict)
-	print('aaaaaa')
-
-	return 'success'
+	except Exception as e:
+		print(e)
+		return 'failed'
 
 # Disconnecting niche and competition
 @api.route("/disconnect-niche", methods=['GET','POST'])
