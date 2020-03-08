@@ -680,9 +680,9 @@ def connectWebsiteApi():
 			print(request.get_json())
 			print(data)
 			# Getting posted data
-			websiteName = request.get_json()['website_name']
-			websiteUrl = request.get_json()['website_url']
-			uid = request.get_json()['uid']
+			websiteName = data['website_name']
+			websiteUrl = data['website_url']
+			uid = data['uid']
 
 			websiteUrl = websiteUrl.lower()
 			websiteScrap = websiteScrapping(website_url)
