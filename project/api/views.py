@@ -685,7 +685,7 @@ def connectWebsiteApi():
 			websiteUrl = websiteUrl.lower()
 			websiteScrap = websiteScrapping(websiteUrl)
 			
-			addWebsite = { "website_name" : websiteName, "website_url" : websiteUrl, "header_text" : websiteScrap[0], "links" : websiteScrap[1] }
+			websiteData = { "website_name" : websiteName, "website_url" : websiteUrl, "header_text" : websiteScrap[0], "links" : websiteScrap[1] }
 
 			# Importing data in firebase
 			database.child("users").child(uid).child("website").set(websiteData)
