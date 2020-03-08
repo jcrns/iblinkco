@@ -676,18 +676,16 @@ def connectWebsiteApi():
 
 		# API Request
 		try:
-			data = request.get_json('data')
-			print(request.get_json())
-			print(data)
+
 			# Getting posted data
-			websiteName = data['website_name']
-			websiteUrl = data['website_url']
-			uid = data['uid']
+			websiteName = request.get_json()['website_name']
+			websiteUrl = request.get_json()['website_url']
+			uid = request.get_json()['uid']
 
 			websiteUrl = websiteUrl.lower()
 			websiteScrap = websiteScrapping(website_url)
 			
-			addWebsite = { "website_name" : website_name, "website_url" : website_url, "header_text" : websiteScrap[0], "links" : websiteScrap[1] }
+			addWebsite = { "website_name" : websiteName, "website_url" : websiteUrl, "header_text" : websiteScrap[0], "links" : websiteScrap[1] }
 
 			# Importing data in firebase
 			database.child("users").child(uid).child("website").set(websiteData)
