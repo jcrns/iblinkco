@@ -652,6 +652,7 @@ def connectWebsiteApi():
 			websiteScrap = websiteScrapping(websiteUrl)
 			print('aaa')
 			
+			websiteUrl = websiteUrl.lower()
 			websiteData = { "website_name" : websiteName, "website_url" : websiteUrl, "header_text" : websiteScrap[0], "links" : websiteScrap[1] }
 			print('aaa')
 
@@ -675,16 +676,15 @@ def connectWebsiteApi():
 
 		# API Request
 		try:
+			data = request.get_json('data')
 			print(request.get_json())
-
+			print(data)
 			# Getting posted data
-			userData['website_name'] = request.get_json()['website_name']
-			userData['website_url'] = request.get_json()['website_url']
+			websiteName = request.get_json()['website_name']
+			websiteUrl = request.get_json()['website_url']
+			uid = request.get_json()['uid']
 
-			# Defining variables
-			websiteName = userData['website_name']
-			websiteUrl = userData['website_url']
-			
+			websiteUrl = websiteUrl.lower()
 			websiteScrap = websiteScrapping(website_url)
 			
 			addWebsite = { "website_name" : website_name, "website_url" : website_url, "header_text" : websiteScrap[0], "links" : websiteScrap[1] }
@@ -716,7 +716,7 @@ def connectWebsite(websiteName, websiteUrl):
 	except Exception as e:
 		print(e)
 		return 'failed'
-		
+
 # Disconnect website function
 @api.route("/disconnect-website", methods=['GET','POST'])
 def disconnectWebsiteApi():
