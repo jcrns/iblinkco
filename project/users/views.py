@@ -121,7 +121,7 @@ def register():
 def sendEmailVerified(email, link):
 
     # Creating msg
-    msg = Message('Confirm Email', sender='iblinkcompany@gmail.com', recipients=[email] )
+    msg = Message('Confirm Email', sender='confirmemailiblinkco@gmail.com', recipients=[email] )
 
     # Creating body email
     msg.body = 'Confirm your email now! {}'.format(link)
